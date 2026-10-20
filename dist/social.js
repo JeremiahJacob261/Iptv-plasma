@@ -4,7 +4,7 @@
  const platform=root.dataset.platform,form=document.querySelector('#social-form'),input=document.querySelector('#social-url'),embed=document.querySelector('#social-embed'),status=document.querySelector('#social-status'),original=document.querySelector('#social-original'),clear=document.querySelector('#social-clear');
  setControlLabel(form.querySelector('button'),platform==='x'?'View':'Watch',platform==='x'?'arrow-top-right-on-square':'play');
  setControlLabel(clear,'Clear viewer','stop');
- let attempt=0,widgetsPromise,timer;
+ let attempt=0,widgetsPromise,timer,resizeObserver;
  function parse(value){
   value=value.trim();if(platform==='twitch'&&/^[a-zA-Z0-9_]{1,25}$/.test(value))value='https://www.twitch.tv/'+value;
   let url;try{url=new URL(value);}catch{throw Error('Paste a complete '+(platform==='x'?'X':'Twitch')+' link.');}
@@ -30,7 +30,7 @@
    script.onerror=()=>{clearTimeout(timeout);script.remove();widgetsPromise=null;reject(Error('X embeds could not load. Check your connection or content blocker.'));};document.head.append(script);
   });return widgetsPromise;
  }
- function reset(){attempt++;clearTimeout(timer);embed.replaceChildren();original.hidden=true;clear.hidden=true;status.textContent='Viewer cleared. Paste another link to continue.';}
+ function reset(){attempt++;resizeObserver?.disconnect();resizeObserver=null;clearTimeout(timer);embed.replaceChildren();original.hidden=true;clear.hidden=true;status.textContent='Viewer cleared. Paste another link to continue.';}
  clear.addEventListener('click',reset);
  form.addEventListener('submit',async event=>{
   event.preventDefault();let item;try{item=parse(input.value);}catch(error){status.textContent=error.message;input.focus();return;}
@@ -40,7 +40,11 @@
     const url=new URL('https://player.twitch.tv/');url.searchParams.set(item.type,item.type==='video'?'v'+item.id:item.id);url.searchParams.set('parent',location.hostname);url.searchParams.set('autoplay','false');
     const frame=document.createElement('iframe');frame.src=url.href;frame.title=item.type==='channel'?'Twitch stream: '+item.id:'Twitch video';frame.allow='autoplay; fullscreen; picture-in-picture';frame.allowFullscreen=true;frame.referrerPolicy='strict-origin-when-cross-origin';
     frame.addEventListener('load',()=>{if(current===attempt){clearTimeout(timer);status.textContent='Twitch player loaded. Press Play to watch. Availability is shown inside the player.';}});
-    slot.append(frame);timer=setTimeout(()=>{if(current===attempt)status.textContent='If the player has not appeared, check your connection or content blocker, or open the original Twitch link.';},15000);
+    slot.append(frame);
+    // Twitch requires a 400x300 layout viewport; fit that viewport on narrow phones.
+    const fit=()=>{const width=embed.clientWidth;if(!width)return;const layoutWidth=Math.max(400,width),height=Math.max(300,layoutWidth*9/16),scale=width/layoutWidth;frame.style.width=layoutWidth+'px';frame.style.height=height+'px';frame.style.transform='scale('+scale+')';frame.style.transformOrigin='top left';slot.style.height=height*scale+'px';};
+    fit();if(typeof ResizeObserver==='function'){resizeObserver=new ResizeObserver(fit);resizeObserver.observe(embed);}
+    timer=setTimeout(()=>{if(current===attempt)status.textContent='If the player has not appeared, check your connection or content blocker, or open the original Twitch link.';},15000);
    }else{
     const api=await widgets();if(current!==attempt)return;
     const result=await Promise.race([item.type==='post'?api.createTweet(item.id,slot,{dnt:true,align:'center'}):api.createTimeline({sourceType:'profile',screenName:item.id},slot,{height:600,dnt:true}),new Promise((_,reject)=>{timer=setTimeout(()=>reject(Error('X has not returned this content. Try again or open the original link.')),20000);})]);
