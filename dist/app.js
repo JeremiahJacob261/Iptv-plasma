@@ -6,7 +6,7 @@ const store = {
 function parsePlaylist(text, base = location.href) {
  text = text.replace(/^\uFEFF/, '');
  if (/^#EXTM3U/m.test(text) && /#EXT-X-(TARGETDURATION|STREAM-INF|MEDIA-SEQUENCE)/.test(text)) return [{ name: 'Live Stream', url: base, group: '', logo: '', type: 'hls' }];
- const channels = []; let info = {};
+ const channels = [], byURL = new Map(); let info = {};
  for (const line of text.split(/\r?\n/).map(x => x.trim())) {
   if (line.startsWith('#EXTINF:')) {
    const attrs = Object.fromEntries([...line.matchAll(/([\w-]+)="([^"]*)"/g)].map(x => [x[1], x[2]]));
@@ -15,13 +15,22 @@ function parsePlaylist(text, base = location.href) {
    info = { name: (comma < 0 ? '' : line.slice(comma + 1).trim()) || attrs['tvg-name'] || 'Channel', logo: attrs['tvg-logo'] || '', group: attrs['group-title'] || '' };
   } else if (line && !line.startsWith('#')) {
    if (/[<>]/.test(line) || (!info.name && !/^https?:\/\//i.test(line) && !/\.(?:m3u8?|mp4|mp3|aac|ts)(?:[?#]|$)/i.test(line))) continue;
-   try { const url = new URL(line, base); if (/^https?:$/.test(url.protocol)) channels.push({ name: info.name || 'Channel '+(channels.length+1), group: info.group || '', logo: info.logo || '', url: url.href }); } catch {}
+   try {
+    const url = new URL(line, base);
+    if (/^https?:$/.test(url.protocol)) {
+     const existing = byURL.get(url.href);
+     if (existing) existing.group = [...new Set([...existing.group.split(';'),...(info.group || '').split(';')].filter(Boolean))].join(';');
+     else { const channel = { name: info.name || 'Channel '+(channels.length+1), group: info.group || '', logo: info.logo || '', url: url.href }; channels.push(channel); byURL.set(url.href,channel); }
+    }
+   } catch {}
    info = {};
   }
  }
  return channels;
 }
 const form = document.querySelector('#m3u-form');
+const DEFAULT_PLAYLIST = 'https://iptv-org.github.io/iptv/index.category.m3u';
+let catalogPromise;
 const savedFavorites = store.get('iptv-favorites', []);
 let channels = [], hls, active, pageSize = 100, playAttempt = 0, loadAttempt = 0, playlistRequest;
 const favorites = new Set(Array.isArray(savedFavorites) ? savedFavorites : []);
@@ -50,6 +59,8 @@ async function loadPlaylist(url, file) {
  const button = form?.querySelector('[type=submit]');
  if (button) { button.disabled = true; button.textContent = 'Loading…'; }
  message('Loading playlist…');
+ const sourceSelect = document.querySelector('#builtin-playlist');
+ if (sourceSelect) sourceSelect.value = [...sourceSelect.options].some(option=>option.value===url) ? url : '';
  let nextChannels;
  try {
   let text, base = location.href;
@@ -96,7 +107,7 @@ function renderPlayer() {
   panel.querySelector('#stop-playback').addEventListener('click', () => stopPlayback());
  }
  const group = panel.querySelector('#channel-group'); group.replaceChildren(new Option('All Channels',''));
- [...new Set(channels.map(x=>x.group).filter(Boolean))].sort().forEach(x=>group.add(new Option(x,x)));
+ [...new Set(channels.flatMap(x=>x.group.split(';')).filter(Boolean))].sort().forEach(x=>group.add(new Option(x,x)));
  panel.querySelector('#channel-search').value=''; panel.querySelector('#favorites-only').checked=false;
  panel.querySelector('#current-channel').textContent='Select a channel to watch'; panel.querySelector('#stream-status').textContent='';
  renderChannels(); safeScroll(panel);
@@ -104,7 +115,7 @@ function renderPlayer() {
 function renderChannels() {
  const query = document.querySelector('#channel-search').value.toLowerCase(), group = document.querySelector('#channel-group').value, only = document.querySelector('#favorites-only').checked;
  const list = document.querySelector('#channel-list'); list.replaceChildren();
- const filtered = channels.filter(x => x.name.toLowerCase().includes(query) && (!group || x.group === group) && (!only || favorites.has(x.url)));
+ const filtered = channels.filter(x => x.name.toLowerCase().includes(query) && (!group || x.group.split(';').includes(group)) && (!only || favorites.has(x.url)));
  document.querySelector('#channel-count').textContent = filtered.length+' channels';
  document.querySelector('#load-more-channels').hidden = filtered.length <= pageSize;
  if (!filtered.length) { const p = document.createElement('p'); p.textContent = 'No channels match your filters.'; list.append(p); }
@@ -167,7 +178,44 @@ async function playChannel(channel) {
   if(attempt===playAttempt)connect();
  } catch(error){if(attempt===playAttempt)status.textContent=error.message;}
 }
+async function playlistCatalog() {
+ if (!catalogPromise) catalogPromise = fetchWithTimeout('/playlist-sources.json').then(async response=>{
+  if (!response.ok) throw Error('The source catalog could not be loaded.');
+  const catalog = await response.json();
+  if (!Array.isArray(catalog.sources)) throw Error('The source catalog could not be loaded.');
+  return catalog;
+ }).catch(error=>{catalogPromise=null;throw error;});
+ return catalogPromise;
+}
+function setupSourcePicker() {
+ const tools=document.createElement('div');tools.className='playlist-source-tools';
+ tools.innerHTML='<label for="playlist-source-search">Find a channel playlist</label><input id="playlist-source-search" type="search" placeholder="Search countries, languages, categories or regions"><label for="builtin-playlist">IPTV-org playlists</label><select id="builtin-playlist"><option value="">Custom playlist</option><option value="https://iptv-org.github.io/iptv/index.category.m3u">All channels · by category</option><option value="https://iptv-org.github.io/iptv/index.m3u">All channels</option></select><button id="load-builtin-playlist" type="button">Load channels</button><p id="playlist-source-status" role="status"></p>';
+ form.before(tools);
+ const select=tools.querySelector('select'),search=tools.querySelector('input'),status=tools.querySelector('[role=status]');
+ const useSelection=()=>{if(select.value){document.querySelector('#playlist-url').value=select.value;document.querySelector('#playlist-file').value='';}};
+ select.addEventListener('change',useSelection);
+ tools.querySelector('button').addEventListener('click',()=>{useSelection();if(select.value)loadPlaylist(select.value);else message('Choose an IPTV-org playlist or paste your own URL below.',true);});
+ const labels={all:'All channels',country:'Countries',category:'Categories',language:'Languages',region:'Regions',subdivision:'States and provinces',city:'Cities'};
+ playlistCatalog().then(catalog=>{
+  const fill=()=>{
+   const current=document.querySelector('#playlist-url').value,query=search.value.trim().toLowerCase();
+   select.replaceChildren(new Option('Custom playlist',''));
+   let count=0;
+   for(const [kind,label] of Object.entries(labels)){
+    const items=catalog.sources.filter(x=>x.kind===kind&&(!query||(x.name+' '+label+' '+(x.code||'')).toLowerCase().includes(query)));
+    if(!items.length)continue;
+    const group=document.createElement('optgroup');group.label=label;
+    items.forEach(source=>group.append(new Option(source.name,source.url)));select.append(group);count+=items.length;
+   }
+   select.value=[...select.options].some(option=>option.value===current)?current:'';
+   status.textContent=query?(count+' matching playlists'):'Channels supplied by IPTV-org.';
+  };
+  search.addEventListener('input',fill);fill();
+ }).catch(()=>{status.textContent='The full source catalog is unavailable. You can still use All channels or paste a playlist URL.';});
+ document.querySelector('#playlist-url').addEventListener('input',()=>{select.value='';});
+}
 if (form) {
+ setupSourcePicker();
  document.querySelectorAll('input[name="player-type"]').forEach(input => input.addEventListener('change', () => {message(input.dataset.type === 'http' ? 'HTTP compatibility mode selected. Streams will load through the secure player.' : 'HTTPS mode selected. Streams connect directly with an automatic compatibility fallback.');}));
  form.removeAttribute('action'); form.addEventListener('submit',event=>{
   event.preventDefault();const url=document.querySelector('#playlist-url').value.trim(),file=document.querySelector('#playlist-file').files[0];
@@ -175,19 +223,18 @@ if (form) {
   if(file&&!/\.m3u8?$/i.test(file.name)){message('Only M3U and M3U8 files are allowed.',true);return;}
   loadPlaylist(url,file);
  });
- const url=new URLSearchParams(location.search).get('playlist');
- if(url){document.querySelector('#playlist-url').value=url;loadPlaylist(url);}
+ const url=new URLSearchParams(location.search).get('playlist') || DEFAULT_PLAYLIST;
+ document.querySelector('#playlist-url').value=url;loadPlaylist(url);
 }
 function directoryStatus(item, text) {let status=document.querySelector('#directory-status');if(!status){status=document.createElement('p');status.id='directory-status';status.setAttribute('role','status');item.parentElement.before(status);}status.textContent=text;safeScroll(status);}
-const directoryData={};
-async function directoryJSON(name) {if(!directoryData[name])directoryData[name]=fetchWithTimeout('/'+name+'.json').then(r=>{if(!r.ok)throw Error('Directory unavailable');return r.json();}).catch(error=>{delete directoryData[name];throw error;});return directoryData[name];}
 async function openDirectory(item) {
- let url=item.dataset.playlist;
- if(item.dataset.country==='International')url='https://iptv-org.github.io/iptv/index.m3u';
  try {
-  if(!url&&item.dataset.country){const match=(await directoryJSON('countries')).find(x=>x.name.toLowerCase()===item.dataset.country.toLowerCase());if(match)url='https://iptv-org.github.io/iptv/countries/'+match.code.toLowerCase()+'.m3u';}
-  if(!url&&item.dataset.category){const match=(await directoryJSON('categories')).find(x=>x.name.toLowerCase()===item.dataset.category.toLowerCase());if(match)url='https://iptv-org.github.io/iptv/categories/'+match.id+'.m3u';}
-  if(!url&&item.dataset.language){const aliases={'Afghan Persian':'prs','Iranian Persian':'pes','Parsi-Dari':'prd','Undefined':'und'};if(aliases[item.dataset.language])url='https://iptv-org.github.io/iptv/languages/'+aliases[item.dataset.language]+'.m3u';const match=(await directoryJSON('languages')).find(x=>x.name.toLowerCase()===item.dataset.language.toLowerCase());if(match)url='https://iptv-org.github.io/iptv/languages/'+match.code+'.m3u';}
+  const catalog=await playlistCatalog();
+  const kind=item.dataset.country?'country':item.dataset.category?'category':'language';
+  const name=item.dataset.country||item.dataset.category||item.dataset.language||'';
+  const aliases={'Afghan Persian':'prs','Iranian Persian':'pes','Parsi-Dari':'prd','Undefined':'und'};
+  const match=catalog.sources.find(source=>source.kind===kind&&(source.name.toLowerCase()===name.toLowerCase()||(item.dataset.playlist&&source.url===item.dataset.playlist)||(kind==='language'&&source.code===aliases[name])));
+  const url=match?.url;
   if(url)location.href='/iptv-player/?playlist='+encodeURIComponent(url);
   else directoryStatus(item,'No public playlist is available for '+item.textContent.trim()+'. Please choose another selection.');
  }catch{directoryStatus(item,'Unable to load the directory. Please try again.');}

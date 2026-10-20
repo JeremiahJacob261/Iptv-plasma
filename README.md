@@ -15,3 +15,7 @@ Project `free-iptv-player` in the connected `jeremiahxs-projects` team. Producti
 ## Player networking repair
 
 Playlists load through `/api/playlist`; `/api/stream` provides the HLS/HTTP compatibility fallback. These Node.js functions validate public network destinations and redirects, forward byte ranges, and rewrite HLS child URLs. Run `node --test tests/player.test.cjs tests/upstream.test.mjs`; DOM tests require jsdom and the downloaded playlist fixtures described in WORK_LOG.md. Actual provider availability and region restrictions still apply. Contact/newsletter destinations remain unconfigured.
+
+## Built-in channel sources
+
+The player loads IPTV-org's category-grouped worldwide list by default. Search the source picker for countries, categories, languages, regions, states/provinces or cities. Both `https://iptv-org.github.io/iptv/index.m3u` and `https://iptv-org.github.io/iptv/index.category.m3u` are included. Source links come from the official repository's `PLAYLISTS.md`; `scripts/update-sources.mjs` refreshes the catalog during deployment. Streams continue to load from their current upstream URLs through the playlist API. Identical feed URLs are displayed once while retaining all their categories.

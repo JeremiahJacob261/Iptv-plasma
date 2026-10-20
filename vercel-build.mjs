@@ -23,4 +23,6 @@ await Promise.all(Array.from({length:12},async()=>{
 }));
 await copyFile('updates/app.js','dist/app.js');
 await copyFile('updates/app.css','dist/app.css');
+await copyFile('updates/playlist-sources.json','dist/playlist-sources.json');
+try { execFileSync(process.execPath,['scripts/update-sources.mjs'],{stdio:'inherit'}); } catch { console.log('Using verified IPTV-org catalog snapshot.'); }
 console.log('Static site ready: original assets verified and player updates installed.');
