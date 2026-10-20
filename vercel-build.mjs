@@ -24,5 +24,10 @@ await Promise.all(Array.from({length:12},async()=>{
 await copyFile('updates/app.js','dist/app.js');
 await copyFile('updates/app.css','dist/app.css');
 await copyFile('updates/playlist-sources.json','dist/playlist-sources.json');
+await copyFile('updates/polish.css','dist/polish.css');
+await copyFile('updates/inter-latin.woff2','dist/assets/inter-latin.woff2');
+await copyFile('updates/Heroicons-LICENSE.txt','dist/assets/Heroicons-LICENSE.txt');
+await copyFile('updates/Inter-LICENSE.txt','dist/assets/Inter-LICENSE.txt');
+execFileSync(process.execPath,['scripts/polish-pages.mjs','updates/heroicons.json'],{stdio:'inherit'});
 try { execFileSync(process.execPath,['scripts/update-sources.mjs'],{stdio:'inherit'}); } catch { console.log('Using verified IPTV-org catalog snapshot.'); }
 console.log('Static site ready: original assets verified and player updates installed.');

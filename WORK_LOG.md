@@ -54,3 +54,14 @@ Player still tries the channel media URL directly, then relay as applicable. On 
 Production deployment submitted: dpl_DB19BJPMcCdrcd7tj2sbTmkSyyVL. Verify READY and record final status below.
 
 Playback deployment dpl_DB19BJPMcCdrcd7tj2sbTmkSyyVL is READY at the existing public origin. Production app.js matches the repaired source, including Full screen and same-station fallback. Source commit 48e960f. Asked user for the exact failing channel and viewer country; screenshot alone shows a working 3ABN Kids stream and does not identify the failing station or prove geoblocking.
+
+## Impeccable modern polish (2026-10-20)
+User explicitly invoked Impeccable and requested a more modern website with Heroicons, while preserving colours and font sizes; font family may change. Replaced interface family with self-hosted variable Inter (48,256-byte WOFF2) and sourced official Heroicons v2.2.0 (MIT), including outline glyphs and solid favorite stars. Font and icon provenance/licenses are in icons/.
+
+Added dist/polish.css as a shared layer across 125 HTML pages. Original CSS files and app.css are byte-for-byte unchanged, including every responsive font-size and colour declaration. New polish layer does not define text sizes or replace foreground/background colours. Representative before/after DOM comparisons confirm unchanged computed font sizes and text/background colours on homepage, player, countries, categories and languages. Baseline fixtures are tracked at .impeccable/polish-baseline/. Updated DESIGN.md and .impeccable/design.json reflect the newly authorized refinement and fixed constraints.
+
+Polish includes consistent control corners/touch targets, aligned header/footer, better homepage spacing, responsive directory rows, original flags/images, Heroicons SVG symbol/category conversion, removal of old FontAwesome browser script, rounded channel rows/video frame, clearer spacing, loading rotation and reduced-motion handling. Playlist source controls now live in a native disclosure with a two-column desktop setup grid; on mobile the disclosure closes after successful loading to foreground video/channels. All controls and source metadata remain available, and player status is outside the setup grid.
+
+Seventeen existing playback/backend tests pass plus three polish tests covering immutable CSS, representative computed size/colour equality, Heroicons and disclosure behavior. No supported browser-control tool exists in this session; visual screenshot QA is unverified. Do not claim pixel-perfect visual review.
+
+Build now additionally uploads updates/polish.css, updates/inter-latin.woff2, updates/heroicons.json, both license files, and scripts/polish-pages.mjs. The build restores the original archive then converts static glyphs and adds /polish.css. This is important: local modified HTML is not individually uploaded. Submitted production deployment dpl_AgsX8F9xaJbKSkN6uw6UCqS4GxEN; confirm final production status below.

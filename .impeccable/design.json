@@ -1,1 +1,35 @@
-{"authority":"https://freeiptvplayer.net/","captured":"2026-10-20","strategy":"preserve downloaded original styles and assets","fonts":["Open Sans","ABeeZee"],"watchTokens":{"background":"#202020","foreground":"#ffffff","accent":"#e74c3c","sidebarWidth":"300px","mobileBreakpoint":"700px"},"verification":{"sourceAudit":true,"visualComparison":false,"livePlayback":false}}
+{
+  "authority": "User polish request, 2026-10-20",
+  "strategy": "modern refinement; preserve colours and font sizes",
+  "fonts": [
+    "Inter",
+    "Open Sans"
+  ],
+  "constraints": {
+    "preserveOriginalColours": true,
+    "preserveOriginalFontSizes": true,
+    "noFontSizeDeclarationsInPolishCSS": true
+  },
+  "tokens": {
+    "siteAccent": "#00ff24",
+    "siteDark": "#171422",
+    "playerBackground": "#202020",
+    "playerForeground": "#ffffff",
+    "playerAction": "#e74c3c",
+    "favorite": "#ffb700",
+    "controlRadius": "10px",
+    "playerRadius": "16px",
+    "controlMotion": "180ms",
+    "mobileBreakpoint": "700px"
+  },
+  "icons": {
+    "library": "Heroicons",
+    "version": "2.2.0",
+    "style": "24px outline; solid favorite star"
+  },
+  "verification": {
+    "sourceAudit": true,
+    "computedStyleComparison": true,
+    "visualBrowserReview": false
+  }
+}

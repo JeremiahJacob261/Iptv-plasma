@@ -1,7 +1,21 @@
-# Original site visual system
+# Free IPTV Player visual system
 
-Visual authority: https://freeiptvplayer.net/ retrieved 2026-10-20. Retain original Oxygen HTML, responsive CSS and image placement. Original font families Open Sans and ABeeZee are self-hosted with their downloaded font files. Original logo, mockups, photographs, article imagery, icons and flags are self-hosted. Hashed assets map to their origin in asset-manifest.json.
+The user authorized a modern polish on 2026-10-20, with two fixed constraints: preserve the existing colours and every text font size. Earlier exact-clone instructions still govern factual copy and original imagery; the new polish instruction authorizes layout and icon refinement.
 
-No visual redesign authorized. Styling of the newly implemented watch view inherits the original interface's dark video surface, white controls and red accent. New watch layout: 300px channel sidebar plus fluid video pane; collapse at 700px. Original responsive rules remain untouched for all other content.
+## Typography and colours
 
-Browser visual comparison is not verified because no supported connected-browser tool is available in this session.
+Inter is the self-hosted interface family, with Open Sans as fallback. Existing heading, body, label, control, and responsive text sizes remain declared in the original immutable Oxygen CSS and app.css. polish.css must contain no font-size or font shorthand declarations. Font weight, line height and tracking can be refined without changing the size scale.
+
+Retain existing colours at their current roles: original neon green #00ff24 and dark purple #171422 for site branding; #202020 player background, #ffffff foreground, #e74c3c playback actions and #ffb700 favorites. Other original surface, text, border, hover and state colours remain in source CSS. No colour/background replacements in polish.css. New outlined icons inherit their role’s colour; category hover uses the original green and input search icons use existing #222 input ink.
+
+## Shape, layout and interaction
+
+Shared controls use 9–12px corners; player shell uses 16px (12px on mobile). Main touch targets remain at least 44px. Heroicons v2.2.0 outline is the icon family, with its solid star for selected favorites. Static SVG symbols and category icons are converted during build; the old FontAwesome browser script is removed.
+
+Source controls use a two-column grid at desktop widths and a native disclosure that closes after successful loading on mobile. The player retains a channel sidebar and fluid video pane; below 700px, video precedes the channel list. Directory entries use aligned responsive grids, original flags, and outlined category glyphs. Homepage/header/footer gain consistent gaps and stronger alignment without replacing original images or copy.
+
+Motion is limited to short 180ms control/hover feedback and loading-icon rotation. prefers-reduced-motion disables these.
+
+## Verification
+
+Original CSS file hashes, colours and font-size declarations are captured in .impeccable/polish-baseline/. DOM comparisons confirm unchanged computed text sizes and foreground/background colours on the homepage, player, countries, categories and languages pages. Playback and interaction checks remain required. No supported browser-control tool is available in this session; screenshot-based visual comparison is unverified.

@@ -1,4 +1,10 @@
 'use strict';
+
+const HEROICON_SVG = {"play": "<svg xmlns=\"http://www.w3.org/2000/svg\" fill=\"none\" viewBox=\"0 0 24 24\" stroke-width=\"1.5\" stroke=\"currentColor\" aria-hidden=\"true\" data-slot=\"icon\">\n  <path stroke-linecap=\"round\" stroke-linejoin=\"round\" d=\"M5.25 5.653c0-.856.917-1.398 1.667-.986l11.54 6.347a1.125 1.125 0 0 1 0 1.972l-11.54 6.347a1.125 1.125 0 0 1-1.667-.986V5.653Z\"/>\n</svg>\n", "stop": "<svg xmlns=\"http://www.w3.org/2000/svg\" fill=\"none\" viewBox=\"0 0 24 24\" stroke-width=\"1.5\" stroke=\"currentColor\" aria-hidden=\"true\" data-slot=\"icon\">\n  <path stroke-linecap=\"round\" stroke-linejoin=\"round\" d=\"M5.25 7.5A2.25 2.25 0 0 1 7.5 5.25h9a2.25 2.25 0 0 1 2.25 2.25v9a2.25 2.25 0 0 1-2.25 2.25h-9a2.25 2.25 0 0 1-2.25-2.25v-9Z\"/>\n</svg>\n", "star": "<svg xmlns=\"http://www.w3.org/2000/svg\" fill=\"none\" viewBox=\"0 0 24 24\" stroke-width=\"1.5\" stroke=\"currentColor\" aria-hidden=\"true\" data-slot=\"icon\">\n  <path stroke-linecap=\"round\" stroke-linejoin=\"round\" d=\"M11.48 3.499a.562.562 0 0 1 1.04 0l2.125 5.111a.563.563 0 0 0 .475.345l5.518.442c.499.04.701.663.321.988l-4.204 3.602a.563.563 0 0 0-.182.557l1.285 5.385a.562.562 0 0 1-.84.61l-4.725-2.885a.562.562 0 0 0-.586 0L6.982 20.54a.562.562 0 0 1-.84-.61l1.285-5.386a.562.562 0 0 0-.182-.557l-4.204-3.602a.562.562 0 0 1 .321-.988l5.518-.442a.563.563 0 0 0 .475-.345L11.48 3.5Z\"/>\n</svg>\n", "star-solid": "<svg xmlns=\"http://www.w3.org/2000/svg\" viewBox=\"0 0 24 24\" fill=\"currentColor\" aria-hidden=\"true\" data-slot=\"icon\">\n  <path fill-rule=\"evenodd\" d=\"M10.788 3.21c.448-1.077 1.976-1.077 2.424 0l2.082 5.006 5.404.434c1.164.093 1.636 1.545.749 2.305l-4.117 3.527 1.257 5.273c.271 1.136-.964 2.033-1.96 1.425L12 18.354 7.373 21.18c-.996.608-2.231-.29-1.96-1.425l1.257-5.273-4.117-3.527c-.887-.76-.415-2.212.749-2.305l5.404-.434 2.082-5.005Z\" clip-rule=\"evenodd\"/>\n</svg>\n", "arrows-pointing-out": "<svg xmlns=\"http://www.w3.org/2000/svg\" fill=\"none\" viewBox=\"0 0 24 24\" stroke-width=\"1.5\" stroke=\"currentColor\" aria-hidden=\"true\" data-slot=\"icon\">\n  <path stroke-linecap=\"round\" stroke-linejoin=\"round\" d=\"M3.75 3.75v4.5m0-4.5h4.5m-4.5 0L9 9M3.75 20.25v-4.5m0 4.5h4.5m-4.5 0L9 15M20.25 3.75h-4.5m4.5 0v4.5m0-4.5L15 9m5.25 11.25h-4.5m4.5 0v-4.5m0 4.5L15 15\"/>\n</svg>\n", "magnifying-glass": "<svg xmlns=\"http://www.w3.org/2000/svg\" fill=\"none\" viewBox=\"0 0 24 24\" stroke-width=\"1.5\" stroke=\"currentColor\" aria-hidden=\"true\" data-slot=\"icon\">\n  <path stroke-linecap=\"round\" stroke-linejoin=\"round\" d=\"m21 21-5.197-5.197m0 0A7.5 7.5 0 1 0 5.196 5.196a7.5 7.5 0 0 0 10.607 10.607Z\"/>\n</svg>\n", "arrow-path": "<svg xmlns=\"http://www.w3.org/2000/svg\" fill=\"none\" viewBox=\"0 0 24 24\" stroke-width=\"1.5\" stroke=\"currentColor\" aria-hidden=\"true\" data-slot=\"icon\">\n  <path stroke-linecap=\"round\" stroke-linejoin=\"round\" d=\"M16.023 9.348h4.992v-.001M2.985 19.644v-4.992m0 0h4.992m-4.993 0 3.181 3.183a8.25 8.25 0 0 0 13.803-3.7M4.031 9.865a8.25 8.25 0 0 1 13.803-3.7l3.181 3.182m0-4.991v4.99\"/>\n</svg>\n", "arrow-top-right-on-square": "<svg xmlns=\"http://www.w3.org/2000/svg\" fill=\"none\" viewBox=\"0 0 24 24\" stroke-width=\"1.5\" stroke=\"currentColor\" aria-hidden=\"true\" data-slot=\"icon\">\n  <path stroke-linecap=\"round\" stroke-linejoin=\"round\" d=\"M13.5 6H5.25A2.25 2.25 0 0 0 3 8.25v10.5A2.25 2.25 0 0 0 5.25 21h10.5A2.25 2.25 0 0 0 18 18.75V10.5m-10.5 6L21 3m0 0h-5.25M21 3v5.25\"/>\n</svg>\n", "rectangle-stack": "<svg xmlns=\"http://www.w3.org/2000/svg\" fill=\"none\" viewBox=\"0 0 24 24\" stroke-width=\"1.5\" stroke=\"currentColor\" aria-hidden=\"true\" data-slot=\"icon\">\n  <path stroke-linecap=\"round\" stroke-linejoin=\"round\" d=\"M6 6.878V6a2.25 2.25 0 0 1 2.25-2.25h7.5A2.25 2.25 0 0 1 18 6v.878m-12 0c.235-.083.487-.128.75-.128h10.5c.263 0 .515.045.75.128m-12 0A2.25 2.25 0 0 0 4.5 9v.878m13.5-3A2.25 2.25 0 0 1 19.5 9v.878m0 0a2.246 2.246 0 0 0-.75-.128H5.25c-.263 0-.515.045-.75.128m15 0A2.25 2.25 0 0 1 21 12v6a2.25 2.25 0 0 1-2.25 2.25H5.25A2.25 2.25 0 0 1 3 18v-6c0-.98.626-1.813 1.5-2.122\"/>\n</svg>\n", "chevron-down": "<svg xmlns=\"http://www.w3.org/2000/svg\" fill=\"none\" viewBox=\"0 0 24 24\" stroke-width=\"1.5\" stroke=\"currentColor\" aria-hidden=\"true\" data-slot=\"icon\">\n  <path stroke-linecap=\"round\" stroke-linejoin=\"round\" d=\"m19.5 8.25-7.5 7.5-7.5-7.5\"/>\n</svg>\n", "chevron-right": "<svg xmlns=\"http://www.w3.org/2000/svg\" fill=\"none\" viewBox=\"0 0 24 24\" stroke-width=\"1.5\" stroke=\"currentColor\" aria-hidden=\"true\" data-slot=\"icon\">\n  <path stroke-linecap=\"round\" stroke-linejoin=\"round\" d=\"m8.25 4.5 7.5 7.5-7.5 7.5\"/>\n</svg>\n"};
+function heroIcon(name) { return (HEROICON_SVG[name] || HEROICON_SVG.play).replace('<svg ', '<svg class="hero-icon" data-heroicon="'+name+'" focusable="false" '); }
+function setControlLabel(button,label,icon) { button.innerHTML=heroIcon(icon);button.append(document.createTextNode(label));button.classList.toggle('is-loading',icon==='arrow-path'); }
+function decorateSearch(input) { const wrap=document.createElement('div');wrap.className='control-with-icon';input.before(wrap);wrap.innerHTML=heroIcon('magnifying-glass');wrap.append(input); }
+
 const store = {
  get(key, fallback) { try { return JSON.parse(localStorage.getItem(key)) ?? fallback; } catch { return fallback; } },
  set(key, value) { try { localStorage.setItem(key, JSON.stringify(value)); } catch {} }
@@ -41,7 +47,7 @@ const favorites = new Set(Array.isArray(savedFavorites) ? savedFavorites : []);
 function safeScroll(element) { try { element?.scrollIntoView({ behavior: 'smooth', block: 'nearest' }); } catch {} }
 function message(text, error = false) {
  let el = document.querySelector('#player-status');
- if (!el && form) { el = document.createElement('p'); el.id = 'player-status'; el.setAttribute('role', 'status'); form.after(el); }
+ if (!el && form) { el = document.createElement('p'); el.id = 'player-status'; el.setAttribute('role', 'status'); (document.querySelector('.playlist-setup')||form).after(el); }
  if (el) { el.textContent = text; el.classList.toggle('error', error); }
 }
 async function fetchWithTimeout(url, options = {}, timeout = 30000) {
@@ -61,7 +67,7 @@ async function loadPlaylist(url, file) {
  const attempt = ++loadAttempt;
  playlistRequest?.abort(); playlistRequest = new AbortController();
  const button = form?.querySelector('[type=submit]');
- if (button) { button.disabled = true; button.textContent = 'Loading…'; }
+ if (button) { button.disabled = true; setControlLabel(button,'Loading…','arrow-path'); }
  message('Loading playlist…');
  const sourceSelect = document.querySelector('#builtin-playlist');
  if (sourceSelect) sourceSelect.value = [...sourceSelect.options].some(option=>option.value===url) ? url : '';
@@ -85,12 +91,13 @@ async function loadPlaylist(url, file) {
   message(error.name === 'AbortError' ? 'The playlist took too long to respond. Please try again.' : error instanceof TypeError ? 'The playlist service could not be reached. Check your connection and try again.' : error.message, true);
   return;
  } finally {
-  if (attempt === loadAttempt && button) { button.disabled = false; button.textContent = 'Watch'; }
+  if (attempt === loadAttempt && button) { button.disabled = false; setControlLabel(button,'Watch','play'); }
  }
  if (attempt !== loadAttempt || !nextChannels) return;
  stopPlayback(false); channels = nextChannels; active = null; pageSize = 100;
  try {
   renderPlayer(); store.set('iptv-playlist', channels);
+  if(window.matchMedia?.('(max-width:700px)')?.matches){const setup=document.querySelector('.playlist-setup');if(setup)setup.open=false;}
   message(channels.length+' channels loaded. Select a channel to watch.');
  } catch (error) { console.error('player_render_failed', error); message('The playlist loaded, but the player could not open. Refresh the page and try again.', true); }
 }
@@ -106,6 +113,10 @@ function renderPlayer() {
   panel = document.createElement('section'); panel.id = 'watch-player'; panel.setAttribute('aria-label','IPTV channel player');
   panel.innerHTML = '<aside class="channel-sidebar"><input id="channel-search" type="search" placeholder="Filter Channels" aria-label="Filter Channels"><label class="favorite-filter"><input id="favorites-only" type="checkbox"> Favorite Channels</label><select id="channel-group" aria-label="Channel group"><option value="">All Channels</option></select><p id="channel-count" role="status"></p><div id="channel-list"></div><button id="load-more-channels" type="button" hidden>Load more channels</button></aside><div class="video-pane"><video id="iptv-video" controls playsinline preload="none"></video><div class="video-caption"><span id="current-channel">Select a channel to watch</span><span class="playback-actions"><button id="fullscreen-playback" type="button">Full screen</button><button id="stop-playback" type="button">Stop</button></span></div><p class="channel-source-line"><a id="channel-source" target="_blank" rel="noopener noreferrer" hidden>Channel source</a></p><p id="stream-status" role="status"></p></div>';
   document.querySelector('#player-status').after(panel);
+  decorateSearch(panel.querySelector('#channel-search'));
+  setControlLabel(panel.querySelector('#stop-playback'),'Stop','stop');
+  setControlLabel(panel.querySelector('#fullscreen-playback'),'Full screen','arrows-pointing-out');
+  setControlLabel(panel.querySelector('#load-more-channels'),'Load more channels','chevron-down');
   ['#channel-search','#favorites-only','#channel-group'].forEach(selector=>panel.querySelector(selector).addEventListener(selector==='#channel-search'?'input':'change',()=>{pageSize=100;renderChannels();}));
   panel.querySelector('#load-more-channels').addEventListener('click',()=>{pageSize+=100;renderChannels();});
   panel.querySelector('#stop-playback').addEventListener('click', () => stopPlayback());
@@ -133,7 +144,7 @@ function renderChannels() {
   const play = document.createElement('button'); play.type = 'button'; play.className = 'channel-play';
   if (/^https?:\/\//i.test(channel.logo)) { const image = document.createElement('img'); image.src = channel.logo; image.alt = ''; image.loading = 'lazy'; image.addEventListener('error',()=>image.remove(),{once:true}); play.append(image); }
   const name = document.createElement('span'); name.textContent = channel.name; play.append(name); play.addEventListener('click',()=>playChannel(channel));
-  const fav = document.createElement('button'); fav.type = 'button'; fav.className = 'channel-favorite'; fav.setAttribute('aria-label',(favorites.has(channel.url)?'Remove from':'Add to')+' favorites: '+channel.name); fav.setAttribute('aria-pressed',String(favorites.has(channel.url))); fav.innerHTML = '<svg width="19" height="19" viewBox="0 0 24 24" fill="'+(favorites.has(channel.url)?'currentColor':'none')+'" stroke="currentColor" stroke-width="1.7" aria-hidden="true"><path d="m12 3 2.8 5.7 6.3.9-4.6 4.5 1.1 6.3-5.6-3-5.6 3 1.1-6.3L3 9.6l6.2-.9Z"/></svg>';
+  const fav = document.createElement('button'); fav.type = 'button'; fav.className = 'channel-favorite'; fav.setAttribute('aria-label',(favorites.has(channel.url)?'Remove from':'Add to')+' favorites: '+channel.name); fav.setAttribute('aria-pressed',String(favorites.has(channel.url))); fav.innerHTML = heroIcon(favorites.has(channel.url)?'star-solid':'star');
   fav.addEventListener('click',()=>{favorites.has(channel.url)?favorites.delete(channel.url):favorites.add(channel.url);store.set('iptv-favorites',[...favorites]);renderChannels();});
   row.append(play,fav);fragment.append(row);
  }); list.append(fragment);
@@ -190,7 +201,7 @@ async function playChannel(channel) {
   if(attempt!==playAttempt)return;
   const epoch=++connection;fallbackBusy=false;recoveredMedia=false;
   video.onerror=null;video.onplaying=null;hls?.destroy();hls=null;video.pause();video.removeAttribute('src');video.load();
-  source.href=feed.url;source.textContent='Channel source: '+new URL(feed.url).hostname;source.hidden=false;
+  source.href=feed.url;source.innerHTML=heroIcon('arrow-top-right-on-square');source.append(document.createTextNode('Channel source: '+new URL(feed.url).hostname));source.hidden=false;
   const isHls=feed.type==='hls'||!/\.(?:mp4|mp3|aac|webm|ogg|mov|ts)(?:[?#]|$)/i.test(feed.url);
   const start=()=>{if(!current(epoch))return;Promise.resolve(video.play()).catch(error=>{if(!current(epoch)||error.name==='AbortError')return;if(error.name==='NotAllowedError')status.textContent='Press Play in the video controls to start watching.';else fallback({type:'mediaError'},epoch);});};
   video.onplaying=()=>{if(current(epoch)){status.textContent=tried.size>1?'Playing an alternative public feed of this channel.':'Playing live';message(channels.length+' channels loaded. Now playing '+channel.name+'.');}};
@@ -238,7 +249,10 @@ async function playlistCatalog() {
 function setupSourcePicker() {
  const tools=document.createElement('div');tools.className='playlist-source-tools';
  tools.innerHTML='<label for="playlist-source-search">Find a channel playlist</label><input id="playlist-source-search" type="search" placeholder="Search countries, languages, categories or regions"><label for="builtin-playlist">IPTV-org playlists</label><select id="builtin-playlist"><option value="">Custom playlist</option><option value="https://iptv-org.github.io/iptv/index.category.m3u">All channels · by category</option><option value="https://iptv-org.github.io/iptv/index.m3u">All channels</option></select><button id="load-builtin-playlist" type="button">Load channels</button><p id="playlist-source-status" role="status"></p>';
- form.before(tools);
+ const setup=document.createElement('details');setup.className='playlist-setup';setup.open=true;
+ setup.innerHTML='<summary>'+heroIcon('rectangle-stack')+'Playlist sources'+heroIcon('chevron-down').replace('class="hero-icon"','class="hero-icon source-disclosure-chevron"')+'</summary><div class="playlist-setup-grid"></div>';
+ form.before(setup);setup.querySelector('.playlist-setup-grid').append(tools,form);
+ decorateSearch(tools.querySelector('input'));setControlLabel(tools.querySelector('button'),'Load channels','rectangle-stack');
  const select=tools.querySelector('select'),search=tools.querySelector('input'),status=tools.querySelector('[role=status]');
  const useSelection=()=>{if(select.value){document.querySelector('#playlist-url').value=select.value;document.querySelector('#playlist-file').value='';}};
  select.addEventListener('change',useSelection);
@@ -264,6 +278,7 @@ function setupSourcePicker() {
 }
 if (form) {
  setupSourcePicker();
+ setControlLabel(form.querySelector('[type=submit]'),'Watch','play');
  document.querySelectorAll('input[name="player-type"]').forEach(input => input.addEventListener('change', () => {message(input.dataset.type === 'http' ? 'HTTP compatibility mode selected. Streams will load through the secure player.' : 'HTTPS mode selected. Streams connect directly with an automatic compatibility fallback.');}));
  form.removeAttribute('action'); form.addEventListener('submit',event=>{
   event.preventDefault();const url=document.querySelector('#playlist-url').value.trim(),file=document.querySelector('#playlist-file').files[0];
