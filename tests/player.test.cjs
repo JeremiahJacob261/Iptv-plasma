@@ -68,8 +68,8 @@ test('HLS switching, direct-to-relay fallback, HTTP compatibility, fatal errors 
  try{
   await s.w.loadPlaylist('https://source.example/list.m3u');d.querySelector('.channel-play').click();await tick();
   const first=s.instances.at(-1);assert.equal(first.url,'https://example.com/one.m3u8');
-  first.handlers.error(null,{fatal:true,type:'network'});const relay=s.instances.at(-1);assert(first.destroyed);assert.match(relay.url,/^\/api\/stream\?url=/);
-  relay.handlers.error(null,{fatal:true,type:'network'});assert.match(d.querySelector('#stream-status').textContent,/offline/);
+  first.handlers.error(null,{fatal:true,type:'network'});await tick();const relay=s.instances.at(-1);assert(first.destroyed);assert.match(relay.url,/^\/api\/stream\?url=/);
+  relay.handlers.error(null,{fatal:true,type:'network',response:{code:403}});await tick();assert.match(d.querySelector('#stream-status').textContent,/HTTP 403/);
   d.querySelectorAll('.channel-play')[1].click();await tick();assert(relay.destroyed);assert.match(s.instances.at(-1).url,/^\/api\/stream\?url=http/);
   d.querySelector('#stop-playback').click();assert(s.instances.at(-1).destroyed);assert.match(d.querySelector('#stream-status').textContent,/stopped/);assert.equal(d.querySelector('video').hasAttribute('src'),false);
   d.querySelector('#player-http').checked=true;d.querySelector('.channel-play').click();await tick();assert.match(s.instances.at(-1).url,/^\/api\/stream\?url=/);
@@ -122,4 +122,28 @@ test('both user-supplied aggregate playlists parse, deduplicate feeds, and retai
 test('repeated stream URLs merge category memberships',async()=>{
  const text='#EXTM3U\n#EXTINF:-1 group-title="News",Station\nhttps://example.com/live.m3u8\n#EXTINF:-1 group-title="General",Station\nhttps://example.com/live.m3u8';
  const s=setup({playlist:text});try{await s.w.loadPlaylist('https://example.com/list.m3u');const parsed=s.w.parsePlaylist(text);assert.equal(parsed.length,1);assert.equal(parsed[0].group,'News;General');for(const group of ['News','General']){const select=s.w.document.querySelector('#channel-group');select.value=group;select.dispatchEvent(new s.w.Event('change'));assert.equal(s.w.document.querySelectorAll('.channel-row').length,1);}}finally{s.dom.window.close();}
+});
+
+test('same-station alternatives are tried without switching to a different channel',async()=>{
+ const list='#EXTM3U\n#EXTINF:-1 tvg-id="Station.us@SD",Station\nhttps://example.com/blocked.m3u8\n#EXTINF:-1 tvg-id="Station.us@HD",Station HD\nhttps://backup.example.com/live.m3u8\n#EXTINF:-1 tvg-id="Different.us@SD",Different Station\nhttps://other.example.com/live.m3u8';
+ const s=setup({playlist:list}),d=s.w.document;
+ try{
+  await s.w.loadPlaylist('https://example.com/list.m3u');d.querySelector('.channel-play').click();await tick();
+  let player=s.instances.at(-1);assert.equal(player.url,'https://example.com/blocked.m3u8');
+  player.handlers.error(null,{fatal:true,type:'network',response:{code:403}});await tick();player=s.instances.at(-1);assert.match(player.url,/api\/stream/);
+  player.handlers.error(null,{fatal:true,type:'network',response:{code:403}});await tick();player=s.instances.at(-1);assert.equal(player.url,'https://backup.example.com/live.m3u8');
+  assert.equal(d.querySelector('#channel-source').href,'https://backup.example.com/live.m3u8');
+  assert.equal(d.querySelectorAll('#watch-player iframe').length,0);assert.equal(d.querySelector('#watch-player video').tagName,'VIDEO');
+  d.querySelector('video').onplaying();assert.match(d.querySelector('#stream-status').textContent,/alternative public feed/);
+ }finally{s.dom.window.close();}
+});
+test('playlist station IDs and declared request headers are retained and used by the relay',async()=>{
+ const list='#EXTM3U\n#EXTINF:-1 tvg-id="Station.us@SD" http-user-agent="Example Player",Station\n#EXTVLCOPT:http-referrer=https://provider.example.com/player\nhttps://cdn.example.com/live.m3u8';
+ const s=setup({playlist:list});try{
+  await s.w.loadPlaylist('https://example.com/list.m3u');const parsed=s.w.parsePlaylist(list);assert.equal(parsed[0].id,'Station.us@SD');assert.equal(parsed[0].userAgent,'Example Player');assert.equal(parsed[0].referer,'https://provider.example.com/player');
+  s.w.document.querySelector('.channel-play').click();await tick();assert.match(s.instances.at(-1).url,/ua=Example%20Player/);assert.match(s.instances.at(-1).url,/referrer=https%3A%2F%2Fprovider/);
+ }finally{s.dom.window.close();}
+});
+test('explicit full-screen control targets the video element',async()=>{
+ const s=setup(),d=s.w.document;try{await s.w.loadPlaylist('https://example.com/list.m3u');let calls=0;d.querySelector('video').requestFullscreen=async()=>{calls++;};d.querySelector('#fullscreen-playback').click();await tick();assert.equal(calls,1);}finally{s.dom.window.close();}
 });

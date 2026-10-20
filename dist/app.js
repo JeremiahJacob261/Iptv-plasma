@@ -5,14 +5,18 @@ const store = {
 };
 function parsePlaylist(text, base = location.href) {
  text = text.replace(/^\uFEFF/, '');
- if (/^#EXTM3U/m.test(text) && /#EXT-X-(TARGETDURATION|STREAM-INF|MEDIA-SEQUENCE)/.test(text)) return [{ name: 'Live Stream', url: base, group: '', logo: '', type: 'hls' }];
+ if (/^#EXTM3U/m.test(text) && /#EXT-X-(TARGETDURATION|STREAM-INF|MEDIA-SEQUENCE)/.test(text)) return [{ name: 'Live Stream', url: base, group: '', logo: '', id: '', userAgent: '', referer: '', type: 'hls' }];
  const channels = [], byURL = new Map(); let info = {};
  for (const line of text.split(/\r?\n/).map(x => x.trim())) {
   if (line.startsWith('#EXTINF:')) {
    const attrs = Object.fromEntries([...line.matchAll(/([\w-]+)="([^"]*)"/g)].map(x => [x[1], x[2]]));
    let quoted = false, comma = -1;
    for (let i = 0; i < line.length; i++) { if (line[i] === '"') quoted = !quoted; if (line[i] === ',' && !quoted) { comma = i; break; } }
-   info = { name: (comma < 0 ? '' : line.slice(comma + 1).trim()) || attrs['tvg-name'] || 'Channel', logo: attrs['tvg-logo'] || '', group: attrs['group-title'] || '' };
+   info = { name: (comma < 0 ? '' : line.slice(comma + 1).trim()) || attrs['tvg-name'] || 'Channel', logo: attrs['tvg-logo'] || '', group: attrs['group-title'] || '', id: attrs['tvg-id'] || '', userAgent: attrs['http-user-agent'] || '', referer: attrs['http-referrer'] || attrs['http-referer'] || '' };
+  } else if (line.startsWith('#EXTVLCOPT:http-user-agent=')) {
+   info.userAgent=line.slice(line.indexOf('=')+1);
+  } else if (/^#EXTVLCOPT:http-referr?er=/.test(line)) {
+   info.referer=line.slice(line.indexOf('=')+1);
   } else if (line && !line.startsWith('#')) {
    if (/[<>]/.test(line) || (!info.name && !/^https?:\/\//i.test(line) && !/\.(?:m3u8?|mp4|mp3|aac|ts)(?:[?#]|$)/i.test(line))) continue;
    try {
@@ -20,7 +24,7 @@ function parsePlaylist(text, base = location.href) {
     if (/^https?:$/.test(url.protocol)) {
      const existing = byURL.get(url.href);
      if (existing) existing.group = [...new Set([...existing.group.split(';'),...(info.group || '').split(';')].filter(Boolean))].join(';');
-     else { const channel = { name: info.name || 'Channel '+(channels.length+1), group: info.group || '', logo: info.logo || '', url: url.href }; channels.push(channel); byURL.set(url.href,channel); }
+     else { const channel = { name: info.name || 'Channel '+(channels.length+1), group: info.group || '', logo: info.logo || '', id: info.id || '', userAgent: info.userAgent || '', referer: info.referer || '', url: url.href }; channels.push(channel); byURL.set(url.href,channel); }
     }
    } catch {}
    info = {};
@@ -94,22 +98,26 @@ function stopPlayback(showMessage = true) {
  ++playAttempt; hls?.destroy(); hls = null;
  const video = document.querySelector('#iptv-video');
  if (video) { video.onplaying = null; video.onerror = null; video.pause(); video.removeAttribute('src'); video.load(); }
- if (showMessage && document.querySelector('#stream-status')) document.querySelector('#stream-status').textContent = 'Playback stopped.';
+ if (showMessage && document.querySelector('#stream-status')) { document.querySelector('#stream-status').textContent = 'Playback stopped.'; message(channels.length+' channels loaded. Playback stopped.'); }
 }
 function renderPlayer() {
  let panel = document.querySelector('#watch-player');
  if (!panel) {
   panel = document.createElement('section'); panel.id = 'watch-player'; panel.setAttribute('aria-label','IPTV channel player');
-  panel.innerHTML = '<aside class="channel-sidebar"><input id="channel-search" type="search" placeholder="Filter Channels" aria-label="Filter Channels"><label class="favorite-filter"><input id="favorites-only" type="checkbox"> Favorite Channels</label><select id="channel-group" aria-label="Channel group"><option value="">All Channels</option></select><p id="channel-count" role="status"></p><div id="channel-list"></div><button id="load-more-channels" type="button" hidden>Load more channels</button></aside><div class="video-pane"><video id="iptv-video" controls playsinline preload="none"></video><div class="video-caption"><span id="current-channel">Select a channel to watch</span><button id="stop-playback" type="button">Stop</button></div><p id="stream-status" role="status"></p></div>';
+  panel.innerHTML = '<aside class="channel-sidebar"><input id="channel-search" type="search" placeholder="Filter Channels" aria-label="Filter Channels"><label class="favorite-filter"><input id="favorites-only" type="checkbox"> Favorite Channels</label><select id="channel-group" aria-label="Channel group"><option value="">All Channels</option></select><p id="channel-count" role="status"></p><div id="channel-list"></div><button id="load-more-channels" type="button" hidden>Load more channels</button></aside><div class="video-pane"><video id="iptv-video" controls playsinline preload="none"></video><div class="video-caption"><span id="current-channel">Select a channel to watch</span><span class="playback-actions"><button id="fullscreen-playback" type="button">Full screen</button><button id="stop-playback" type="button">Stop</button></span></div><p class="channel-source-line"><a id="channel-source" target="_blank" rel="noopener noreferrer" hidden>Channel source</a></p><p id="stream-status" role="status"></p></div>';
   document.querySelector('#player-status').after(panel);
   ['#channel-search','#favorites-only','#channel-group'].forEach(selector=>panel.querySelector(selector).addEventListener(selector==='#channel-search'?'input':'change',()=>{pageSize=100;renderChannels();}));
   panel.querySelector('#load-more-channels').addEventListener('click',()=>{pageSize+=100;renderChannels();});
   panel.querySelector('#stop-playback').addEventListener('click', () => stopPlayback());
+  panel.querySelector('#fullscreen-playback').addEventListener('click', async()=>{
+   const video=panel.querySelector('video');
+   try{if(video.requestFullscreen)await video.requestFullscreen();else if(video.webkitEnterFullscreen)video.webkitEnterFullscreen();else document.querySelector('#stream-status').textContent='Use your browser’s video controls to enter full screen.';}catch{document.querySelector('#stream-status').textContent='Full screen was blocked. Tap the video’s full-screen control.';}
+  });
  }
  const group = panel.querySelector('#channel-group'); group.replaceChildren(new Option('All Channels',''));
  [...new Set(channels.flatMap(x=>x.group.split(';')).filter(Boolean))].sort().forEach(x=>group.add(new Option(x,x)));
  panel.querySelector('#channel-search').value=''; panel.querySelector('#favorites-only').checked=false;
- panel.querySelector('#current-channel').textContent='Select a channel to watch'; panel.querySelector('#stream-status').textContent='';
+ panel.querySelector('#current-channel').textContent='Select a channel to watch'; panel.querySelector('#stream-status').textContent=''; panel.querySelector('#channel-source').hidden=true;
  renderChannels(); safeScroll(panel);
 }
 function renderChannels() {
@@ -138,45 +146,85 @@ function ensureHls() {
  });
  return hlsLibrary;
 }
+function stationKey(channel) {
+ return channel.id ? channel.id.split('@')[0].toLowerCase() : 'name:'+channel.name.replace(/\[[^\]]*\]/g,'').replace(/\((?:\d+p|\d+x\d+|hd|sd|uhd|4k)\)/gi,'').replace(/\s+/g,' ').trim().toLowerCase();
+}
+let alternateCatalog;
+async function alternateFeeds(channel,tried) {
+ const key=stationKey(channel),same=feed=>stationKey(feed)===key&&!tried.has(feed.url);
+ let matches=channels.filter(same);
+ if(matches.length<2){
+  try{
+   if(!alternateCatalog)alternateCatalog=fetchPlaylist('https://iptv-org.github.io/iptv/index.m3u').then(data=>parsePlaylist(data.text,data.url)).catch(error=>{alternateCatalog=null;throw error;});
+   matches=matches.concat((await alternateCatalog).filter(same));
+  }catch{}
+ }
+ return [...new Map(matches.map(feed=>[feed.url,feed])).values()].sort((a,b)=>Number(/\[Geo-blocked\]/i.test(a.name))-Number(/\[Geo-blocked\]/i.test(b.name)));
+}
+function playbackFailure(data) {
+ const body=data?.response?.data;
+ try{const parsed=typeof body==='string'?JSON.parse(body):body;if(typeof parsed?.error==='string')return parsed.error;}catch{}
+ const code=Number(data?.response?.code||data?.response?.status);
+ if(code===401||code===403)return 'The provider refused this feed (HTTP '+code+'). It may require authorization or an allowed location.';
+ if(code===451)return 'The provider reports a legal or location restriction (HTTP 451).';
+ if(code===404||code===410)return 'The provider removed this feed or its URL has expired (HTTP '+code+').';
+ if(code===429)return 'The provider is limiting connections (HTTP 429).';
+ if(data?.type==='mediaError')return 'The browser could not decode this feed’s audio or video.';
+ return 'The media source did not respond with playable video.';
+}
+function channelRelayURL(channel) {
+ return '/api/stream?url='+encodeURIComponent(channel.url)+(channel.userAgent?'&ua='+encodeURIComponent(channel.userAgent):'')+(channel.referer?'&referrer='+encodeURIComponent(channel.referer):'');
+}
 async function playChannel(channel) {
- stopPlayback(false); const attempt = playAttempt;
- active = channel.url; renderChannels();
- const video = document.querySelector('#iptv-video'), status = document.querySelector('#stream-status');
- document.querySelector('#current-channel').textContent = channel.name; status.textContent = 'Connecting…';
- const isHls = channel.type === 'hls' || !/\.(?:mp4|mp3|aac|webm|ogg|mov|ts)(?:[?#]|$)/i.test(channel.url);
- const forceRelay = channel.url.startsWith('http:') || document.querySelector('#player-http')?.checked;
- let proxied = forceRelay, recoveredMedia = false;
- const streamURL = () => proxied ? '/api/stream?url='+encodeURIComponent(channel.url) : channel.url;
- const failed = () => { if(attempt===playAttempt) status.textContent='This channel is offline, restricted, or unavailable from this region. Try another channel.'; };
- const start = () => {
-  if(attempt!==playAttempt)return;
-  video.play().catch(error=>{if(attempt!==playAttempt)return;if(error.name==='NotAllowedError')status.textContent='Press Play in the video controls to start watching.';else if(error.name!=='AbortError')fallback();});
- };
+ stopPlayback(false);const attempt=playAttempt;
+ active=channel.url;renderChannels();
+ message(channels.length+' channels loaded. Connecting to '+channel.name+'.');
+ const video=document.querySelector('#iptv-video'),status=document.querySelector('#stream-status'),source=document.querySelector('#channel-source');
+ document.querySelector('#current-channel').textContent=channel.name;status.textContent='Connecting directly to the channel…';
+ let feed=channel,proxied=forceRelay(feed),connection=0,recoveredMedia=false,fallbackBusy=false,lastFailure='',alternatives;
+ const tried=new Set([channel.url]);
  let HlsClass;
- const connect = () => {
+ function forceRelay(item){return item.url.startsWith('http:')||Boolean(item.userAgent||item.referer)||document.querySelector('#player-http')?.checked;}
+ const current=epoch=>attempt===playAttempt&&epoch===connection;
+ const connect=async()=>{
   if(attempt!==playAttempt)return;
-  video.onerror=null; hls?.destroy();hls=null;video.pause();video.removeAttribute('src');video.load();
-  if(isHls && HlsClass?.isSupported()) {
-   hls=new HlsClass({manifestLoadingTimeOut:20000,fragLoadingTimeOut:25000});
-   hls.on(HlsClass.Events.MANIFEST_PARSED,start);
-   hls.on(HlsClass.Events.ERROR,(_,data)=>{
-    if(attempt!==playAttempt||!data.fatal)return;
-    if(data.type===HlsClass.ErrorTypes.MEDIA_ERROR&&!recoveredMedia){recoveredMedia=true;hls.recoverMediaError();return;}
-    fallback();
-   });
-   hls.loadSource(streamURL());hls.attachMedia(video);
-  } else {video.onerror=fallback;video.src=streamURL();start();}
+  const epoch=++connection;fallbackBusy=false;recoveredMedia=false;
+  video.onerror=null;video.onplaying=null;hls?.destroy();hls=null;video.pause();video.removeAttribute('src');video.load();
+  source.href=feed.url;source.textContent='Channel source: '+new URL(feed.url).hostname;source.hidden=false;
+  const isHls=feed.type==='hls'||!/\.(?:mp4|mp3|aac|webm|ogg|mov|ts)(?:[?#]|$)/i.test(feed.url);
+  const start=()=>{if(!current(epoch))return;Promise.resolve(video.play()).catch(error=>{if(!current(epoch)||error.name==='AbortError')return;if(error.name==='NotAllowedError')status.textContent='Press Play in the video controls to start watching.';else fallback({type:'mediaError'},epoch);});};
+  video.onplaying=()=>{if(current(epoch)){status.textContent=tried.size>1?'Playing an alternative public feed of this channel.':'Playing live';message(channels.length+' channels loaded. Now playing '+channel.name+'.');}};
+  try{
+   if(isHls&&!video.canPlayType('application/vnd.apple.mpegurl'))HlsClass=await ensureHls();
+   if(!current(epoch))return;
+   const url=proxied?channelRelayURL(feed):feed.url;
+   if(isHls&&HlsClass?.isSupported()){
+    hls=new HlsClass({manifestLoadingTimeOut:15000,fragLoadingTimeOut:20000,manifestLoadingMaxRetry:0,levelLoadingMaxRetry:1,fragLoadingMaxRetry:1});
+    hls.on(HlsClass.Events.MANIFEST_PARSED,start);
+    hls.on(HlsClass.Events.ERROR,(_,data)=>{if(!current(epoch)||!data.fatal)return;if(data.type===HlsClass.ErrorTypes.MEDIA_ERROR&&!recoveredMedia){recoveredMedia=true;hls.recoverMediaError();return;}fallback(data,epoch);});
+    hls.loadSource(url);hls.attachMedia(video);
+   }else{video.onerror=()=>fallback({type:'mediaError'},epoch);video.src=url;start();}
+  }catch(error){if(current(epoch))status.textContent=error.message;}
  };
- const fallback = () => {
-  if(attempt!==playAttempt)return;
-  if(!proxied){proxied=true;status.textContent='Retrying through the player…';connect();}else failed();
+ const fallback=async(data,epoch)=>{
+  if(!current(epoch)||fallbackBusy)return;
+  fallbackBusy=true;lastFailure=playbackFailure(data);
+  if(!proxied){proxied=true;status.textContent='Retrying the channel through the server relay…';await connect();return;}
+  // A provider may allow the viewer's location while refusing the server's location.
+  if(!feed._directTried&&!forceRelay(feed)){feed={...feed,_directTried:true};proxied=false;status.textContent='Trying the channel directly from your location…';await connect();return;}
+  status.textContent='Checking other public feeds of this same channel…';
+  if(!alternatives)alternatives=await alternateFeeds(channel,tried);
+  if(!current(epoch))return;
+  const next=alternatives.find(item=>!tried.has(item.url));
+  if(next&&tried.size<3){feed=next;tried.add(feed.url);proxied=forceRelay(feed);if(!proxied)feed={...feed,_directTried:true};status.textContent='Trying another public feed of '+channel.name+'…';await connect();return;}
+  hls?.destroy();hls=null;
+  status.textContent=lastFailure+' No working public feed was found among the '+tried.size+' source'+(tried.size===1?'':'s')+' tried.';
+  message(channels.length+' channels loaded. '+channel.name+' could not be played.',true);
+  fallbackBusy=false;
  };
- video.onplaying=()=>{if(attempt===playAttempt)status.textContent='';};
- try {
-  // Safari uses native HLS; other browsers wait for hls.js before connecting.
-  if(isHls&&!video.canPlayType('application/vnd.apple.mpegurl')) HlsClass=await ensureHls();
-  if(attempt===playAttempt)connect();
- } catch(error){if(attempt===playAttempt)status.textContent=error.message;}
+ // Track the first direct attempt to avoid repeating it after the relay fails.
+ if(!proxied)feed={...feed,_directTried:true};
+ await connect();
 }
 async function playlistCatalog() {
  if (!catalogPromise) catalogPromise = fetchWithTimeout('/playlist-sources.json').then(async response=>{
