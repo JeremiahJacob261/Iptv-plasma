@@ -1,0 +1,14 @@
+const fs = require('node:fs'), vm = require('node:vm'), assert = require('node:assert/strict');
+const source = fs.readFileSync(__dirname+'/dist/app.js','utf8');
+const parser = source.slice(source.indexOf('function parsePlaylist'),source.indexOf('const form ='));
+const context = vm.createContext({ URL, location:{href:'https://player.example/'} });
+vm.runInContext(parser,context);
+const parse = context.parsePlaylist;
+let result = parse('#EXTM3U\r\n#EXTINF:-1 tvg-logo="https://example.com/logo.png" group-title="News",World News\r\nhttps://example.com/live.m3u8');
+assert.equal(result.length,1);assert.equal(result[0].name,'World News');assert.equal(result[0].group,'News');assert.equal(result[0].logo,'https://example.com/logo.png');
+assert.equal(parse('#EXTM3U\n#EXTINF:-1,Relative\nchannel.m3u8','https://example.com/list/playlist.m3u')[0].url,'https://example.com/list/channel.m3u8');
+assert.equal(parse('#EXTM3U\n#EXT-X-TARGETDURATION:6\nseg.ts','https://example.com/live.m3u8')[0].url,'https://example.com/live.m3u8');
+assert.equal(parse('#EXTINF:-1,Invalid\njavascript:alert(1)').length,0);
+assert.equal(parse('\uFEFF#EXTM3U\n#EXTINF:-1,新闻\nhttps://example.com/live')[0].name,'新闻');
+assert.equal(parse('').length,0);
+console.log('Playlist checks passed: metadata, relative URLs, HLS manifests, unsafe URL rejection, Unicode, empty input.');
