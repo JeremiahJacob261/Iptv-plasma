@@ -30,3 +30,5 @@ DOM fixtures use real playlists downloaded into /tmp/iptv-{ng,us,news,english}.m
 
 ## Latest deployment
 Repair preview dpl_G5r1ueB57rUgrzEhfkX6uN1kidgL at https://free-iptv-player-5su3cgxl2-jeremiahxs-projects.vercel.app tested successfully. Preview promotion API returned 422, so same verified source was submitted as a production deployment. Record final production ID and verification after completion below.
+
+Final production repair: dpl_2FUb3jQiMGS1i5rtFXTitxQcecw7, READY, assigned https://free-iptv-player-sigma.vercel.app/. Production JavaScript matches local repaired source. Production Nigeria/US APIs and ACNN HLS checked. Last repair source commit: c75cef1. Original source-parts are unchanged; updated app and CSS are overlays. Contact/newsletter destination still pending user answer.
