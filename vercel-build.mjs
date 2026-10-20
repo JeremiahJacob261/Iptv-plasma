@@ -28,6 +28,9 @@ await copyFile('updates/polish.css','dist/polish.css');
 await copyFile('updates/inter-latin.woff2','dist/assets/inter-latin.woff2');
 await copyFile('updates/Heroicons-LICENSE.txt','dist/assets/Heroicons-LICENSE.txt');
 await copyFile('updates/Inter-LICENSE.txt','dist/assets/Inter-LICENSE.txt');
+await copyFile('updates/social.js','dist/social.js');
+await copyFile('updates/social.css','dist/social.css');
+execFileSync(process.execPath,['scripts/social-pages.mjs'],{stdio:'inherit'});
 execFileSync(process.execPath,['scripts/polish-pages.mjs','updates/heroicons.json'],{stdio:'inherit'});
 try { execFileSync(process.execPath,['scripts/update-sources.mjs'],{stdio:'inherit'}); } catch { console.log('Using verified IPTV-org catalog snapshot.'); }
 console.log('Static site ready: original assets verified and player updates installed.');
