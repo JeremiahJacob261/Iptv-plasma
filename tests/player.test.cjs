@@ -1,0 +1,91 @@
+const {test} = require('node:test');
+const assert = require('node:assert/strict');
+const fs = require('node:fs');
+const {JSDOM} = require('/tmp/iptv-tests/node_modules/jsdom');
+const app=fs.readFileSync('dist/app.js','utf8');
+const html=fs.readFileSync('dist/iptv-player/index.html','utf8');
+const sample='#EXTM3U\n#EXTINF:-1 tvg-logo="https://example.com/logo.png" group-title="News",Channel One\nhttps://example.com/one.m3u8\n#EXTINF:-1 group-title="Sports",Channel Two\nhttp://example.com/two.m3u8\n#EXTINF:-1 group-title="News",News Three\nhttps://example.com/three.m3u8';
+const tick=()=>new Promise(resolve=>setImmediate(resolve));
+function setup({playlist=sample, apiError=null, noTimeout=false, savedFavorites=null}={}){
+ const dom=new JSDOM(html,{url:'https://player.example/iptv-player/',runScripts:'outside-only'}),w=dom.window;
+ const requests=[],instances=[];
+ w.HTMLElement.prototype.scrollIntoView=function(){throw TypeError('Unsupported scrolling');};
+ w.HTMLMediaElement.prototype.pause=function(){this._paused=true;};
+ w.HTMLMediaElement.prototype.load=function(){};
+ w.HTMLMediaElement.prototype.play=function(){this._paused=false;return Promise.resolve();};
+ w.HTMLMediaElement.prototype.canPlayType=()=>'';
+ class FakeHls{
+  static Events={MANIFEST_PARSED:'manifest',ERROR:'error'};
+  static ErrorTypes={NETWORK_ERROR:'network',MEDIA_ERROR:'media'};
+  static isSupported=()=>true;
+  constructor(){this.handlers={};instances.push(this);}
+  on(e,f){this.handlers[e]=f;}
+  loadSource(url){this.url=url;}
+  attachMedia(video){this.video=video;queueMicrotask(()=>this.handlers.manifest?.());}
+  destroy(){this.destroyed=true;}
+  recoverMediaError(){this.recovered=true;}
+ }
+ w.Hls=FakeHls;
+ if(noTimeout)w.AbortSignal.timeout=undefined;
+ if(savedFavorites!==null)w.localStorage.setItem('iptv-favorites',savedFavorites);
+ w.fetch=async(url)=>{requests.push(url);return {ok:!apiError,json:async()=>apiError?{error:apiError}:{text:playlist,url:'https://source.example/list.m3u'}};};
+ w.eval(app+'\nwindow.loadPlaylist=loadPlaylist;window.parsePlaylist=parsePlaylist;');return {dom,w,requests,instances};
+}
+test('directory playlist loads through same-origin API without AbortSignal.timeout or scrolling support',async()=>{
+ const s=setup({noTimeout:true,savedFavorites:'{"invalid":"value"}'});
+ try{
+  await s.w.loadPlaylist('https://iptv-org.github.io/iptv/countries/ng.m3u');
+  assert(s.requests[0].startsWith('/api/playlist?url='));
+  assert.equal(s.w.document.querySelectorAll('.channel-row').length,3);
+  assert.match(s.w.document.querySelector('#player-status').textContent,/3 channels loaded/);
+  assert.equal(s.w.document.querySelector('#m3u-form button').disabled,false);
+ }finally{s.dom.window.close();}
+});
+test('real country/category/language playlists parse and render without mislabeling UI errors as CORS',async()=>{
+ for(const file of ['/tmp/iptv-ng.m3u','/tmp/iptv-us.m3u','/tmp/iptv-news.m3u','/tmp/iptv-english.m3u']){
+  const s=setup({playlist:fs.readFileSync(file,'utf8')});
+  try{await s.w.loadPlaylist('https://example.com/list.m3u');assert.match(s.w.document.querySelector('#player-status').textContent,/channels loaded/);assert(s.w.document.querySelectorAll('.channel-row').length>0);}finally{s.dom.window.close();}
+ }
+});
+test('search, groups, favorite add/remove, persistence, empty result and playlist replacement',async()=>{
+ const s=setup();const d=s.w.document;
+ try{
+  await s.w.loadPlaylist('https://source.example/list.m3u');
+  d.querySelector('#channel-search').value='one';d.querySelector('#channel-search').dispatchEvent(new s.w.Event('input'));
+  assert.equal(d.querySelectorAll('.channel-row').length,1);
+  d.querySelector('.channel-favorite').click();assert.equal(JSON.parse(s.w.localStorage.getItem('iptv-favorites')).length,1);
+  d.querySelector('#channel-search').value='';d.querySelector('#channel-search').dispatchEvent(new s.w.Event('input'));
+  d.querySelector('#favorites-only').checked=true;d.querySelector('#favorites-only').dispatchEvent(new s.w.Event('change'));assert.equal(d.querySelectorAll('.channel-row').length,1);
+  d.querySelector('.channel-favorite').click();assert.match(d.querySelector('#channel-list').textContent,/No channels/);
+  d.querySelector('#favorites-only').checked=false;d.querySelector('#favorites-only').dispatchEvent(new s.w.Event('change'));
+  d.querySelector('#channel-group').value='News';d.querySelector('#channel-group').dispatchEvent(new s.w.Event('change'));assert.equal(d.querySelectorAll('.channel-row').length,2);
+  await s.w.loadPlaylist('https://source.example/next.m3u');assert.equal(d.querySelector('#channel-group').value,'');assert.equal(d.querySelectorAll('.channel-row').length,3);
+ }finally{s.dom.window.close();}
+});
+test('HLS switching, direct-to-relay fallback, HTTP compatibility, fatal errors and Stop',async()=>{
+ const s=setup(),d=s.w.document;
+ try{
+  await s.w.loadPlaylist('https://source.example/list.m3u');d.querySelector('.channel-play').click();await tick();
+  const first=s.instances.at(-1);assert.equal(first.url,'https://example.com/one.m3u8');
+  first.handlers.error(null,{fatal:true,type:'network'});const relay=s.instances.at(-1);assert(first.destroyed);assert.match(relay.url,/^\/api\/stream\?url=/);
+  relay.handlers.error(null,{fatal:true,type:'network'});assert.match(d.querySelector('#stream-status').textContent,/offline/);
+  d.querySelectorAll('.channel-play')[1].click();await tick();assert(relay.destroyed);assert.match(s.instances.at(-1).url,/^\/api\/stream\?url=http/);
+  d.querySelector('#stop-playback').click();assert(s.instances.at(-1).destroyed);assert.match(d.querySelector('#stream-status').textContent,/stopped/);assert.equal(d.querySelector('video').hasAttribute('src'),false);
+  d.querySelector('#player-http').checked=true;d.querySelector('.channel-play').click();await tick();assert.match(s.instances.at(-1).url,/^\/api\/stream\?url=/);
+ }finally{s.dom.window.close();}
+});
+test('uploads, quoted metadata commas, unsafe URLs, malformed data and service failure',async()=>{
+ const s=setup();
+ try{
+  const parsed=s.w.parsePlaylist('#EXTM3U\n#EXTINF:-1 tvg-name="Name, With Comma",Visible Name\nhttps://example.com/live');assert.equal(parsed[0].name,'Visible Name');
+  await s.w.loadPlaylist('',{size:sample.length,text:async()=>sample});assert.match(s.w.document.querySelector('#player-status').textContent,/3 channels/);
+  await s.w.loadPlaylist('file:///etc/passwd');assert.match(s.w.document.querySelector('#player-status').textContent,/HTTP or HTTPS/);
+  await s.w.loadPlaylist('',{size:9e6,text:async()=>sample});assert.match(s.w.document.querySelector('#player-status').textContent,/too large/);
+  await s.w.loadPlaylist('',{size:10,text:async()=>'<html>error</html>'});assert.match(s.w.document.querySelector('#player-status').textContent,/No playable channels/);
+ }finally{s.dom.window.close();}
+ const failed=setup({apiError:'This playlist is no longer available (404).'});try{await failed.w.loadPlaylist('https://source.example/removed.m3u');assert.match(failed.w.document.querySelector('#player-status').textContent,/404/);assert.equal(failed.w.document.querySelector('#m3u-form button').disabled,false);}finally{failed.dom.window.close();}
+});
+test('large playlists render progressively and searches cover channels beyond first page',async()=>{
+ const s=setup({playlist:'#EXTM3U\n'+Array.from({length:230},(_,i)=>`#EXTINF:-1,Station ${i}\nhttps://example.com/${i}.m3u8`).join('\n')});
+ try{await s.w.loadPlaylist('https://source.example/list.m3u');const d=s.w.document;assert.equal(d.querySelectorAll('.channel-row').length,100);d.querySelector('#load-more-channels').click();assert.equal(d.querySelectorAll('.channel-row').length,200);d.querySelector('#channel-search').value='Station 229';d.querySelector('#channel-search').dispatchEvent(new s.w.Event('input'));assert.equal(d.querySelectorAll('.channel-row').length,1);}finally{s.dom.window.close();}
+});
