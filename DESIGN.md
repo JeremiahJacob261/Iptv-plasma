@@ -35,3 +35,7 @@ X and Twitch each have their own searchable channel directory and category selec
 ## Large featured catalogs and Laws of UX
 
 Each social page has a sourced 512-account catalog. Editorial featured picks appear before the manual URL field/player, with six visible initially and a clear Browse all channels route. Category shortcuts reduce the first decision set (Hick's Law); first position gives featured picks prominence (serial-position effect). The main catalog uses clearly bounded category sections (common region), with small initial groups, search and progressive disclosure. No false personalized recommendations or fabricated live labels. Original palette and type sizes remain fixed. Small creator avatars retain their natural purpose instead of being stretched into video thumbnails.
+
+## Narrow-screen behavior
+
+At phone widths, use 16px page gutters and 12px player padding, preserving the original text scale. The navigation drawer stays within the viewport and uses dynamic viewport height. Playback actions share a full-width row; native quality selectors receive their own row. Featured social picks remain first in a horizontally swipeable, scroll-snapping shelf; category shortcuts scroll independently and the full directory uses compact single-column rows. Never hide page overflow to conceal an oversized control. Inputs and metadata must shrink or wrap within their containers. Below 380px, IPTV directory tiles use one column.
