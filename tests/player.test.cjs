@@ -7,8 +7,8 @@ const html=fs.readFileSync('dist/iptv-player/index.html','utf8');
 const catalog=JSON.parse(fs.readFileSync('dist/playlist-sources.json','utf8'));
 const sample='#EXTM3U\n#EXTINF:-1 tvg-logo="https://example.com/logo.png" group-title="News",Channel One\nhttps://example.com/one.m3u8\n#EXTINF:-1 group-title="Sports",Channel Two\nhttp://example.com/two.m3u8\n#EXTINF:-1 group-title="News",News Three\nhttps://example.com/three.m3u8';
 const tick=()=>new Promise(resolve=>setImmediate(resolve));
-function setup({playlist=sample, apiError=null, noTimeout=false, savedFavorites=null}={}){
- const dom=new JSDOM(html,{url:'https://player.example/iptv-player/',runScripts:'outside-only'}),w=dom.window;
+function setup({playlist=sample, apiError=null, noTimeout=false, savedFavorites=null, url='https://player.example/iptv-player/'}={}){
+ const dom=new JSDOM(html,{url,runScripts:'outside-only'}),w=dom.window;
  const requests=[],instances=[];
  w.HTMLElement.prototype.scrollIntoView=function(){throw TypeError('Unsupported scrolling');};
  w.HTMLMediaElement.prototype.pause=function(){this._paused=true;};
@@ -91,12 +91,24 @@ test('large playlists render progressively and searches cover channels beyond fi
  try{await s.w.loadPlaylist('https://source.example/list.m3u');const d=s.w.document;assert.equal(d.querySelectorAll('.channel-row').length,100);d.querySelector('#load-more-channels').click();assert.equal(d.querySelectorAll('.channel-row').length,200);d.querySelector('#channel-search').value='Station 229';d.querySelector('#channel-search').dispatchEvent(new s.w.Event('input'));assert.equal(d.querySelectorAll('.channel-row').length,1);}finally{s.dom.window.close();}
 });
 
-test('official default source loads automatically and source picker searches and loads a country',async()=>{
+test('recommendations load only on request and source controls stay visible on mobile',async()=>{
  const s=setup(),d=s.w.document;
  try{
   await tick();
+  s.w.matchMedia=()=>({matches:true});
+  assert(!s.requests.some(url=>url.startsWith('/api/playlist?')));
+  assert(!d.querySelector('#watch-player'));
+  assert.equal(d.querySelector('#playlist-url').value,'');
+  assert(d.querySelector('section.playlist-setup #playlist-url'));
+  assert(!d.querySelector('details.playlist-setup'));
+  const recommendation=d.querySelector('#see-recommendation');
+  assert.equal(recommendation.textContent.trim(),'See Recommendation');recommendation.click();
+  assert(recommendation.disabled);await tick();assert(!recommendation.disabled);
   assert(s.requests.some(url=>url==='/api/playlist?url='+encodeURIComponent('https://iptv-org.github.io/iptv/index.category.m3u')));
   assert.equal(d.querySelector('#playlist-url').value,'https://iptv-org.github.io/iptv/index.category.m3u');
+  assert(d.querySelector('#watch-player'));
+  assert(d.querySelector('.playlist-recommendation').compareDocumentPosition(d.querySelector('#watch-player'))&s.w.Node.DOCUMENT_POSITION_FOLLOWING);
+  assert(!d.querySelector('.playlist-setup').hidden);
   assert(d.querySelector('#builtin-playlist').options.length>1000);
   const search=d.querySelector('#playlist-source-search');search.value='Nigeria';search.dispatchEvent(new s.w.Event('input'));
   const select=d.querySelector('#builtin-playlist');const option=[...select.options].find(x=>x.value.endsWith('/countries/ng.m3u'));assert(option);
@@ -104,6 +116,11 @@ test('official default source loads automatically and source picker searches and
   assert(s.requests.some(url=>url.endsWith(encodeURIComponent('/countries/ng.m3u'))));
   assert.equal(d.querySelector('#playlist-file').value,'');
  }finally{s.dom.window.close();}
+});
+test('explicit playlist links load directly without requiring the recommendation button',async()=>{
+ const source='https://example.com/sports.m3u';
+ const s=setup({url:'https://player.example/iptv-player/?playlist='+encodeURIComponent(source)});
+ try{await tick();assert(s.requests.includes('/api/playlist?url='+encodeURIComponent(source)));assert(s.w.document.querySelector('#watch-player'));assert.equal(s.w.document.querySelector('#playlist-url').value,source);}finally{s.dom.window.close();}
 });
 test('both user-supplied aggregate playlists parse, deduplicate feeds, and retain selectable categories',async()=>{
  for(const file of ['/tmp/iptv-org-main','/tmp/iptv-org-category']){

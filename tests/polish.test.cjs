@@ -47,7 +47,7 @@ test('computed text sizes and colours match the baseline across representative p
   finally{before.window.close();after.window.close();}
  }
 });
-test('Heroicons and accessible disclosure replace old UI glyphs without losing controls',async()=>{
+test('Heroicons and always-visible playlist sources retain the player controls',async()=>{
  const dom=await surface('iptv-player/',true),d=dom.window.document;
  try{
   assert(d.querySelector('#m3u-form button [data-heroicon=play]'));
@@ -55,8 +55,8 @@ test('Heroicons and accessible disclosure replace old UI glyphs without losing c
   assert(d.querySelector('.channel-favorite [data-heroicon=star]'));
   d.querySelector('.channel-favorite').click();assert(d.querySelector('.channel-favorite [data-heroicon=star-solid]'));
   assert.equal(d.querySelector('#watch-player').parentElement.id,'inner_content-3-536');
-  assert(d.querySelector('details.playlist-setup>summary'));
-  assert(d.querySelector('details.playlist-setup #playlist-url'));
+  assert(d.querySelector('section.playlist-setup [role=heading]'));
+  assert(d.querySelector('section.playlist-setup #playlist-url'));
   for(const icon of d.querySelectorAll('.hero-icon'))assert.equal(icon.getAttribute('aria-hidden'),'true');
  }finally{dom.window.close();}
  const html=fs.readFileSync('dist/categories/index.html','utf8');assert(!html.includes('<i class="fa-'));assert(html.includes('data-heroicon="film"'));

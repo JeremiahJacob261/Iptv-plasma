@@ -47,7 +47,7 @@ const favorites = new Set(Array.isArray(savedFavorites) ? savedFavorites : []);
 function safeScroll(element) { try { element?.scrollIntoView({ behavior: 'smooth', block: 'nearest' }); } catch {} }
 function message(text, error = false) {
  let el = document.querySelector('#player-status');
- if (!el && form) { el = document.createElement('p'); el.id = 'player-status'; el.setAttribute('role', 'status'); (document.querySelector('.playlist-setup')||form).after(el); }
+ if (!el && form) { el = document.createElement('p'); el.id = 'player-status'; el.setAttribute('role', 'status'); (document.querySelector('.playlist-recommendation')||document.querySelector('.playlist-setup')||form).after(el); }
  if (el) { el.textContent = text; el.classList.toggle('error', error); }
 }
 async function fetchWithTimeout(url, options = {}, timeout = 30000) {
@@ -67,6 +67,8 @@ async function loadPlaylist(url, file) {
  const attempt = ++loadAttempt;
  playlistRequest?.abort(); playlistRequest = new AbortController();
  const button = form?.querySelector('[type=submit]');
+ const recommendation = document.querySelector('#see-recommendation');
+ if (recommendation) recommendation.disabled = true;
  if (button) { button.disabled = true; setControlLabel(button,'Loading…','arrow-path'); }
  message('Loading playlist…');
  const sourceSelect = document.querySelector('#builtin-playlist');
@@ -91,13 +93,15 @@ async function loadPlaylist(url, file) {
   message(error.name === 'AbortError' ? 'The playlist took too long to respond. Please try again.' : error instanceof TypeError ? 'The playlist service could not be reached. Check your connection and try again.' : error.message, true);
   return;
  } finally {
-  if (attempt === loadAttempt && button) { button.disabled = false; setControlLabel(button,'Watch','play'); }
+  if (attempt === loadAttempt) {
+   if (button) { button.disabled = false; setControlLabel(button,'Watch','play'); }
+   if (recommendation) recommendation.disabled = false;
+  }
  }
  if (attempt !== loadAttempt || !nextChannels) return;
  stopPlayback(false); channels = nextChannels; active = null; pageSize = 100;
  try {
   renderPlayer(); store.set('iptv-playlist', channels);
-  if(window.matchMedia?.('(max-width:700px)')?.matches){const setup=document.querySelector('.playlist-setup');if(setup)setup.open=false;}
   message(channels.length+' channels loaded. Select a channel to watch.');
  } catch (error) { console.error('player_render_failed', error); message('The playlist loaded, but the player could not open. Refresh the page and try again.', true); }
 }
@@ -249,9 +253,17 @@ async function playlistCatalog() {
 function setupSourcePicker() {
  const tools=document.createElement('div');tools.className='playlist-source-tools';
  tools.innerHTML='<label for="playlist-source-search">Find a channel playlist</label><input id="playlist-source-search" type="search" placeholder="Search countries, languages, categories or regions"><label for="builtin-playlist">IPTV-org playlists</label><select id="builtin-playlist"><option value="">Custom playlist</option><option value="https://iptv-org.github.io/iptv/index.category.m3u">All channels · by category</option><option value="https://iptv-org.github.io/iptv/index.m3u">All channels</option></select><button id="load-builtin-playlist" type="button">Load channels</button><p id="playlist-source-status" role="status"></p>';
- const setup=document.createElement('details');setup.className='playlist-setup';setup.open=true;
- setup.innerHTML='<summary>'+heroIcon('rectangle-stack')+'Playlist sources'+heroIcon('chevron-down').replace('class="hero-icon"','class="hero-icon source-disclosure-chevron"')+'</summary><div class="playlist-setup-grid"></div>';
+ const setup=document.createElement('section');setup.className='playlist-setup';setup.setAttribute('aria-labelledby','playlist-setup-heading');
+ setup.innerHTML='<div id="playlist-setup-heading" class="playlist-setup-heading" role="heading" aria-level="2">'+heroIcon('rectangle-stack')+'Playlist sources</div><div class="playlist-setup-grid"></div>';
  form.before(setup);setup.querySelector('.playlist-setup-grid').append(tools,form);
+ const recommendation=document.createElement('button');recommendation.id='see-recommendation';recommendation.type='button';
+ const recommendationAction=document.createElement('div');recommendationAction.className='playlist-source-tools playlist-recommendation';
+ setControlLabel(recommendation,'See Recommendation','rectangle-stack');recommendationAction.append(recommendation);setup.after(recommendationAction);
+ recommendation.addEventListener('click',()=>{
+  document.querySelector('#playlist-url').value=DEFAULT_PLAYLIST;
+  document.querySelector('#playlist-file').value='';
+  loadPlaylist(DEFAULT_PLAYLIST);
+ });
  decorateSearch(tools.querySelector('input'));setControlLabel(tools.querySelector('button'),'Load channels','rectangle-stack');
  const select=tools.querySelector('select'),search=tools.querySelector('input'),status=tools.querySelector('[role=status]');
  const useSelection=()=>{if(select.value){document.querySelector('#playlist-url').value=select.value;document.querySelector('#playlist-file').value='';}};
@@ -286,8 +298,8 @@ if (form) {
   if(file&&!/\.m3u8?$/i.test(file.name)){message('Only M3U and M3U8 files are allowed.',true);return;}
   loadPlaylist(url,file);
  });
- const url=new URLSearchParams(location.search).get('playlist') || DEFAULT_PLAYLIST;
- document.querySelector('#playlist-url').value=url;loadPlaylist(url);
+ const url=new URLSearchParams(location.search).get('playlist');
+ if(url){document.querySelector('#playlist-url').value=url;loadPlaylist(url);}
 }
 function directoryStatus(item, text) {let status=document.querySelector('#directory-status');if(!status){status=document.createElement('p');status.id='directory-status';status.setAttribute('role','status');item.parentElement.before(status);}status.textContent=text;safeScroll(status);}
 async function openDirectory(item) {
