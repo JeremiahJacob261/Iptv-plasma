@@ -91,23 +91,18 @@ test('large playlists render progressively and searches cover channels beyond fi
  try{await s.w.loadPlaylist('https://source.example/list.m3u');const d=s.w.document;assert.equal(d.querySelectorAll('.channel-row').length,100);d.querySelector('#load-more-channels').click();assert.equal(d.querySelectorAll('.channel-row').length,200);d.querySelector('#channel-search').value='Station 229';d.querySelector('#channel-search').dispatchEvent(new s.w.Event('input'));assert.equal(d.querySelectorAll('.channel-row').length,1);}finally{s.dom.window.close();}
 });
 
-test('recommendations load only on request and source controls stay visible on mobile',async()=>{
+test('recommendations load by default and source controls stay visible on mobile',async()=>{
  const s=setup(),d=s.w.document;
  try{
   await tick();
   s.w.matchMedia=()=>({matches:true});
-  assert(!s.requests.some(url=>url.startsWith('/api/playlist?')));
-  assert(!d.querySelector('#watch-player'));
-  assert.equal(d.querySelector('#playlist-url').value,'');
   assert(d.querySelector('section.playlist-setup #playlist-url'));
   assert(!d.querySelector('details.playlist-setup'));
-  const recommendation=d.querySelector('#see-recommendation');
-  assert.equal(recommendation.textContent.trim(),'See Recommendation');recommendation.click();
-  assert(recommendation.disabled);await tick();assert(!recommendation.disabled);
+  assert(!d.querySelector('#see-recommendation'));
   assert(s.requests.some(url=>url==='/api/playlist?url='+encodeURIComponent('https://iptv-org.github.io/iptv/index.category.m3u')));
   assert.equal(d.querySelector('#playlist-url').value,'https://iptv-org.github.io/iptv/index.category.m3u');
   assert(d.querySelector('#watch-player'));
-  assert(d.querySelector('.playlist-recommendation').compareDocumentPosition(d.querySelector('#watch-player'))&s.w.Node.DOCUMENT_POSITION_FOLLOWING);
+  assert(d.querySelector('.playlist-setup').compareDocumentPosition(d.querySelector('#watch-player'))&s.w.Node.DOCUMENT_POSITION_FOLLOWING);
   assert(!d.querySelector('.playlist-setup').hidden);
   assert(d.querySelector('#builtin-playlist').options.length>1000);
   const search=d.querySelector('#playlist-source-search');search.value='Nigeria';search.dispatchEvent(new s.w.Event('input'));

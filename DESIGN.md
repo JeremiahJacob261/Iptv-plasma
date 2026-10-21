@@ -12,7 +12,7 @@ Retain existing colours at their current roles: original neon green #00ff24 and 
 
 Shared controls use 9–12px corners; player shell uses 16px (12px on mobile). Main touch targets remain at least 44px. Heroicons v2.2.0 outline is the icon family, with its solid star for selected favorites. Static SVG symbols and category icons are converted during build; the old FontAwesome browser script is removed.
 
-Source controls remain visible in a two-column grid on desktop and one column on phones. The default channel player loads only after See Recommendation is tapped; an explicit playlist link, source selection or URL/file submission opens its channels directly. The player retains a channel sidebar and fluid video pane; below 700px, video precedes the channel list. Directory entries use aligned responsive grids, original flags, and outlined category glyphs. Homepage/header/footer gain consistent gaps and stronger alignment without replacing original images or copy.
+Source controls remain visible in a two-column grid on desktop and one column on phones. The recommended default channels load automatically on entry, with the source controls remaining visible. An explicit playlist link, source selection or URL/file submission opens its channels directly. The player retains a channel sidebar and fluid video pane; below 700px, video precedes the channel list. Directory entries use aligned responsive grids, original flags, and outlined category glyphs. Homepage/header/footer gain consistent gaps and stronger alignment without replacing original images or copy.
 
 Motion is limited to short 180ms control/hover feedback and loading-icon rotation. prefers-reduced-motion disables these.
 
