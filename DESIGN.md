@@ -23,3 +23,7 @@ Original CSS file hashes, colours and font-size declarations are captured in .im
 ## X native video surface
 
 The X viewer uses the site's own native video player with HLS support and direct-to-relay fallback. Video leads; creator avatar, display name, linked username, genuine live/replay state, post text/title and publication date sit beneath it in the existing dark player palette. Quality and clip selection, Stop and Full screen controls use the existing Heroicons and control sizing. No X widgets or X website interface loads. Preserve all existing text sizes and colours. Missing or restricted media receives an explicit message, with no silent provider-UI fallback.
+
+## Shared X and Twitch viewing layout
+
+Both pages now use the native media player. A full-width link field and adjacent desktop Load video action lead to status feedback and a quiet outlined empty stage. On phones the action stacks below the field. The media area leads; creator identity/state, title, optional genuine category/viewer count, publication time and a separated control row follow. Quality/clip selectors stay left; playback actions sit right on wide screens and wrap on phones. Secondary availability guidance lives in a native disclosure below the viewer. Existing palette and text sizes remain fixed.
