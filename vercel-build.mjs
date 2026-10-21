@@ -28,6 +28,7 @@ await copyFile('updates/polish.css','dist/polish.css');
 await copyFile('updates/inter-latin.woff2','dist/assets/inter-latin.woff2');
 await copyFile('updates/Heroicons-LICENSE.txt','dist/assets/Heroicons-LICENSE.txt');
 await copyFile('updates/Inter-LICENSE.txt','dist/assets/Inter-LICENSE.txt');
+await copyFile('updates/live-directory.js','dist/live-directory.js');
 await copyFile('updates/x-player.js','dist/x-player.js');
 await copyFile('updates/social.js','dist/social.js');
 await copyFile('updates/social.css','dist/social.css');
