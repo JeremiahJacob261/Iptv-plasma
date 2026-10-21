@@ -130,3 +130,42 @@ form#m3u-form>span{margin:0 0 18px}
 }
 
 #current-channel{min-width:0;max-width:100%;overflow-wrap:anywhere}
+
+/* Keep controls inside narrow viewports without reducing the type scale. */
+.playlist-setup,.playlist-setup-grid>*{min-width:0}
+form#m3u-form input,.playlist-source-tools input,.playlist-source-tools select{box-sizing:border-box;min-width:0}
+@media(max-width:991px){
+ #-site-navigation-19-15.oxy-site-navigation>ul{right:0;left:auto;width:min(340px,100vw);max-width:100vw;height:100dvh;padding-bottom:max(24px,env(safe-area-inset-bottom));overscroll-behavior:contain}
+ .oxy-site-navigation__mobile-close-wrapper>button{min-width:44px;min-height:44px}
+}
+@media(max-width:700px){
+ .ct-section>.ct-section-inner-wrap,.oxy-header-container{padding-left:16px;padding-right:16px}
+ #_header_row-3-15{padding-top:12px;padding-bottom:12px}
+ #_header_row-3-15 .oxy-header-left{min-width:0;flex:1}
+ #_header_row-3-15 .oxy-header-center{flex:none}
+ #_header_row-3-15 .oxy-header-right:empty{display:none}
+ #link-7-15{max-width:100%}
+ #image-8-15{max-width:100%;height:auto;max-height:48px}
+ #section-70-529>.ct-section-inner-wrap{padding:36px 16px}
+ #image-90-529{margin-bottom:-36px}
+ #section-2-536>.ct-section-inner-wrap{padding-top:28px;padding-bottom:28px}
+ #inner_content-3-536{min-width:0;max-width:100%;padding-left:16px;padding-right:16px;box-sizing:border-box}
+ .ct-headline{max-width:100%;overflow-wrap:anywhere}
+ .playlist-setup-grid{gap:20px}
+ .playlist-source-tools select{max-width:100%}
+ form#m3u-form input[type=file]{width:100%;overflow:hidden}
+ #watch-player{margin-bottom:24px}
+ .video-pane,.channel-sidebar{padding:12px}
+ .video-caption{gap:12px}
+ .playback-actions{width:100%;display:grid;grid-template-columns:repeat(2,minmax(0,1fr))}
+ .video-caption button{padding:10px 8px;white-space:normal}
+ #channel-list{max-height:55vh;max-height:55dvh}
+ .channel-play{padding:10px 8px;gap:10px}
+ .channel-favorite{min-width:44px}
+ #new_columns-13-15{gap:24px}
+ #div_block-15-15{flex-wrap:wrap;gap:16px}
+ #section-12-15 .oxy-nav-menu-list{flex-wrap:wrap}
+}
+@media(max-width:380px){
+ #world-m3u,#category-m3u,#language-m3u{grid-template-columns:minmax(0,1fr)}
+}
