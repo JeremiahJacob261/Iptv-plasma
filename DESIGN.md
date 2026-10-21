@@ -31,3 +31,7 @@ Both pages now use the native media player. A full-width link field and adjacent
 ## Page-local live discovery
 
 X and Twitch each have their own searchable channel directory and category selector, never added to global IPTV category navigation. Twitch categories come from current stream metadata; X categories are editorial groupings for featured accounts. Live notices use a moving strip with a Pause/Resume button, hover/focus pausing, and a static scrollable reduced-motion variant. Cards use actual media previews and verified state; playback stays in the native player above the directory. Status text shows check time, partial coverage and stale results accurately. Browser-local monitoring does not require site accounts.
+
+## Large featured catalogs and Laws of UX
+
+Each social page has a sourced 512-account catalog. Editorial featured picks appear before the manual URL field/player, with six visible initially and a clear Browse all channels route. Category shortcuts reduce the first decision set (Hick's Law); first position gives featured picks prominence (serial-position effect). The main catalog uses clearly bounded category sections (common region), with small initial groups, search and progressive disclosure. No false personalized recommendations or fabricated live labels. Original palette and type sizes remain fixed. Small creator avatars retain their natural purpose instead of being stretched into video thumbnails.

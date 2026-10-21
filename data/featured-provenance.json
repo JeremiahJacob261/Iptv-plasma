@@ -1,0 +1,30 @@
+{
+  "generatedAt": "2026-10-21T09:19:44.615377+00:00",
+  "sources": [
+    {
+      "platform": "x",
+      "url": "https://www.wikidata.org/wiki/Property:P2002",
+      "selection": "Public account identifiers for news, sports, science, education, business, music and entertainment; balanced by category, ranked by sitelinks. Existing featured picks retained."
+    },
+    {
+      "platform": "twitch",
+      "url": "https://www.wikidata.org/wiki/Property:P5797",
+      "selection": "Candidate usernames, confirmed with Twitch public users(logins:) profile lookup. Public popular-live directory supplies additional current creators."
+    },
+    {
+      "platform": "twitch",
+      "url": "https://gql.twitch.tv/gql",
+      "selection": "512 unique profiles returned by anonymous public profile lookup; current live state is checked separately in rotating batches."
+    }
+  ],
+  "uxReferences": [
+    "https://lawsofux.com/hicks-law/",
+    "https://lawsofux.com/serial-position-effect/",
+    "https://lawsofux.com/law-of-common-region/"
+  ],
+  "counts": {
+    "x": 512,
+    "twitch": 512
+  },
+  "limitations": "Catalog membership is not a claim that an account is currently live or that every recorded X identifier remains available. Unchecked, unavailable and stale statuses are explicit."
+}
