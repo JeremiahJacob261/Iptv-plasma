@@ -1,26 +1,34 @@
 {
-  "authority": "User polish request, 2026-10-20",
-  "strategy": "modern refinement; preserve colours and font sizes",
+  "authority": "User supplied 1000066920.jpg and authorized matching website colours, 2026-10-24; original font-size and UI-structure constraints retained",
+  "strategy": "Supplied purple crescent/flame identity and matching palette; preserve interface structure, layout and font sizes",
   "fonts": [
     "Inter",
     "Open Sans"
   ],
   "constraints": {
-    "preserveOriginalColours": true,
+    "preserveOriginalColours": false,
     "preserveOriginalFontSizes": true,
-    "noFontSizeDeclarationsInPolishCSS": true
+    "noFontSizeDeclarationsInPolishCSS": true,
+    "preserveOriginalLayout": true,
+    "preserveSemanticStatusColours": true,
+    "colourChangesAuthorizedBy": "Supplied-logo matching-colour request, 2026-10-24"
   },
   "tokens": {
-    "siteAccent": "#00ff24",
-    "siteDark": "#171422",
-    "playerBackground": "#202020",
+    "siteAccent": "#693695",
+    "siteDark": "#191120",
+    "playerBackground": "#211929",
     "playerForeground": "#ffffff",
-    "playerAction": "#e74c3c",
-    "favorite": "#ffb700",
+    "playerAction": "#693695",
+    "favorite": "#cfb0ed",
     "controlRadius": "10px",
     "playerRadius": "16px",
     "controlMotion": "180ms",
-    "mobileBreakpoint": "700px"
+    "mobileBreakpoint": "700px",
+    "link": "#cfb0ed",
+    "primaryHover": "#55277e",
+    "gradientStart": "#7c4aa5",
+    "gradientMiddle": "#693695",
+    "gradientEnd": "#4c236f"
   },
   "icons": {
     "library": "Heroicons",
@@ -30,7 +38,7 @@
   "verification": {
     "sourceAudit": true,
     "computedStyleComparison": true,
-    "visualBrowserReview": false
+    "visualBrowserReview": true
   },
   "brandIdentity": {
     "name": "PlasmaX",
@@ -40,26 +48,34 @@
     "plannedDomainAttached": false,
     "publicOrigin": "https://free-iptv-player-sigma.vercel.app",
     "navigation": "relative",
-    "preservesExistingPalette": true,
+    "preservesExistingPalette": false,
     "preservesExistingInterfaceFontSizes": true,
     "paletteTokenReferences": {
       "accent": "tokens.siteAccent",
       "dark": "tokens.siteDark",
-      "foreground": "tokens.playerForeground"
+      "foreground": "tokens.playerForeground",
+      "link": "tokens.link",
+      "favorite": "tokens.favorite",
+      "primaryHover": "tokens.primaryHover"
     },
     "logo": {
       "wordmark": "/assets/plasmax-logo.svg",
       "mark": "/assets/plasmax-mark.svg",
-      "authorship": "Original authored geometric SVG; rounded P and play-triangle geometry"
+      "authorship": "User-supplied 1000066920.jpg purple crescent and three flame wisps; transparent image_gen preparation, WebP delivery embedded in SVG; geometric P retired",
+      "source": "1000066920.jpg",
+      "contrastTreatment": "White chip on dark surfaces",
+      "provenance": "icons/PlasmaX-PROVENANCE.json"
     },
     "pageIdentity": {
       "buildPass": "scripts/brand-pages.mjs",
-      "scope": "Generated HTML titles, shared branding and favicon; app manifest"
+      "scope": "Generated HTML titles, shared branding and favicon; app manifest",
+      "themeBuildPass": "scripts/theme-pages.mjs after scripts/brand-pages.mjs",
+      "themeLayer": "dist/theme.css; colour-only declarations; mirrored CSS unchanged"
     },
     "promotionalAsset": {
       "path": "/assets/plasmax-player-preview.png",
       "provenance": "icons/PlasmaX-PROVENANCE.json",
-      "source": "Actual authored native-player UI screenshot",
+      "source": "Actual authored native-player UI screenshot recaptured with approved purple palette",
       "illustrativeRows": [
         "News",
         "Entertainment",
@@ -81,7 +97,8 @@
       "radius": "6px",
       "opacity": 0.85,
       "burnedIntoVideo": false,
-      "fullscreen": "Custom control targets branded wrapper where supported; fullscreen unverified in headless review; native iOS fullscreen can omit DOM overlay"
+      "fullscreen": "Custom control targets branded wrapper where supported; fullscreen unverified in headless review; native iOS fullscreen can omit DOM overlay",
+      "markIdentity": "Supplied purple crescent/flame artwork on white chip"
     },
     "personalAccounts": {
       "xProfile": "",
@@ -94,7 +111,8 @@
       "placement": "Hidden labeled slot outside media and controls",
       "adsense": "Await genuine approved publisher and slot identifiers",
       "hilltopAds": "Alternative awaiting actual account-specific approved snippet and selection"
-    }
+    },
+    "preservesExistingLayout": true
   },
   "reviewHistory": [
     {
@@ -134,6 +152,75 @@
         "Native iOS video fullscreen can omit DOM overlays.",
         "Personal account links and advertising activation remain pending genuine configuration."
       ]
+    },
+    {
+      "date": "2026-10-24",
+      "reviewer": "purple_logo_review",
+      "scope": "Supplied purple crescent/flame logo and matching colour-only theme; unchanged structure and font sizes",
+      "disposition": "SHIP",
+      "screenshots": {
+        "directory": "/workspace/plasmax-purple-review",
+        "count": 10,
+        "viewports": [
+          {
+            "width": 390,
+            "height": 844
+          },
+          {
+            "width": 1440,
+            "height": 1000
+          }
+        ],
+        "surfaces": [
+          "home",
+          "IPTV player",
+          "X",
+          "Twitch",
+          "categories"
+        ]
+      },
+      "results": {
+        "browser": "Chromium",
+        "comparison": "Theme enabled versus disabled",
+        "geometryUnchanged": true,
+        "computedFontSizesUnchanged": true,
+        "horizontalOverflow": false,
+        "sampledCTAContrastMinimum": 4.5,
+        "passingTests": 56,
+        "testResultSource": "Parent-reported implementation suite",
+        "advertisingEnabled": false
+      },
+      "limitations": [
+        "This review verifies supplied artwork, palette and retained UI structure; earlier controlled provider-playback evidence and unverified fullscreen limitations remain applicable.",
+        "Personal account links and ad publisher/slot configuration remain pending; no active advertising claim."
+      ]
+    }
+  ],
+  "paletteHistory": [
+    {
+      "date": "2026-10-24",
+      "phase": "Initial PlasmaX identity before supplied-logo approval",
+      "authority": "User polish request, 2026-10-20",
+      "strategy": "modern refinement; preserve colours and font sizes",
+      "constraints": {
+        "preserveOriginalColours": true,
+        "preserveOriginalFontSizes": true,
+        "noFontSizeDeclarationsInPolishCSS": true
+      },
+      "tokens": {
+        "siteAccent": "#00ff24",
+        "siteDark": "#171422",
+        "playerBackground": "#202020",
+        "playerForeground": "#ffffff",
+        "playerAction": "#e74c3c",
+        "favorite": "#ffb700"
+      },
+      "logo": {
+        "wordmark": "/assets/plasmax-logo.svg",
+        "mark": "/assets/plasmax-mark.svg",
+        "authorship": "Original authored geometric SVG; rounded P and play-triangle geometry"
+      },
+      "supersededBy": "User-supplied purple logo and explicit matching-colour request, 2026-10-24"
     }
   ]
 }

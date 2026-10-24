@@ -1,6 +1,6 @@
 {
   "logo": "User supplied 1000066920.jpg purple crescent/flame artwork; transparent background preparation by image_gen, lossless source retained /workspace/generated_images/exec-70b3fa82-53e6-4dac-8e5b-875d91593d32.png; WebP delivery encoding quality90, embedded inside SVG lockup and favicon. Layout and PlasmaX lettering retain prior sizing.",
   "preview": "Screenshot of authored PlasmaX native-player UI at http://127.0.0.1:4077/iptv-player/ captured with Chromium; illustrative News/Entertainment/Kids rows, no playback claim; 2026-10-24.",
-  "logoSource": "/tmp/codex-remote-attachments/01a158d3-c3c7-7786-8bc7-7d91c7537071/5854eaa4-50ca-4a7c-9089-a26b05b924f0/1-1000066920.jpg",
+  "logoSource": "icons/plasmax-supplied-logo.jpg (user supplied 1000066920.jpg)",
   "logoPrompt": "Extract exact supplied purple crescent with three flames from white background; preserve contours, proportions, gaps, purple texture; transparent background; no redesign, text, shadows or color changes."
 }
