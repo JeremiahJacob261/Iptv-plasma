@@ -23,6 +23,6 @@ async function visit(dir){for(const e of await readdir(dir,{withFileTypes:true})
  await writeFile(p,s);pages++;
 }}
 await visit('dist');
-await writeFile('dist/site.webmanifest',JSON.stringify({name:'PlasmaX',short_name:'PlasmaX',start_url:'/',display:'browser',background_color:'#171422',theme_color:'#171422',icons:[{src:'/assets/plasmax-mark.svg',sizes:'any',type:'image/svg+xml',purpose:'any'}]}));
+await writeFile('dist/site.webmanifest',JSON.stringify({name:'PlasmaX',short_name:'PlasmaX',start_url:'/',display:'browser',background_color:'#191120',theme_color:'#191120',icons:[{src:'/assets/plasmax-mark.svg',sizes:'any',type:'image/svg+xml',purpose:'any'}]}));
 const ads=config.advertising;if(ads?.enabled&&/^ca-pub-\d{16}$/.test(ads.publisherId))await writeFile('dist/ads.txt',`google.com, ${ads.publisherId.slice(3)}, DIRECT, f08c47fec0942fa0\n`);else await writeFile('dist/ads.txt','# PlasmaX: advertising is not activated.\n');
 console.log('Applied PlasmaX identity to',pages,'pages; advertising',ads?.enabled?'configured':'disabled');

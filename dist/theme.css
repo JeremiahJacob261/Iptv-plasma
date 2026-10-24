@@ -1,0 +1,66 @@
+:root{--plasma-primary:#693695;--plasma-link:#cfb0ed;--plasma-canvas:#191120;--plasma-player:#211929}
+:root{--player-accent:#693695;--player-background:#211929}
+::selection{background:#693695}
+:focus-visible{outline:2px solid #693695}
+#watch-player{background:#211929}
+.channel-favorite{color:#cfb0ed!important}
+.video-caption button{background:#693695}
+.playlist-source-tools button{background:#693695}
+#section-70-529{background-image:linear-gradient(rgba(25,17,32,0.95),rgba(25,17,32,0.95)),url("/assets/0aec6a7a384c87cf512c.jpg");border-top-color:#693695;box-shadow:0px 0px 10px 2px rgba(25,17,32,0.58)}
+#section-68-529{background-image:linear-gradient(120deg,#7c4aa5,#693695,#4c236f)}
+#headline-74-529{color:#cfb0ed}
+#text_block-79-529{color:#191120}
+#text_block-82-529{color:#191120}
+#text_block-85-529{color:#191120}
+#text_block-160-529{color:#191120}
+#fancy_icon-169-529{color:#7c4aa5}
+#fancy_icon-177-529{color:#7c4aa5}
+.oxel_accordion__row{border-bottom-color:#7c4aa5}
+.oxel_iconlist__row__icon{color: #cfb0ed}
+.oxel_icon_button__container:hover{background-color:#693695}
+.oxel_icon_button__container{background-color:#693695}
+form.iptv-form button, .btn.btn-primary, #pmpro_btn-submit, input#wp-submit{background-color: #693695}
+.btn.btn-primary{color: #191120}
+#_nav_menu-31-251 .current-menu-item a{border-left: 5px solid #693695}
+.world-item:hover .world-country,
+.category-item:hover .category-name{text-decoration-color: #693695}
+.category-item:hover .category-icon svg path{fill: #cfb0ed}
+@media only screen and (max-width: 992px){#-site-navigation-19-15.oxy-site-navigation>ul{background: #191120 !important}
+}
+body.modal-filter::before{background: rgba(25,17,32, 0.8)}
+#register-modal{border: 2px solid #693695;box-shadow: 0px 0px 5px 2px #693695;color: #191120}
+#register-modal-close svg{stroke: #cfb0ed}
+.playlist_btn{background-color: #693695;color: #191120}
+.terms a{color: #191120}
+#section-20-15{background-image:linear-gradient(rgba(25,17,32,0.79),rgba(25,17,32,0.79)),url("/assets/0aec6a7a384c87cf512c.jpg");border-top-color:#693695}
+#section-12-15{background-color:#191120;border-top-color:#693695}
+#text_block-35-15{color:#191120}
+#text_block-29-15{background-color:rgba(25,17,32,0.75)}
+#_nav_menu-30-15 .menu-item:focus-within a,#_nav_menu-30-15 .menu-item:hover a{color:#cfb0ed}
+#_nav_menu-18-15 .menu-item:focus-within a,#_nav_menu-18-15 .menu-item:hover a{color:#cfb0ed}
+#_header_row-37-15 .oxy-nav-menu-open,#_header_row-37-15 .oxy-nav-menu:not(.oxy-nav-menu-open) .sub-menu{background-color:#191120}
+#_header_row-37-15{background-color:#191120}
+#_header_row-3-15 .oxy-nav-menu-open,#_header_row-3-15 .oxy-nav-menu:not(.oxy-nav-menu-open) .sub-menu{background-color:#191120}
+#_header_row-3-15{background-color:#191120}
+#-site-navigation-19-15{--oxynav-brand-color:#693695}
+.plasma-platforms a{background:#693695;color:#191120}
+.plasma-platforms a:hover{outline:2px solid #191120}
+.plasma-watermark{background:#191120}
+.category-item:hover .category-icon svg{stroke:#cfb0ed}
+
+.plasma-platforms a,.ct-link-button,.oxy-nav-menu-list .ct-link-button{background-color:var(--plasma-primary);color:#fff}
+.ct-link-button{color:#fff!important}
+.oxel_icon_button__container,.oxel_icon_button__container *{color:#fff!important}
+.oxy-site-navigation{--oxynav-brand-color:#cfb0ed!important}
+.oxy-site-navigation a{color:#cfb0ed!important}
+#section-68-529,#section-68-529 .ct-headline,#section-68-529 .ct-text-block,#section-68-529 .ct-text-block *{color:#fff!important}
+.plasma-platforms a:hover,.ct-link-button:hover{background-color:#55277e;color:#fff}
+.oxy-site-navigation a,.oxy-nav-menu a{color:var(--plasma-link)}
+.category-item:hover,.world-item:hover,.language-item:hover{background-color:var(--plasma-primary);color:#fff}
+.category-item:hover .category-icon svg{stroke:#fff}
+.channel-row.active{background-color:#382445}
+.channel-favorite{color:var(--plasma-link)!important}
+#watch-player :focus-visible,.social-viewer :focus-visible{outline-color:var(--plasma-link)}
+.plasma-platforms a:focus-visible{outline:2px solid #fff;outline-offset:3px}
+::selection{background:var(--plasma-primary);color:#fff}
+.plasma-watermark{background:var(--plasma-canvas);color:#fff}
