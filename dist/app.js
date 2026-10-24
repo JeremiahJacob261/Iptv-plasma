@@ -123,7 +123,7 @@ function renderPlayer() {
   panel.querySelector('#stop-playback').addEventListener('click', () => stopPlayback());
   panel.querySelector('#fullscreen-playback').addEventListener('click', async()=>{
    const video=panel.querySelector('video');
-   try{if(video.requestFullscreen)await video.requestFullscreen();else if(video.webkitEnterFullscreen)video.webkitEnterFullscreen();else document.querySelector('#stream-status').textContent='Use your browser’s video controls to enter full screen.';}catch{document.querySelector('#stream-status').textContent='Full screen was blocked. Tap the video’s full-screen control.';}
+   try{if(video.requestFullscreen)await (video.closest('[data-plasma-player]')||video).requestFullscreen();else if(video.webkitEnterFullscreen)video.webkitEnterFullscreen();else document.querySelector('#stream-status').textContent='Use your browser’s video controls to enter full screen.';}catch{document.querySelector('#stream-status').textContent='Full screen was blocked. Tap the video’s full-screen control.';}
   });
  }
  const group = panel.querySelector('#channel-group'); group.replaceChildren(new Option('All Channels',''));

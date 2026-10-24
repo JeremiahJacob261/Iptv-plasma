@@ -36,4 +36,7 @@ await copyFile('updates/social.css','dist/social.css');
 execFileSync(process.execPath,['scripts/social-pages.mjs'],{stdio:'inherit'});
 execFileSync(process.execPath,['scripts/polish-pages.mjs','updates/heroicons.json'],{stdio:'inherit'});
 try { execFileSync(process.execPath,['scripts/update-sources.mjs'],{stdio:'inherit'}); } catch { console.log('Using verified IPTV-org catalog snapshot.'); }
+for(const name of ['brand.css','brand.js'])await copyFile('updates/'+name,'dist/'+name);
+for(const name of ['plasmax-mark.svg','plasmax-logo.svg','plasmax-player-preview.png'])await copyFile('updates/'+name,'dist/assets/'+name);
+execFileSync(process.execPath,['scripts/brand-pages.mjs'],{stdio:'inherit'});
 console.log('Static site ready: original assets verified and player updates installed.');

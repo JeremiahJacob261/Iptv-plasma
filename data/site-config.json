@@ -1,0 +1,13 @@
+{
+  "brand": "PlasmaX",
+  "plannedDomain": "plasmax.io",
+  "siteOrigin": "https://free-iptv-player-sigma.vercel.app",
+  "xProfile": "",
+  "twitchURL": "",
+  "advertising": {
+    "enabled": false,
+    "provider": "adsense",
+    "publisherId": "",
+    "slotId": ""
+  }
+}
