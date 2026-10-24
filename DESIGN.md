@@ -1,4 +1,4 @@
-# Free IPTV Player visual system
+# PlasmaX visual system
 
 The user authorized a modern polish on 2026-10-20, with two fixed constraints: preserve the existing colours and every text font size. Earlier exact-clone instructions still govern factual copy and original imagery; the new polish instruction authorizes layout and icon refinement.
 
@@ -39,3 +39,22 @@ Each social page has a sourced 512-account catalog. Editorial featured picks app
 ## Narrow-screen behavior
 
 At phone widths, use 16px page gutters and 12px player padding, preserving the original text scale. The navigation drawer stays within the viewport and uses dynamic viewport height. Playback actions share a full-width row; native quality selectors receive their own row. Featured social picks remain first in a horizontally swipeable, scroll-snapping shelf; category shortcuts scroll independently and the full directory uses compact single-column rows. Never hide page overflow to conceal an oversized control. Inputs and metadata must shrink or wrap within their containers. Below 380px, IPTV directory tiles use one column.
+
+
+## PlasmaX identity — 2026-10-24
+
+PlasmaX is the standalone site identity. The planned domain is plasmax.io; it is unpurchased and unattached. The public origin remains https://free-iptv-player-sigma.vercel.app and internal navigation stays relative. This identity update preserves the existing colours and every interface text size described above.
+
+The original authored geometric SVG logo combines a rounded mark, a P silhouette and a play triangle; the wordmark ends in the existing neon-green X. The header uses /assets/plasmax-logo.svg and favicon/app identity uses /assets/plasmax-mark.svg. The final build pass in scripts/brand-pages.mjs applies the PlasmaX identity, page titles and favicon across generated HTML pages. Homepage entry links expose Live TV, X (Twitter) and Twitch.
+
+The replacement promotional artwork at /assets/plasmax-player-preview.png is an actual capture of the authored player UI. Its News, Entertainment and Kids rows are illustrative; the image makes no provider or live-playback claim. Authorship and screenshot provenance are recorded in icons/PlasmaX-PROVENANCE.json and the PNG metadata.
+
+The inline video watermark pairs the geometric mark and PlasmaX text at the upper right of native IPTV, X and Twitch video. It uses the existing dark purple/white roles, a 6px corner, 85% opacity and a 20px mark. The label is noninteractive and hidden from assistive technology. dist/brand.js observes added video nodes with MutationObserver, wraps the existing IPTV video or brands the existing social media frame, and preserves the video node and source. It is a page overlay rather than a burned-in broadcast mark. Custom element fullscreen targets the branded wrapper where supported; native iOS video fullscreen can omit DOM overlays.
+
+Personal X and Twitch account links remain empty until genuine user-supplied HTTPS links are configured. Advertising is authorized but disabled: hidden placements outside the media/controls load no ad script. AdSense awaits genuine approved publisher and slot identifiers. HilltopAds remains an alternative awaiting an actual account-specific integration snippet and selection. Do not depict these integrations as active.
+
+### Completed identity review
+
+The finish review disposition is **SHIP for the PlasmaX identity and inline watermark**. Evidence comprises 12 screenshots in /workspace/plasmax-review: home, IPTV player, X directory, Twitch directory, loaded X viewer and loaded Twitch viewer, each at 390×844 and 1440×1000. The reviewed layouts have no horizontal overflow, and advertising was not loaded. The implementation suite reports 55 passing tests.
+
+Loaded X/Twitch screenshots use controlled metadata and a local test MP4; they demonstrate the native viewing UI and watermark only. They do not establish live provider availability or universal playback. Fullscreen was unavailable in headless review even with a direct request, so fullscreen overlay behavior remains unverified. This review supplements the earlier source/computed-style verification; the earlier lack of screenshot review is retained as historical context, not the status of this identity review.

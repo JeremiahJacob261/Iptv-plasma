@@ -31,5 +31,109 @@
     "sourceAudit": true,
     "computedStyleComparison": true,
     "visualBrowserReview": false
-  }
+  },
+  "brandIdentity": {
+    "name": "PlasmaX",
+    "effectiveDate": "2026-10-24",
+    "plannedDomain": "plasmax.io",
+    "plannedDomainPurchased": false,
+    "plannedDomainAttached": false,
+    "publicOrigin": "https://free-iptv-player-sigma.vercel.app",
+    "navigation": "relative",
+    "preservesExistingPalette": true,
+    "preservesExistingInterfaceFontSizes": true,
+    "paletteTokenReferences": {
+      "accent": "tokens.siteAccent",
+      "dark": "tokens.siteDark",
+      "foreground": "tokens.playerForeground"
+    },
+    "logo": {
+      "wordmark": "/assets/plasmax-logo.svg",
+      "mark": "/assets/plasmax-mark.svg",
+      "authorship": "Original authored geometric SVG; rounded P and play-triangle geometry"
+    },
+    "pageIdentity": {
+      "buildPass": "scripts/brand-pages.mjs",
+      "scope": "Generated HTML titles, shared branding and favicon; app manifest"
+    },
+    "promotionalAsset": {
+      "path": "/assets/plasmax-player-preview.png",
+      "provenance": "icons/PlasmaX-PROVENANCE.json",
+      "source": "Actual authored native-player UI screenshot",
+      "illustrativeRows": [
+        "News",
+        "Entertainment",
+        "Kids"
+      ],
+      "providerOrPlaybackClaim": false
+    },
+    "inlineWatermark": {
+      "surfaces": [
+        "native IPTV",
+        "native X",
+        "native Twitch"
+      ],
+      "implementation": "dist/brand.js MutationObserver; preserves existing video node and source",
+      "interactive": false,
+      "ariaHidden": true,
+      "position": "upper right",
+      "markSize": "20px",
+      "radius": "6px",
+      "opacity": 0.85,
+      "burnedIntoVideo": false,
+      "fullscreen": "Custom control targets branded wrapper where supported; fullscreen unverified in headless review; native iOS fullscreen can omit DOM overlay"
+    },
+    "personalAccounts": {
+      "xProfile": "",
+      "twitchURL": "",
+      "status": "Await genuine user-supplied HTTPS account links"
+    },
+    "advertising": {
+      "enabled": false,
+      "loadedDuringReview": false,
+      "placement": "Hidden labeled slot outside media and controls",
+      "adsense": "Await genuine approved publisher and slot identifiers",
+      "hilltopAds": "Alternative awaiting actual account-specific approved snippet and selection"
+    }
+  },
+  "reviewHistory": [
+    {
+      "date": "2026-10-24",
+      "scope": "PlasmaX identity and inline watermark",
+      "disposition": "SHIP",
+      "screenshots": {
+        "directory": "/workspace/plasmax-review",
+        "count": 12,
+        "viewports": [
+          {
+            "width": 390,
+            "height": 844
+          },
+          {
+            "width": 1440,
+            "height": 1000
+          }
+        ],
+        "surfaces": [
+          "home",
+          "IPTV player",
+          "X directory",
+          "Twitch directory",
+          "loaded X viewer",
+          "loaded Twitch viewer"
+        ]
+      },
+      "results": {
+        "horizontalOverflow": false,
+        "advertisingLoaded": false,
+        "passingTests": 55
+      },
+      "limitations": [
+        "Loaded X/Twitch views use controlled metadata and a local test MP4; evidence proves UI and inline watermark only, not all provider playback.",
+        "Fullscreen was unavailable in headless review even with a direct request; fullscreen overlay behavior is unverified.",
+        "Native iOS video fullscreen can omit DOM overlays.",
+        "Personal account links and advertising activation remain pending genuine configuration."
+      ]
+    }
+  ]
 }
