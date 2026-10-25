@@ -71,3 +71,7 @@ This is a colour and identity change only. Keep interface structure, section ord
 ### Supplied-logo finish review
 
 Reviewer purple_logo_review disposition: **SHIP**. Ten screenshots in /workspace/plasmax-purple-review cover home, IPTV player, X, Twitch and categories at 390×844 and 1440×1000. Chromium comparisons with the theme enabled and disabled found identical geometry and computed font sizes, with no horizontal overflow. Sampled CTA foreground/background contrast meets 4.5:1. The parent-reported implementation suite has 56 passing tests. This review verifies the supplied artwork, purple palette and retained layout; the earlier provider-playback and fullscreen limitations continue to apply, and advertising remains disabled.
+
+
+## Official account links — 2026-10-25
+User supplied twitter.com/plasma1337x and twitch.tv/plasma1337x. Homepage Follow on X and Watch on Twitch actions now link to these HTTPS profiles in new tabs with noopener/noreferrer. Existing native X/Twitch viewer routes and editorial directories remain available. This config change does not establish account live status or alter media resolution. Advertising remains disabled pending real publisher setup.

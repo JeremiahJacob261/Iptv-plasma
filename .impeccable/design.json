@@ -101,9 +101,9 @@
       "markIdentity": "Supplied purple crescent/flame artwork on white chip"
     },
     "personalAccounts": {
-      "xProfile": "",
-      "twitchURL": "",
-      "status": "Await genuine user-supplied HTTPS account links"
+      "xProfile": "https://twitter.com/plasma1337x",
+      "twitchURL": "https://www.twitch.tv/plasma1337x",
+      "status": "User-supplied accounts linked from homepage; advertising setup still pending."
     },
     "advertising": {
       "enabled": false,
