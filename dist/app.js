@@ -228,7 +228,7 @@ async function playChannel(channel, skipped = 0) {
   if(next){status.textContent=channel.name+' could not be played. Trying '+next.name+'…';playChannel(next,skipped+1);}
   else {stopPlayback(false);status.textContent=lastFailure+' No further channels could be played. Select another channel to try.';message(channels.length+' channels loaded. Playback could not start.',true);}
  }
- playTimeout=setTimeout(()=>{lastFailure='The channel took too long to start.';advance();},22000);
+ playTimeout=setTimeout(()=>{lastFailure='The channel took too long to start.';advance();},20000);
  // Track the first direct attempt to avoid repeating it after the relay fails.
  if(!proxied)feed={...feed,_directTried:true};
  await connect();
