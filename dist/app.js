@@ -44,7 +44,7 @@ let catalogPromise;
 const savedFavorites = store.get('iptv-favorites', []);
 let channels = [], hls, active, pageSize = 100, playAttempt = 0, loadAttempt = 0, playlistRequest;
 const favorites = new Set(Array.isArray(savedFavorites) ? savedFavorites : []);
-function safeScroll(element) { try { element?.scrollIntoView({ behavior: 'smooth', block: 'nearest' }); } catch {} }
+function safeScroll(element) { try { const reduced=window.matchMedia?.('(prefers-reduced-motion: reduce)').matches; element?.scrollIntoView({ behavior: reduced ? 'auto' : 'smooth', block: 'nearest' }); } catch {} }
 function message(text, error = false) {
  let el = document.querySelector('#player-status');
  if (!el && form) { el = document.createElement('p'); el.id = 'player-status'; el.setAttribute('role', 'status'); (document.querySelector('.playlist-setup')||form).after(el); }
