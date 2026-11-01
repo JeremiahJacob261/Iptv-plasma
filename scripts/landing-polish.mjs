@@ -10,5 +10,7 @@ if(!html.includes('class="plasma-landing-about"')){
  if(!heading.test(html))throw Error('Missing landing introduction');
  html=html.replace(heading,m=>m+action+nav+'<details class="plasma-landing-about"><summary>About the player</summary>'+details+'</details>');
 }
+const hilltopVerification='<meta name="d3cfd1c1ab1c59b0cad018ae26c3b5e4cd6c1d66" content="d3cfd1c1ab1c59b0cad018ae26c3b5e4cd6c1d66" />';
+if(!html.includes(hilltopVerification))html=html.replace('</head>',hilltopVerification+'</head>');
 if(!html.includes('href="/landing.css"'))html=html.replace('</head>','<link rel="stylesheet" href="/landing.css"></head>');
 await writeFile(path,html);console.log('Organized PlasmaX landing page.');
