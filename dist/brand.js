@@ -6,7 +6,7 @@
   if(!frame.classList.contains('x-media-frame')){frame=document.createElement('div');video.before(frame);frame.append(video);}
   frame.classList.add('plasma-video-frame');frame.dataset.plasmaPlayer='';
   const mark=document.createElement('span');mark.className='plasma-watermark';mark.setAttribute('aria-hidden','true');
-  const image=document.createElement('img');image.src='/assets/plasmax-mark.svg';image.alt='';mark.append(image,document.createTextNode('PlasmaX'));frame.append(mark);
+  const image=document.createElement('img');image.src='/assets/plasmax-mark.svg';image.alt='';mark.append(image);frame.append(mark);
  }
  function scan(node){if(node.nodeType!==1)return;if(node.matches('video'))brandPlayer(node);node.querySelectorAll('video').forEach(brandPlayer);}
  scan(document.body);

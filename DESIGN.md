@@ -51,7 +51,7 @@ The first, now-retired authored geometric SVG logo combined a rounded mark, a P 
 
 The replacement promotional artwork at /assets/plasmax-player-preview.png is an actual capture of the authored player UI. Its News, Entertainment and Kids rows are illustrative; the image makes no provider or live-playback claim. Authorship and screenshot provenance are recorded in icons/PlasmaX-PROVENANCE.json and the PNG metadata.
 
-The inline video watermark pairs the geometric mark and PlasmaX text at the upper right of native IPTV, X and Twitch video. It uses the existing dark purple/white roles, a 6px corner, 85% opacity and a 20px mark. The label is noninteractive and hidden from assistive technology. dist/brand.js observes added video nodes with MutationObserver, wraps the existing IPTV video or brands the existing social media frame, and preserves the video node and source. It is a page overlay rather than a burned-in broadcast mark. Custom element fullscreen targets the branded wrapper where supported; native iOS video fullscreen can omit DOM overlays.
+The inline video watermark pairs the geometric mark and PlasmaX text at the lower right of native IPTV, X and Twitch video, above the native control area. It uses the existing dark purple/white roles, a 6px corner, 85% opacity and a 28px mark. The logo is noninteractive and hidden from assistive technology. dist/brand.js observes added video nodes with MutationObserver, wraps the existing IPTV video or brands the existing social media frame, and preserves the video node and source. It is a page overlay rather than a burned-in broadcast mark. Custom element fullscreen targets the branded wrapper where supported; native iOS video fullscreen can omit DOM overlays.
 
 Personal X and Twitch account links remain empty until genuine user-supplied HTTPS links are configured. Advertising is authorized but disabled: hidden placements outside the media/controls load no ad script. AdSense awaits genuine approved publisher and slot identifiers. HilltopAds remains an alternative awaiting an actual account-specific integration snippet and selection. Do not depict these integrations as active.
 
@@ -75,3 +75,7 @@ Reviewer purple_logo_review disposition: **SHIP**. Ten screenshots in /workspace
 
 ## Official account links — 2026-10-25
 User supplied twitter.com/plasma1337x and twitch.tv/plasma1337x. Homepage Follow on X and Watch on Twitch actions now link to these HTTPS profiles in new tabs with noopener/noreferrer. Existing native X/Twitch viewer routes and editorial directories remain available. This config change does not establish account live status or alter media resolution. Advertising remains disabled pending real publisher setup.
+
+
+## Video watermark placement — 2026-11-01
+The PlasmaX logo appears by itself in the lower-right corner of each inline native IPTV, X and Twitch player, offset above native controls. The overlay remains noninteractive and preserves the media node. Element fullscreen uses its own offset; native iOS/video fullscreen can exclude DOM overlays.
