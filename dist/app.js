@@ -42,7 +42,7 @@ const form = document.querySelector('#m3u-form');
 const DEFAULT_PLAYLIST = 'https://iptv-org.github.io/iptv/index.category.m3u';
 let catalogPromise;
 const savedFavorites = store.get('iptv-favorites', []);
-let channels = [], hls, active, pageSize = 100, playAttempt = 0, loadAttempt = 0, playlistRequest;
+let channels = [], hls, active, pageSize = 100, playAttempt = 0, loadAttempt = 0, playlistRequest, playTimeout;
 const favorites = new Set(Array.isArray(savedFavorites) ? savedFavorites : []);
 function safeScroll(element) { try { const reduced=window.matchMedia?.('(prefers-reduced-motion: reduce)').matches; element?.scrollIntoView({ behavior: reduced ? 'auto' : 'smooth', block: 'nearest' }); } catch {} }
 function message(text, error = false) {
@@ -103,7 +103,7 @@ async function loadPlaylist(url, file) {
  } catch (error) { console.error('player_render_failed', error); message('The playlist loaded, but the player could not open. Refresh the page and try again.', true); }
 }
 function stopPlayback(showMessage = true) {
- ++playAttempt; hls?.destroy(); hls = null;
+ ++playAttempt; clearTimeout(playTimeout); playTimeout = null; hls?.destroy(); hls = null;
  const video = document.querySelector('#iptv-video');
  if (video) { video.onplaying = null; video.onerror = null; video.pause(); video.removeAttribute('src'); video.load(); }
  if (showMessage && document.querySelector('#stream-status')) { document.querySelector('#stream-status').textContent = 'Playback stopped.'; message(channels.length+' channels loaded. Playback stopped.'); }
@@ -161,18 +161,6 @@ function ensureHls() {
 function stationKey(channel) {
  return channel.id ? channel.id.split('@')[0].toLowerCase() : 'name:'+channel.name.replace(/\[[^\]]*\]/g,'').replace(/\((?:\d+p|\d+x\d+|hd|sd|uhd|4k)\)/gi,'').replace(/\s+/g,' ').trim().toLowerCase();
 }
-let alternateCatalog;
-async function alternateFeeds(channel,tried) {
- const key=stationKey(channel),same=feed=>stationKey(feed)===key&&!tried.has(feed.url);
- let matches=channels.filter(same);
- if(matches.length<2){
-  try{
-   if(!alternateCatalog)alternateCatalog=fetchPlaylist('https://iptv-org.github.io/iptv/index.m3u').then(data=>parsePlaylist(data.text,data.url)).catch(error=>{alternateCatalog=null;throw error;});
-   matches=matches.concat((await alternateCatalog).filter(same));
-  }catch{}
- }
- return [...new Map(matches.map(feed=>[feed.url,feed])).values()].sort((a,b)=>Number(/\[Geo-blocked\]/i.test(a.name))-Number(/\[Geo-blocked\]/i.test(b.name)));
-}
 function playbackFailure(data) {
  const body=data?.response?.data;
  try{const parsed=typeof body==='string'?JSON.parse(body):body;if(typeof parsed?.error==='string')return parsed.error;}catch{}
@@ -187,7 +175,7 @@ function playbackFailure(data) {
 function channelRelayURL(channel) {
  return '/api/stream?url='+encodeURIComponent(channel.url)+(channel.userAgent?'&ua='+encodeURIComponent(channel.userAgent):'')+(channel.referer?'&referrer='+encodeURIComponent(channel.referer):'');
 }
-async function playChannel(channel) {
+async function playChannel(channel, skipped = 0) {
  stopPlayback(false);const attempt=playAttempt;
  active=channel.url;renderChannels();
  message(channels.length+' channels loaded. Connecting to '+channel.name+'.');
@@ -204,8 +192,8 @@ async function playChannel(channel) {
   video.onerror=null;video.onplaying=null;hls?.destroy();hls=null;video.pause();video.removeAttribute('src');video.load();
   source.href=feed.url;source.innerHTML=heroIcon('arrow-top-right-on-square');source.append(document.createTextNode('Channel source: '+new URL(feed.url).hostname));source.hidden=false;
   const isHls=feed.type==='hls'||!/\.(?:mp4|mp3|aac|webm|ogg|mov|ts)(?:[?#]|$)/i.test(feed.url);
-  const start=()=>{if(!current(epoch))return;Promise.resolve(video.play()).catch(error=>{if(!current(epoch)||error.name==='AbortError')return;if(error.name==='NotAllowedError')status.textContent='Press Play in the video controls to start watching.';else fallback({type:'mediaError'},epoch);});};
-  video.onplaying=()=>{if(current(epoch)){status.textContent=tried.size>1?'Playing an alternative public feed of this channel.':'Playing live';message(channels.length+' channels loaded. Now playing '+channel.name+'.');}};
+  const start=()=>{if(!current(epoch))return;Promise.resolve(video.play()).catch(error=>{if(!current(epoch)||error.name==='AbortError')return;if(error.name==='NotAllowedError'){clearTimeout(playTimeout);playTimeout=null;status.textContent='Press Play in the video controls to start watching.';}else fallback({type:'mediaError'},epoch);});};
+  video.onplaying=()=>{if(current(epoch)){clearTimeout(playTimeout);playTimeout=null;status.textContent=tried.size>1?'Playing an alternative public feed of this channel.':'Playing live';message(channels.length+' channels loaded. Now playing '+channel.name+'.');}};
   try{
    if(isHls&&!video.canPlayType('application/vnd.apple.mpegurl'))HlsClass=await ensureHls();
    if(!current(epoch))return;
@@ -225,15 +213,22 @@ async function playChannel(channel) {
   // A provider may allow the viewer's location while refusing the server's location.
   if(!feed._directTried&&!forceRelay(feed)){feed={...feed,_directTried:true};proxied=false;status.textContent='Trying the channel directly from your location…';await connect();return;}
   status.textContent='Checking other public feeds of this same channel…';
-  if(!alternatives)alternatives=await alternateFeeds(channel,tried);
+  if(!alternatives)alternatives=channels.filter(item=>stationKey(item)===stationKey(channel)&&!tried.has(item.url));
   if(!current(epoch))return;
   const next=alternatives.find(item=>!tried.has(item.url));
   if(next&&tried.size<3){feed=next;tried.add(feed.url);proxied=forceRelay(feed);if(!proxied)feed={...feed,_directTried:true};status.textContent='Trying another public feed of '+channel.name+'…';await connect();return;}
   hls?.destroy();hls=null;
-  status.textContent=lastFailure+' No working public feed was found among the '+tried.size+' source'+(tried.size===1?'':'s')+' tried.';
-  message(channels.length+' channels loaded. '+channel.name+' could not be played.',true);
-  fallbackBusy=false;
+  advance();
  };
+ function advance(){
+  if(attempt!==playAttempt)return;
+  const query=document.querySelector('#channel-search').value.toLowerCase(),group=document.querySelector('#channel-group').value,only=document.querySelector('#favorites-only').checked;
+  const index=channels.findIndex(item=>item.url===channel.url);
+  const next=skipped<4?channels.slice(index+1).find(item=>stationKey(item)!==stationKey(channel)&&item.name.toLowerCase().includes(query)&&(!group||item.group.split(';').includes(group))&&(!only||favorites.has(item.url))):null;
+  if(next){status.textContent=channel.name+' could not be played. Trying '+next.name+'…';playChannel(next,skipped+1);}
+  else {stopPlayback(false);status.textContent=lastFailure+' No further channels could be played. Select another channel to try.';message(channels.length+' channels loaded. Playback could not start.',true);}
+ }
+ playTimeout=setTimeout(()=>{lastFailure='The channel took too long to start.';advance();},22000);
  // Track the first direct attempt to avoid repeating it after the relay fails.
  if(!proxied)feed={...feed,_directTried:true};
  await connect();

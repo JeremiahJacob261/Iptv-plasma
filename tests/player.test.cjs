@@ -69,7 +69,7 @@ test('HLS switching, direct-to-relay fallback, HTTP compatibility, fatal errors 
   await s.w.loadPlaylist('https://source.example/list.m3u');d.querySelector('.channel-play').click();await tick();
   const first=s.instances.at(-1);assert.equal(first.url,'https://example.com/one.m3u8');
   first.handlers.error(null,{fatal:true,type:'network'});await tick();const relay=s.instances.at(-1);assert(first.destroyed);assert.match(relay.url,/^\/api\/stream\?url=/);
-  relay.handlers.error(null,{fatal:true,type:'network',response:{code:403}});await tick();assert.match(d.querySelector('#stream-status').textContent,/HTTP 403/);
+  relay.handlers.error(null,{fatal:true,type:'network',response:{code:403}});await tick();assert.equal(d.querySelector('#current-channel').textContent,'Channel Two');
   d.querySelectorAll('.channel-play')[1].click();await tick();assert(relay.destroyed);assert.match(s.instances.at(-1).url,/^\/api\/stream\?url=http/);
   d.querySelector('#stop-playback').click();assert(s.instances.at(-1).destroyed);assert.match(d.querySelector('#stream-status').textContent,/stopped/);assert.equal(d.querySelector('video').hasAttribute('src'),false);
   d.querySelector('#player-http').checked=true;d.querySelector('.channel-play').click();await tick();assert.match(s.instances.at(-1).url,/^\/api\/stream\?url=/);
@@ -158,4 +158,14 @@ test('playlist station IDs and declared request headers are retained and used by
 });
 test('explicit full-screen control targets the video element',async()=>{
  const s=setup(),d=s.w.document;try{await s.w.loadPlaylist('https://example.com/list.m3u');let calls=0;d.querySelector('video').requestFullscreen=async()=>{calls++;};d.querySelector('#fullscreen-playback').click();await tick();assert.equal(calls,1);}finally{s.dom.window.close();}
+});
+test('failed channels advance within the active filter and Stop cancels the pending startup timeout',async()=>{
+ const s=setup(),d=s.w.document;try{await s.w.loadPlaylist('https://source.example/list.m3u');const group=d.querySelector('#channel-group');group.value='News';group.dispatchEvent(new s.w.Event('change'));d.querySelector('.channel-play').click();await tick();s.instances.at(-1).handlers.error(null,{fatal:true,type:'network'});await tick();s.instances.at(-1).handlers.error(null,{fatal:true,type:'network'});await tick();assert.equal(d.querySelector('#current-channel').textContent,'News Three');d.querySelector('#stop-playback').click();assert.match(d.querySelector('#stream-status').textContent,/stopped/);}finally{s.dom.window.close();}
+});
+test('automatic channel skipping stops after five unsuccessful channels',async()=>{
+ const list='#EXTM3U\n'+Array.from({length:7},(_,i)=>`#EXTINF:-1 group-title="News",Station ${i+1}\nhttps://example.com/${i+1}.m3u8`).join('\n');const s=setup({playlist:list}),d=s.w.document;
+ try{await s.w.loadPlaylist('https://source.example/list.m3u');d.querySelector('.channel-play').click();await tick();for(let i=0;i<5;i++){s.instances.at(-1).handlers.error(null,{fatal:true,type:'network'});await tick();s.instances.at(-1).handlers.error(null,{fatal:true,type:'network'});await tick();}assert.equal(d.querySelector('#current-channel').textContent,'Station 5');assert.match(d.querySelector('#stream-status').textContent,/Select another channel/);}finally{s.dom.window.close();}
+});
+test('startup timeout moves forward while stale timeout after Stop cannot restart playback',async()=>{
+ const s=setup(),d=s.w.document;try{await s.w.loadPlaylist('https://source.example/list.m3u');const original=s.w.setTimeout.bind(s.w);let timeout; s.w.setTimeout=(fn,ms,...args)=>ms===22000?(timeout=fn,42):original(fn,ms,...args);d.querySelector('.channel-play').click();await tick();assert.equal(typeof timeout,'function');timeout();await tick();assert.equal(d.querySelector('#current-channel').textContent,'Channel Two');const stale=timeout;d.querySelector('#stop-playback').click();stale();await tick();assert.match(d.querySelector('#stream-status').textContent,/stopped/);assert.equal(d.querySelector('#current-channel').textContent,'Channel Two');}finally{s.dom.window.close();}
 });
