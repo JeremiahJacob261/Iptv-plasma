@@ -40,4 +40,6 @@ for(const name of ['brand.css','brand.js'])await copyFile('updates/'+name,'dist/
 for(const name of ['plasmax-mark.svg','plasmax-logo.svg','plasmax-player-preview.png'])await copyFile('updates/'+name,'dist/assets/'+name);
 execFileSync(process.execPath,['scripts/brand-pages.mjs'],{stdio:'inherit'});
 execFileSync(process.execPath,['scripts/theme-pages.mjs'],{stdio:'inherit'});
+await copyFile('updates/landing.css','dist/landing.css');
+execFileSync(process.execPath,['scripts/landing-polish.mjs'],{stdio:'inherit'});
 console.log('Static site ready: original assets verified and player updates installed.');

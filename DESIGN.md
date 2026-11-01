@@ -79,3 +79,6 @@ User supplied twitter.com/plasma1337x and twitch.tv/plasma1337x. Homepage Follow
 
 ## Video watermark placement — 2026-11-01
 The PlasmaX logo appears by itself in the lower-right corner of each inline native IPTV, X and Twitch player, offset above native controls. The overlay remains noninteractive and preserves the media node. Element fullscreen uses its own offset; native iOS/video fullscreen can exclude DOM overlays.
+
+## Landing-page organization — 2026-11-01
+The landing page presents the existing heading and description first, followed by the primary Watch Now action. Live TV, X, Twitch, and the supplied profile links form a quieter secondary group. The unchanged longer introductory copy is available through a native, keyboard-operable About the player disclosure. Features, FAQ, footer links and other site pages are retained. The homepage-only landing.css uses the existing purple palette and type scale. The static build runs landing-polish.mjs after branding and theme generation so these changes survive deployment.
