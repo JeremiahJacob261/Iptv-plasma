@@ -17,14 +17,11 @@
 
 .plasma-tap-feedback{position:absolute;left:50%;top:50%;transform:translate(-50%,-50%);display:grid;place-items:center;width:72px;height:72px;border-radius:50%;background:rgba(0,0,0,.65);color:white;opacity:0;pointer-events:none;transition:opacity .18s;z-index:5}.plasma-tap-feedback.visible{opacity:1}.plasma-tap-feedback svg{width:32px;height:32px}@media(prefers-reduced-motion:reduce){.plasma-tap-feedback{transition:none}}
 
-/* SparkExchange feature: clear visual break after the live player. */
-.sparkexchange-promo{position:relative;display:grid;grid-template-columns:minmax(0,1.4fr) minmax(180px,.6fr);align-items:center;gap:32px;max-width:1168px;margin:32px auto 56px;padding:clamp(28px,5vw,56px);overflow:hidden;border:1px solid rgba(196,145,255,.3);border-radius:18px;background:radial-gradient(ellipse at 88% 12%,rgba(132,65,213,.24),transparent 42%),linear-gradient(135deg,#17121f,#21172b 55%,#16121d);color:#f7f1ff}
-.sparkexchange-promo-copy{position:relative;z-index:1;max-width:66ch}
-.sparkexchange-promo h2{max-width:18ch;margin:0 0 14px;font-size:clamp(1.7rem,3.6vw,2.8rem);line-height:1.1;letter-spacing:-.025em;text-wrap:balance}
-.sparkexchange-promo-copy>p{max-width:58ch;margin:0 0 24px;color:#ded3e8;font-size:1.05rem;line-height:1.65}
-.sparkexchange-promo-cta{display:inline-flex;min-height:48px;align-items:center;justify-content:center;gap:12px;padding:0 20px;border:1px solid #d4b2ff;border-radius:9px;background:#c99aff;color:#1a1025;text-decoration:none;font-weight:700;transition:transform .18s ease,background-color .18s ease,box-shadow .18s ease}
-.sparkexchange-promo-cta:hover{transform:translateY(-2px);background:#d8b8ff;box-shadow:0 8px 22px rgba(6,0,12,.3)}
-.sparkexchange-promo-cta:focus-visible{outline:3px solid #fff;outline-offset:3px}
-.sparkexchange-promo-logo{display:block;justify-self:center;width:min(100%,220px);max-height:220px;height:auto;object-fit:contain;border-radius:16px;filter:drop-shadow(0 14px 24px rgba(5,0,10,.35))}
-@media(max-width:700px){.sparkexchange-promo{grid-template-columns:1fr;gap:20px;margin:24px 12px 40px;padding:26px 22px}.sparkexchange-promo h2{max-width:16ch}.sparkexchange-promo-logo{grid-row:1;justify-self:start;width:min(48vw,140px);max-height:140px}}
-@media(prefers-reduced-motion:reduce){.sparkexchange-promo-cta{transition:none}.sparkexchange-promo-cta:hover{transform:none}}
+/* SparkExchange widget within the PlasmaX homepage. */
+.sparkexchange-promo{max-width:1168px;margin:32px auto 56px;padding:clamp(20px,4vw,48px);border:1px solid rgba(232,176,41,.35);border-radius:18px;background:linear-gradient(135deg,#17120b,#21190d 50%,#120f0b);color:#fff}
+.sparkexchange-promo-heading{display:flex;align-items:center;gap:22px;max-width:850px;margin:0 auto 18px}
+.sparkexchange-promo-logo{display:block;flex:0 0 auto;width:84px;height:84px;object-fit:contain;border-radius:12px}
+.sparkexchange-promo h2{margin:0 0 8px;font-size:clamp(1.7rem,3.5vw,2.6rem);line-height:1.12;letter-spacing:-.025em;text-wrap:balance}
+.sparkexchange-promo-heading p{margin:0;max-width:68ch;color:#e2d6ba;font-size:1rem;line-height:1.55}
+#sparkexchange-widget{display:block;width:100%;height:900px;min-height:650px;border:0;border-radius:12px;background:#0a0a0a}
+@media(max-width:700px){.sparkexchange-promo{margin:24px 12px 40px;padding:20px 12px}.sparkexchange-promo-heading{align-items:flex-start;gap:12px;padding:0 6px}.sparkexchange-promo-logo{width:56px;height:56px}.sparkexchange-promo h2{font-size:1.65rem}#sparkexchange-widget{height:1080px}}
