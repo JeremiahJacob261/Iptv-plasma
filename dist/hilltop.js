@@ -43,9 +43,10 @@
    const getDue=()=>{try{return Number(sessionStorage.getItem(key))||0;}catch{return 0;}};
    const setDue=due=>{try{sessionStorage.setItem(key,String(due));}catch{}};
    const schedule=(fresh=false)=>{clearTimeout(timer);let due=fresh?0:getDue();if(!due){due=Date.now()+(10+Math.random()*25)*60*1000;setDue(due);}timer=setTimeout(showBreak,Math.max(0,due-Date.now()));};
-   function showBreak(){if(document.hidden){pending=true;return;}pending=false;ad.replaceChildren(isolatedBanner());if(!dialog.open)dialog.showModal();}
+   let resumeAfterBreak=false;
+   function showBreak(){if(document.hidden){pending=true;return;}pending=false;const video=document.querySelector('#iptv-video');resumeAfterBreak=!!video&&!video.paused;if(resumeAfterBreak)video.pause();ad.replaceChildren(isolatedBanner());if(!dialog.open)dialog.showModal();}
    close.addEventListener('click',()=>dialog.close());
-   dialog.addEventListener('close',()=>{ad.replaceChildren();schedule(true);});
+   dialog.addEventListener('close',()=>{ad.replaceChildren();if(resumeAfterBreak){const video=document.querySelector('#iptv-video');video?.play().catch(()=>{});}resumeAfterBreak=false;schedule(true);});
    document.addEventListener('visibilitychange',()=>{if(!document.hidden&&pending&&!dialog.open)showBreak();});
    schedule();
  }
