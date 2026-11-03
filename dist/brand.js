@@ -22,7 +22,7 @@
  function updateNavigation(){
   document.querySelectorAll('nav a, [role="navigation"] a, .menu-item a').forEach(a=>{
    const href=a.getAttribute('href') || '';
-   if(['/blog/','/guest-posts/','/iptv-player/','/contact-us/','/newsletter/'].includes(href)) { const item=a.closest('li'); if(item) item.remove(); else a.remove(); return; }
+   if(['/blog/','/guest-posts/','/contact-us/','/newsletter/'].includes(href) || (href==='/iptv-player/' && /^iptv players?$/i.test(a.textContent.trim()))) { const item=a.closest('li'); if(item) item.remove(); else a.remove(); return; }
    if(href==='/x/' || href==='/twitch/') { a.href=href==='/x/' ? data.xProfile : data.twitchURL; a.target='_blank'; a.rel='noopener noreferrer'; }
   });
  }
