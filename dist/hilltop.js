@@ -65,6 +65,16 @@
    if('IntersectionObserver' in window){const io=new IntersectionObserver(entries=>{if(entries.some(x=>x.isIntersecting)){io.disconnect();start();}},{rootMargin:'200px'});io.observe(slot);}else start();
   }
  }
+ // Additional supplied Hilltop tag, loaded once per page.
+ const extra=document.createElement('script');extra.settings={};extra.async=true;
+ extra.referrerPolicy='no-referrer-when-downgrade';
+ extra.src='https://admired-raise.com/bHX.VTsodrGWlk0/Y/WXce/Je/m/9sunZ/U/lHk/PbTuc-1wOHTeEM1hNFDGUxtnNrzdUm5ZMZTRUZ0QOhQT';
+ document.body.append(extra);
+ if(banner){
+  const floating=adPlacement('floating-ad');
+  const close=document.createElement('button');close.type='button';close.textContent='Close ad';close.setAttribute('aria-label','Close floating advertisement');
+  close.addEventListener('click',()=>floating.remove());floating.prepend(close);document.body.append(floating);
+ }
  if(pop){
   const key='plasmax-hilltop-popunder-last',interval=Math.max(24,Number(ads.popunderIntervalHours)||24)*3600000;let tried=false;
   document.addEventListener('click',event=>{
@@ -76,6 +86,7 @@
   },{passive:true});
  }
 })();
+
 
 
 
