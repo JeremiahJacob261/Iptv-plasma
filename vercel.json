@@ -7,5 +7,43 @@
     "api/*.mjs": {
       "maxDuration": 60
     }
-  }
+  },
+  "rewrites": [
+    {
+      "source": "/api/admin/login",
+      "destination": "/api/admin-login"
+    },
+    {
+      "source": "/api/admin/:route",
+      "destination": "/api/admin-api?route=:route"
+    },
+    {
+      "source": "/admin/dashboard",
+      "destination": "/admin/index.html"
+    },
+    {
+      "source": "/api/changenow/:path*",
+      "destination": "https://www.sparkexchange.io/api/changenow/:path*"
+    },
+    {
+      "source": "/api/stealthex/:path*",
+      "destination": "https://www.sparkexchange.io/api/stealthex/:path*"
+    },
+    {
+      "source": "/api/settings/:path*",
+      "destination": "https://www.sparkexchange.io/api/settings/:path*"
+    },
+    {
+      "source": "/api/contact",
+      "destination": "https://www.sparkexchange.io/api/contact"
+    },
+    {
+      "source": "/api/track-visit",
+      "destination": "https://www.sparkexchange.io/api/track-visit"
+    },
+    {
+      "source": "/status/:id",
+      "destination": "/status/index.html"
+    }
+  ]
 }

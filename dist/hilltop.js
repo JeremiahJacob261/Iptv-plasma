@@ -8,11 +8,11 @@
  const style=document.createElement('link');style.rel='stylesheet';style.href='/ads.css';document.head.append(style);
  // The supplied Hilltop tag is a 300x250 unit and only initializes once per
  // window. Give additional placements their own document so each can render.
- function isolatedBanner(){
+ function isolatedBanner(source=banner){
   const frame=document.createElement('iframe');
   frame.className='watch-ad-frame';frame.title='Advertisement';frame.loading='lazy';
   frame.setAttribute('sandbox','allow-scripts allow-popups allow-popups-to-escape-sandbox');
-  const safe=banner.replace(/&/g,'&amp;').replace(/"/g,'&quot;').replace(/</g,'&lt;');
+  const safe=source.replace(/&/g,'&amp;').replace(/"/g,'&quot;').replace(/</g,'&lt;');
   frame.srcdoc='<!doctype html><html><head><meta name="referrer" content="no-referrer-when-downgrade"><style>html,body{margin:0;width:300px;height:250px;overflow:hidden;background:#100d15}</style></head><body><script async src="'+safe+'"><\/script></body></html>';
   return frame;
  }
@@ -20,7 +20,7 @@
   const slot=document.createElement('aside');slot.className='watch-ad '+className;slot.setAttribute('aria-label','Advertisement');
   const label=document.createElement('span');label.textContent='Advertisement';slot.append(label,isolatedBanner());return slot;
  }
- if((path==='/'||path==='/iptv-player')&&banner){
+ if((path==='/'||(path==='/iptv-player'||path==='/iptv'))&&banner){
   const player=document.querySelector('#watch-player'),pane=player?.querySelector('.video-pane');
   if(player&&pane){
    const top=adPlacement('watch-ad-top');
@@ -50,7 +50,7 @@
    document.addEventListener('visibilitychange',()=>{if(!document.hidden&&pending&&!dialog.open)showBreak();});
    schedule();
  }
- if(banner&&!['/','/iptv-player','/x','/twitch'].includes(path)){
+ if(banner&&!['/','/iptv','/iptv-player','/x','/twitch'].includes(path)){
   const content=document.querySelector('.ct-inner-content, main, article')||document.querySelector('header');
   if(content){
    const paragraphs=[...content.querySelectorAll('p')].filter(p=>p.textContent.trim().length>80);
@@ -60,17 +60,16 @@
   }
  }
  if(banner||direct){
-  const target=(path==='/'||path==='/iptv-player')?document.querySelector('.channel-sidebar'):['/x','/twitch'].includes(path)?document.querySelector('.social-actions'):null;
-  if(target){const slot=document.createElement('aside');slot.className='hilltop-banner';slot.setAttribute('aria-label','Advertisement');slot.innerHTML='<p>Advertisement</p>';if(direct){const a=document.createElement('a');a.href=direct;a.textContent='Visit sponsor';a.target='_blank';a.rel='sponsored noopener noreferrer';slot.append(a);}if(path==='/'||path==='/iptv-player')target.append(slot);else target.after(slot);
-   const start=()=>{const script=document.createElement('script');script.settings={};script.async=true;script.referrerPolicy='no-referrer-when-downgrade';script.src=banner;script.onerror=()=>{script.remove();if(!direct)slot.remove();};slot.append(script);};
+  const target=(path==='/'||(path==='/iptv-player'||path==='/iptv'))?document.querySelector('.channel-sidebar'):['/x','/twitch'].includes(path)?document.querySelector('.social-actions'):null;
+  if(target){const slot=document.createElement('aside');slot.className='hilltop-banner';slot.setAttribute('aria-label','Advertisement');slot.innerHTML='<p>Advertisement</p>';if(direct){const a=document.createElement('a');a.href=direct;a.textContent='Visit sponsor';a.target='_blank';a.rel='sponsored noopener noreferrer';slot.append(a);}if(path==='/'||(path==='/iptv-player'||path==='/iptv'))target.append(slot);else target.after(slot);
+   const start=()=>{slot.append(isolatedBanner());};
    if(!banner)return;
    if('IntersectionObserver' in window){const io=new IntersectionObserver(entries=>{if(entries.some(x=>x.isIntersecting)){io.disconnect();start();}},{rootMargin:'200px'});io.observe(slot);}else start();
   }
  }
  // Additional supplied Hilltop tag, loaded once per page.
- const extra=document.createElement('script');extra.settings={};extra.async=true;
- extra.referrerPolicy='no-referrer-when-downgrade';
- extra.src='https://admired-raise.com/bHX.VTsodrGWlk0/Y/WXce/Je/m/9sunZ/U/lHk/PbTuc-1wOHTeEM1hNFDGUxtnNrzdUm5ZMZTRUZ0QOhQT';
+ const extra=isolatedBanner('https://admired-raise.com/bHX.VTsodrGWlk0/Y/WXce/Je/m/9sunZ/U/lHk/PbTuc-1wOHTeEM1hNFDGUxtnNrzdUm5ZMZTRUZ0QOhQT');
+ extra.title='Advertisement'; extra.style.cssText='width:300px;height:250px;border:0;display:block;max-width:100%;margin:1rem auto';
  document.body.append(extra);
  if(banner){
   const floating=adPlacement('floating-ad');

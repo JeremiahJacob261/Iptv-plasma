@@ -51,39 +51,21 @@
  }
  updateNavigation();
  new MutationObserver(updateNavigation).observe(document.body,{childList:true,subtree:true});
- // SparkExchange cross-promotion on the homepage, placed after the live viewing area.
- function placeSparkExchangePromo(){
-  if(document.getElementById('sparkexchange-promo'))return;
-  const player=document.querySelector('#watch-player');
-  if(!player)return;
-  const section=document.createElement('section');
-  section.id='sparkexchange-promo';
-  section.className='sparkexchange-promo';
-  section.setAttribute('aria-labelledby','sparkexchange-promo-title');
-  section.innerHTML='<div class="sparkexchange-promo-heading"><img class="sparkexchange-promo-logo" src="https://www.sparkexchange.io/logo.jpg" alt="SparkExchange logo" loading="lazy" decoding="async"><div class="sparkexchange-promo-intro"><h2 id="sparkexchange-promo-title">Swap crypto anonymously.</h2><p>Start your swap here. Complete it on SparkExchange.</p></div><a class="sparkexchange-promo-visit" href="https://www.sparkexchange.io/" target="_blank" rel="noopener noreferrer">Visit SparkExchange</a></div><iframe id="sparkexchange-widget" title="SparkExchange crypto swap" src="https://www.sparkexchange.io/embed" loading="lazy" referrerpolicy="strict-origin-when-cross-origin"></iframe>';
-  player.after(section);
+ // Count aggregate player visits and playback starts without changing the player.
+ if(document.querySelector('#m3u-form')){const tracker=document.createElement('script');tracker.src='/iptv-analytics.js';tracker.defer=true;document.body.append(tracker);}
+ // Mount the original exchange sections below the existing IPTV player.
+ function mountExchangeSections(){
+  if(document.getElementById('plasmax-exchange-sections'))return;
+  const player=document.querySelector('#watch-player');if(!player)return;
+  const section=document.createElement('section');section.id='plasmax-exchange-sections';section.setAttribute('aria-label','PlasmaX Exchange');player.after(section);
+  const load=()=>{const script=document.createElement('script');script.src='/exchange-sections.js';script.defer=true;document.body.append(script);};
+  if(location.hash&&['#exchange','#how-it-works','#video-section','#speedtest','#about','#faq','#contact'].includes(location.hash))load();
+  else if('IntersectionObserver' in window){const io=new IntersectionObserver(entries=>{if(entries.some(e=>e.isIntersecting)){io.disconnect();load();}},{rootMargin:'500px'});io.observe(section);}else load();
  }
- placeSparkExchangePromo();
- new MutationObserver(placeSparkExchangePromo).observe(document.body,{childList:true,subtree:true});
- window.addEventListener('message',event=>{
-  const frame=document.getElementById('sparkexchange-widget');
-  if(!frame||event.source!==frame.contentWindow||!['https://sparkexchange.io','https://www.sparkexchange.io'].includes(event.origin))return;
-  const data=event.data;
-  if(data?.type==='sparkexchange:resize'&&Number.isFinite(data.height)){
-   frame.style.height=Math.max(650,Math.min(1800,Math.ceil(data.height)+16))+'px';
-  }else if(data?.type==='sparkexchange:exchange-created'&&typeof data.id==='string'&&/^[a-zA-Z0-9_-]{4,120}$/.test(data.id)){
-   window.location.assign('https://www.sparkexchange.io/status/'+encodeURIComponent(data.id));
-  }
- });
+ mountExchangeSections();new MutationObserver(mountExchangeSections).observe(document.body,{childList:true,subtree:true});
  const ads=data.advertising;
  if(ads?.enabled&&ads.provider==='hilltop'&&!document.querySelector('script[src="/hilltop.js"]')){
   const script=document.createElement('script');script.src='/hilltop.js';script.async=true;document.head.append(script);
  }
- if(!ads?.enabled||ads.provider!=='adsense'||!/^ca-pub-\d{16}$/.test(ads.publisherId)||!/^\d{5,20}$/.test(ads.slotId))return;
- const slot=document.querySelector('.plasma-ad');if(!slot)return;
- const start=()=>{slot.hidden=false;const ins=document.createElement('ins');ins.className='adsbygoogle';ins.dataset.adClient=ads.publisherId;ins.dataset.adSlot=ads.slotId;ins.dataset.adFormat='auto';ins.dataset.fullWidthResponsive='true';slot.append(ins);
-  const script=document.createElement('script');script.async=true;script.crossOrigin='anonymous';script.src='https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client='+ads.publisherId;script.onerror=()=>{slot.hidden=true;};document.head.append(script);(window.adsbygoogle=window.adsbygoogle||[]).push({});};
- if(typeof IntersectionObserver==='undefined')start();else{const io=new IntersectionObserver(entries=>{if(entries.some(e=>e.isIntersecting)){io.disconnect();start();}},{rootMargin:'200px'});io.observe(slot.parentElement);}
+ // Other advertising providers remain disabled until their scripts can be isolated.
 })();
-
-
