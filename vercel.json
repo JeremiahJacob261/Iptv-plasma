@@ -7,11 +7,5 @@
     "api/*.mjs": {
       "maxDuration": 60
     }
-  },
-  "rewrites": [
-    {
-      "source": "/",
-      "destination": "/iptv-player/"
-    }
-  ]
+  }
 }
