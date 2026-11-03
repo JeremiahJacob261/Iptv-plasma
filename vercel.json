@@ -10,6 +10,26 @@
   },
   "rewrites": [
     {
+      "source": "/exchange/privacy-policy",
+      "destination": "/exchange-legal/index.html"
+    },
+    {
+      "source": "/exchange/terms-and-conditions",
+      "destination": "/exchange-legal/index.html"
+    },
+    {
+      "source": "/exchange/risk-disclosure",
+      "destination": "/exchange-legal/index.html"
+    },
+    {
+      "source": "/exchange/aml-kyc-policy",
+      "destination": "/exchange-legal/index.html"
+    },
+    {
+      "source": "/exchange/disclaimer",
+      "destination": "/exchange-legal/index.html"
+    },
+    {
       "source": "/api/admin/login",
       "destination": "/api/admin-login"
     },

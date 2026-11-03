@@ -82,3 +82,11 @@ The PlasmaX logo appears by itself in the lower-right corner of each inline nati
 
 ## Landing-page organization — 2026-11-01
 The landing page presents the existing heading and description first, followed by the primary Watch Now action. Live TV, X, Twitch, and the supplied profile links form a quieter secondary group. The unchanged longer introductory copy is available through a native, keyboard-operable About the player disclosure. Features, FAQ, footer links and other site pages are retained. The homepage-only landing.css uses the existing purple palette and type scale. The static build runs landing-polish.mjs after branding and theme generation so these changes survive deployment.
+
+## Exchange below the IPTV player — 2026-11-03
+
+The existing IPTV player and channel directory lead the page; the actual SparkExchange sections follow as a subordinate PlasmaX Exchange area. The exchange widget is followed by how it works, video, speed test, features, FAQ, contact, CTA and the exchange footer. The area uses PlasmaX branding and purple/lavender accents on dark surfaces, with white and muted text.
+
+The exchange bundle loads near the section or immediately for supported section hashes; the speed test loads separately as it approaches the viewport. An open Shadow DOM and its own stylesheet isolate exchange styling from the player. In-area links scroll to their sections and respect reduced-motion preferences; footer links reach the exchange legal pages, support and the supplied X profile.
+
+The available review images in /workspace/plasmax-below-review show desktop and mobile player, exchange preview and footer views. Visual inspection of the exchange preview and mobile footer confirms the displayed branding and layout only; these images do not establish successful swaps, provider availability, or end-to-end navigation and playback behavior.

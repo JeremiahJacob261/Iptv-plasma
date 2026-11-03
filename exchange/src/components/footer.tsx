@@ -3,6 +3,7 @@ import Image from "next/image";
 import { Twitter, Github, MessageCircle } from "lucide-react";
 
 export function Footer() {
+    const section = (id: string) => /^\/(?:status|exchange)\//.test(window.location.pathname) ? `/#${id}` : `#${id}`;
     return (
         <footer className="bg-secondary/30 border-t border-border/50">
             <div className="container mx-auto px-4 py-12 md:py-16">
@@ -28,6 +29,7 @@ export function Footer() {
                         <div className="flex gap-4 mt-6">
                             <a
                                 href="https://twitter.com/plasma1337x"
+                                aria-label="Follow PlasmaX on X"
                                 target="_blank"
                                 rel="noopener noreferrer"
                                 className="w-10 h-10 rounded-lg bg-secondary flex items-center justify-center hover:bg-primary hover:text-primary-foreground transition-all duration-200"
@@ -58,7 +60,7 @@ export function Footer() {
                         <ul className="space-y-3">
                             <li>
                                 <Link
-                                    href="/#about"
+                                    href={section("about")}
                                     className="text-sm text-muted-foreground hover:text-primary transition-colors"
                                 >
                                     About us
@@ -66,7 +68,7 @@ export function Footer() {
                             </li>
                             <li>
                                 <Link
-                                    href="/#contact"
+                                    href={section("contact")}
                                     className="text-sm text-muted-foreground hover:text-primary transition-colors"
                                 >
                                     Contact us
@@ -74,7 +76,7 @@ export function Footer() {
                             </li>
                             <li>
                                 <Link
-                                    href="/#faq"
+                                    href={section("faq")}
                                     className="text-sm text-muted-foreground hover:text-primary transition-colors"
                                 >
                                     FAQ
@@ -89,7 +91,7 @@ export function Footer() {
                         <ul className="space-y-3">
                             <li>
                                 <Link
-                                    href="/privacy-policy"
+                                    href="/exchange/privacy-policy"
                                     className="text-sm text-muted-foreground hover:text-primary transition-colors"
                                 >
                                     Privacy Policy
@@ -97,7 +99,7 @@ export function Footer() {
                             </li>
                             <li>
                                 <Link
-                                    href="/terms-and-conditions"
+                                    href="/exchange/terms-and-conditions"
                                     className="text-sm text-muted-foreground hover:text-primary transition-colors"
                                 >
                                     Terms & Conditions
@@ -105,7 +107,7 @@ export function Footer() {
                             </li>
                             <li>
                                 <Link
-                                    href="/risk-disclosure"
+                                    href="/exchange/risk-disclosure"
                                     className="text-sm text-muted-foreground hover:text-primary transition-colors"
                                 >
                                     Risk Disclosure
@@ -113,7 +115,7 @@ export function Footer() {
                             </li>
                             <li>
                                 <Link
-                                    href="/aml-kyc-policy"
+                                    href="/exchange/aml-kyc-policy"
                                     className="text-sm text-muted-foreground hover:text-primary transition-colors"
                                 >
                                     AML & KYC Policy
@@ -121,7 +123,7 @@ export function Footer() {
                             </li>
                             <li>
                                 <Link
-                                    href="/disclaimer"
+                                    href="/exchange/disclaimer"
                                     className="text-sm text-muted-foreground hover:text-primary transition-colors"
                                 >
                                     Disclaimer
@@ -136,7 +138,7 @@ export function Footer() {
                         <ul className="space-y-3">
                             <li>
                                 <Link
-                                    href="/#faq"
+                                    href={section("faq")}
                                     className="text-sm text-muted-foreground hover:text-primary transition-colors"
                                 >
                                     FAQ
@@ -144,7 +146,7 @@ export function Footer() {
                             </li>
                             <li>
                                 <a
-                                    href="mailto:sparkexchangedex@gmail.com"
+                                    href="mailto:plasma1337x@gmail.com"
                                     className="text-sm text-muted-foreground hover:text-primary transition-colors"
                                 >
                                     Support
@@ -161,13 +163,13 @@ export function Footer() {
                     </p>
                     <div className="flex gap-6">
                         <Link
-                            href="/privacy-policy"
+                            href="/exchange/privacy-policy"
                             className="text-sm text-muted-foreground hover:text-primary transition-colors"
                         >
                             Privacy Policy
                         </Link>
                         <Link
-                            href="/terms-and-conditions"
+                            href="/exchange/terms-and-conditions"
                             className="text-sm text-muted-foreground hover:text-primary transition-colors"
                         >
                             Terms of Service
