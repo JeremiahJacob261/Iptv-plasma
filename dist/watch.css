@@ -21,6 +21,20 @@ body { background: #100d15; }
 .channel-sidebar .hilltop-banner { width: 100%; max-width: 300px; margin: 18px auto 0; text-align: center; overflow: hidden; }
 .channel-sidebar .hilltop-banner p { margin: 0 0 4px; color: #d0c4d8; font-size: 12px; }
 .channel-sidebar .hilltop-banner a { display: inline-block; margin-bottom: 8px; color: #d9b6f1; }
+.watch-ad { display: flex; flex-direction: column; align-items: center; gap: 5px; color: #d0c4d8; font-size: 12px; }
+.watch-ad-frame { display: block; width: 300px; height: 250px; max-width: 100%; border: 0; background: #100d15; }
+.watch-ad-top { padding: 10px; background: #19131f; }
+.watch-stage { display: grid; grid-template-columns: 300px minmax(0,1fr) 300px; align-items: start; min-width: 0; background: #08070b; }
+.watch-ad-left, .watch-ad-right { padding-top: 24px; }
+.watch-stage .video-pane { width: 100%; padding-left: 16px; padding-right: 16px; }
+.watch-ad-break { position: fixed; inset: 0; width: 100%; max-width: none; height: 100%; max-height: none; margin: 0; padding: 24px; border: 0; background: rgba(8,7,11,.97); color: #fff; }
+.watch-ad-break::backdrop { background: rgba(0,0,0,.85); }
+.watch-ad-break[open] { display: grid; place-items: center; }
+.watch-ad-break-content { position: relative; display: flex; flex-direction: column; align-items: center; gap: 12px; width: min(100%, 420px); }
+.watch-ad-break-content p { margin: 0; color: #d0c4d8; font-size: 13px; }
+.watch-ad-close { align-self: flex-end; min-height: 44px; padding: 10px 16px; border: 1px solid #a889b8; border-radius: 6px; background: #35223f; color: #fff; font: inherit; cursor: pointer; }
+.watch-ad-close:focus-visible { outline: 2px solid #e2c4ff; outline-offset: 3px; }
+@media (max-width: 1500px) { .watch-stage { grid-template-columns: minmax(0,1fr); } .watch-ad-left, .watch-ad-right { display: none; } }
 .video-pane { display: flex; flex-direction: column; justify-content: center; padding: 24px clamp(20px, 4vw, 64px); background: #08070b; }
 #iptv-video { width: 100%; max-height: calc(100vh - 230px); min-height: 280px; object-fit: contain; background: #000; }
 .video-caption { color: #fff; }
@@ -45,5 +59,6 @@ body { background: #100d15; }
  .playlist-setup { width: calc(100% - 24px); }
  .playlist-setup-heading span { width: 100%; order: 3; }
 }
+
 
 
