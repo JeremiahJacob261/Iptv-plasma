@@ -102,7 +102,6 @@ async function loadPlaylist(url, file, scroll = true, autoplay = false) {
  try {
   renderPlayer(scroll); store.set('iptv-playlist', channels);
   if (startAutomatically) {
-   document.querySelector('#iptv-video').muted = true;
    playChannel(channels[0]);
   } else message(channels.length+' channels loaded. Select a channel to watch.');
  } catch (error) { console.error('player_render_failed', error); message('The playlist loaded, but the player could not open. Refresh the page and try again.', true); }
@@ -311,5 +310,6 @@ async function openDirectory(item) {
 }
 document.querySelectorAll('.world-item,.category-item,.language-item').forEach(item=>{item.removeAttribute('aria-haspopup');item.addEventListener('click',()=>openDirectory(item));item.addEventListener('keydown',e=>{if(e.key==='Enter'||e.key===' '){e.preventDefault();openDirectory(item);}});});
 document.querySelectorAll('form[data-local-form]').forEach(form=>form.addEventListener('submit',e=>{e.preventDefault();let status=form.querySelector('[role=status]');if(!status){status=document.createElement('p');status.setAttribute('role','status');form.append(status);}status.textContent='This recreated site is not connected to the original website’s contact or newsletter service. Your information has not been submitted.';}));
+
 
 
