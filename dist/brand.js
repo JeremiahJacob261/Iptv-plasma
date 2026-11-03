@@ -19,9 +19,13 @@
   }catch{/* Missing/invalid configured account links stay absent. */}
  }
  const ads=data.advertising;
+ if(ads?.enabled&&ads.provider==='hilltop'&&!document.querySelector('script[src="/hilltop.js"]')){
+  const script=document.createElement('script');script.src='/hilltop.js';script.async=true;document.head.append(script);
+ }
  if(!ads?.enabled||ads.provider!=='adsense'||!/^ca-pub-\d{16}$/.test(ads.publisherId)||!/^\d{5,20}$/.test(ads.slotId))return;
  const slot=document.querySelector('.plasma-ad');if(!slot)return;
  const start=()=>{slot.hidden=false;const ins=document.createElement('ins');ins.className='adsbygoogle';ins.dataset.adClient=ads.publisherId;ins.dataset.adSlot=ads.slotId;ins.dataset.adFormat='auto';ins.dataset.fullWidthResponsive='true';slot.append(ins);
   const script=document.createElement('script');script.async=true;script.crossOrigin='anonymous';script.src='https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client='+ads.publisherId;script.onerror=()=>{slot.hidden=true;};document.head.append(script);(window.adsbygoogle=window.adsbygoogle||[]).push({});};
  if(typeof IntersectionObserver==='undefined')start();else{const io=new IntersectionObserver(entries=>{if(entries.some(e=>e.isIntersecting)){io.disconnect();start();}},{rootMargin:'200px'});io.observe(slot.parentElement);}
 })();
+

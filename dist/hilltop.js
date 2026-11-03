@@ -5,11 +5,12 @@
  function valid(value){try{const u=new URL(value);return u.protocol==='https:'&&u.hostname==='admired-raise.com'?u.href:null;}catch{return null;}}
  const banner=valid(ads.bannerScript),pop=valid(ads.popunderURL),direct=valid(ads.directURL);
  const path=location.pathname.replace(/\/+$/,'')||'/';
+ const style=document.createElement('link');style.rel='stylesheet';style.href='/ads.css';document.head.append(style);
  // The supplied Hilltop tag is a 300x250 unit and only initializes once per
  // window. Give additional placements their own document so each can render.
  function isolatedBanner(){
   const frame=document.createElement('iframe');
-  frame.className='watch-ad-frame';frame.title='Advertisement';
+  frame.className='watch-ad-frame';frame.title='Advertisement';frame.loading='lazy';
   frame.setAttribute('sandbox','allow-scripts allow-popups allow-popups-to-escape-sandbox');
   const safe=banner.replace(/&/g,'&amp;').replace(/"/g,'&quot;').replace(/</g,'&lt;');
   frame.srcdoc='<!doctype html><html><head><meta name="referrer" content="no-referrer-when-downgrade"><style>html,body{margin:0;width:300px;height:250px;overflow:hidden;background:#100d15}</style></head><body><script async src="'+safe+'"><\/script></body></html>';
@@ -25,18 +26,32 @@
    const top=adPlacement('watch-ad-top');player.before(top);
    const stage=document.createElement('div');stage.className='watch-stage';pane.before(stage);
    stage.append(adPlacement('watch-ad-left'),pane,adPlacement('watch-ad-right'));
+  }
+ }
+ if(banner){
    const dialog=document.createElement('dialog');dialog.className='watch-ad-break';dialog.setAttribute('aria-label','Advertisement break');
    const content=document.createElement('div');content.className='watch-ad-break-content';
    const title=document.createElement('p');title.textContent='Advertisement';
    const close=document.createElement('button');close.type='button';close.className='watch-ad-close';close.textContent='Close ad';close.setAttribute('aria-label','Close advertisement');
    const ad=document.createElement('div');ad.className='watch-ad-break-unit';content.append(close,title,ad);dialog.append(content);document.body.append(dialog);
    let timer,pending=false;
-   const schedule=()=>{clearTimeout(timer);timer=setTimeout(showBreak,(10+Math.random()*25)*60*1000);};
+   const key='plasmax-next-ad-break';
+   const getDue=()=>{try{return Number(sessionStorage.getItem(key))||0;}catch{return 0;}};
+   const setDue=due=>{try{sessionStorage.setItem(key,String(due));}catch{}};
+   const schedule=(fresh=false)=>{clearTimeout(timer);let due=fresh?0:getDue();if(!due){due=Date.now()+(10+Math.random()*25)*60*1000;setDue(due);}timer=setTimeout(showBreak,Math.max(0,due-Date.now()));};
    function showBreak(){if(document.hidden){pending=true;return;}pending=false;ad.replaceChildren(isolatedBanner());if(!dialog.open)dialog.showModal();}
    close.addEventListener('click',()=>dialog.close());
-   dialog.addEventListener('close',()=>{ad.replaceChildren();schedule();});
+   dialog.addEventListener('close',()=>{ad.replaceChildren();schedule(true);});
    document.addEventListener('visibilitychange',()=>{if(!document.hidden&&pending&&!dialog.open)showBreak();});
    schedule();
+ }
+ if(banner&&!['/','/iptv-player','/x','/twitch'].includes(path)){
+  const content=document.querySelector('.ct-inner-content, main, article')||document.querySelector('header');
+  if(content){
+   const paragraphs=[...content.querySelectorAll('p')].filter(p=>p.textContent.trim().length>80);
+   const first=paragraphs[0],middle=paragraphs.length>3?paragraphs[Math.floor(paragraphs.length/2)]:null;
+   if(first)first.after(adPlacement('sitewide-ad'));else content.after(adPlacement('sitewide-ad'));
+   if(middle)middle.after(adPlacement('sitewide-ad'));
   }
  }
  if(banner||direct){
