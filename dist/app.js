@@ -42,7 +42,7 @@ const form = document.querySelector('#m3u-form');
 const DEFAULT_PLAYLIST = 'https://iptv-org.github.io/iptv/index.category.m3u';
 let catalogPromise;
 const savedFavorites = store.get('iptv-favorites', []);
-let channels = [], hls, active, pageSize = 20, playAttempt = 0, loadAttempt = 0, playlistRequest, playTimeout;
+let channels = [], hls, active, pageSize = 10, playAttempt = 0, loadAttempt = 0, playlistRequest, playTimeout;
 const favorites = new Set(Array.isArray(savedFavorites) ? savedFavorites : []);
 function safeScroll(element) { try { const reduced=window.matchMedia?.('(prefers-reduced-motion: reduce)').matches; element?.scrollIntoView({ behavior: reduced ? 'auto' : 'smooth', block: 'nearest' }); } catch {} }
 function message(text, error = false) {
@@ -98,7 +98,7 @@ async function loadPlaylist(url, file, scroll = true, autoplay = false) {
  }
  if (attempt !== loadAttempt || !nextChannels) return;
  const startAutomatically = autoplay && playAttempt === playAttemptAtStart;
- stopPlayback(false); channels = nextChannels; active = null; pageSize = 20;
+ stopPlayback(false); channels = nextChannels; active = null; pageSize = 10;
  try {
   renderPlayer(scroll); store.set('iptv-playlist', channels);
   if (startAutomatically) {
@@ -123,9 +123,9 @@ function renderPlayer(scroll = true) {
   setControlLabel(panel.querySelector('#stop-playback'),'Stop','stop');
   setControlLabel(panel.querySelector('#fullscreen-playback'),'Full screen','arrows-pointing-out');
   setControlLabel(panel.querySelector('#load-more-channels'),'Load more channels','chevron-down');
-  ['#channel-search','#favorites-only','#channel-group'].forEach(selector=>panel.querySelector(selector).addEventListener(selector==='#channel-search'?'input':'change',()=>{pageSize=20;renderChannels();}));
-  panel.querySelector('#load-more-channels').addEventListener('click',()=>{pageSize+=20;renderChannels();});
-  panel.querySelector('#channel-list').addEventListener('scroll',event=>{const list=event.currentTarget;if(list.scrollTop+list.clientHeight>=list.scrollHeight-40&&!panel.querySelector('#load-more-channels').hidden){const top=list.scrollTop;pageSize+=20;renderChannels();list.scrollTop=top;}},{passive:true});
+  ['#channel-search','#favorites-only','#channel-group'].forEach(selector=>panel.querySelector(selector).addEventListener(selector==='#channel-search'?'input':'change',()=>{pageSize=10;renderChannels();}));
+  panel.querySelector('#load-more-channels').addEventListener('click',()=>{pageSize+=10;renderChannels();});
+
   panel.querySelector('#stop-playback').addEventListener('click', () => stopPlayback());
   panel.querySelector('#fullscreen-playback').addEventListener('click', async()=>{
    const video=panel.querySelector('video');
