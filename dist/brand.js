@@ -16,7 +16,9 @@
    const syncTime=()=>{const finite=Number.isFinite(video.duration)&&video.duration>0;seek.hidden=!finite;status.hidden=finite;if(finite)seek.value=String(video.currentTime/video.duration*100);};
    video.addEventListener('durationchange',syncTime);video.addEventListener('timeupdate',syncTime);seek.oninput=()=>{if(Number.isFinite(video.duration))video.currentTime=Number(seek.value)*video.duration/100;};
    const full=button('Full screen','<svg viewBox="0 0 24 24" aria-hidden="true"><path d="M4 9V4h5m6 0h5v5M4 15v5h5m6 0h5v-5" fill="none" stroke="currentColor" stroke-width="2"/></svg>');
-   play.onclick=()=>{if(video.paused)video.play().catch(()=>{});else video.pause();};
+   const togglePlayback=()=>{if(video.paused)video.play().catch(()=>{});else video.pause();};
+   play.onclick=togglePlayback;
+   video.addEventListener('click',togglePlayback);
    video.addEventListener('play',()=>{play.setAttribute('aria-label','Pause');play.title='Pause';play.innerHTML='<svg viewBox="0 0 24 24" aria-hidden="true"><path d="M7 5h4v14H7zm6 0h4v14h-4z" fill="currentColor"/></svg>';});
    video.addEventListener('pause',()=>{play.setAttribute('aria-label','Play');play.title='Play';play.innerHTML='<svg viewBox="0 0 24 24" aria-hidden="true"><path d="M8 5v14l11-7z" fill="currentColor"/></svg>';});
    mute.onclick=()=>{video.muted=!video.muted;};volume.oninput=()=>{video.volume=Number(volume.value);video.muted=video.volume===0;};
