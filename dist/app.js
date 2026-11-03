@@ -142,7 +142,7 @@ function renderChannels() {
  const filtered = channels.filter(x => x.name.toLowerCase().includes(query) && (!group || x.group.split(';').includes(group)) && (!only || favorites.has(x.url)));
  document.querySelector('#channel-count').textContent = filtered.length+' channels';
  document.querySelector('#load-more-channels').hidden = filtered.length <= pageSize;
- if (!filtered.length) { const p = document.createElement('p'); p.textContent = 'No channels match your filters.'; list.append(p); }
+ if (!filtered.length) { const p = document.createElement('p'); p.textContent = channels.length ? 'No channels match your filters.' : 'Channels will appear here when the playlist loads.'; list.append(p); }
  const fragment = document.createDocumentFragment();
  filtered.slice(0,pageSize).forEach(channel => {
   const row = document.createElement('div'); row.className = 'channel-row'; row.classList.toggle('active', active === channel.url);
@@ -310,6 +310,7 @@ async function openDirectory(item) {
 }
 document.querySelectorAll('.world-item,.category-item,.language-item').forEach(item=>{item.removeAttribute('aria-haspopup');item.addEventListener('click',()=>openDirectory(item));item.addEventListener('keydown',e=>{if(e.key==='Enter'||e.key===' '){e.preventDefault();openDirectory(item);}});});
 document.querySelectorAll('form[data-local-form]').forEach(form=>form.addEventListener('submit',e=>{e.preventDefault();let status=form.querySelector('[role=status]');if(!status){status=document.createElement('p');status.setAttribute('role','status');form.append(status);}status.textContent='This recreated site is not connected to the original website’s contact or newsletter service. Your information has not been submitted.';}));
+
 
 
 

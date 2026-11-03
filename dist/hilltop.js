@@ -23,9 +23,12 @@
  if(path==='/iptv-player'&&banner){
   const player=document.querySelector('#watch-player'),pane=player?.querySelector('.video-pane');
   if(player&&pane){
-   const top=adPlacement('watch-ad-top');player.before(top);
+   const top=adPlacement('watch-ad-top');
    const stage=document.createElement('div');stage.className='watch-stage';pane.before(stage);
    stage.append(adPlacement('watch-ad-left'),pane,adPlacement('watch-ad-right'));
+   const phone=window.matchMedia('(max-width: 700px)');
+   const placeTop=()=>{if(phone.matches)player.querySelector('.channel-sidebar').append(top);else player.before(top);};
+   placeTop();if(phone.addEventListener)phone.addEventListener('change',placeTop);else phone.addListener?.(placeTop);
   }
  }
  if(banner){
@@ -73,5 +76,6 @@
   },{passive:true});
  }
 })();
+
 
 

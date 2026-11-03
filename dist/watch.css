@@ -49,16 +49,39 @@ body { background: #100d15; }
 .playlist-setup-grid { padding: 24px 18px; color: #f5eef9; }
 .playlist-source-tools { margin-bottom: 0; }
 @media (max-width: 700px) {
+ #_header_row-37-15 { display: none; }
+ #_header_row-3-15 { padding-top: 8px; padding-bottom: 8px; }
+ #link-33-15 { display: none; }
  #section-2-536 > .ct-section-inner-wrap { padding: 0 0 24px; }
- #watch-player { display: flex; flex-direction: column; min-height: 0; }
- .video-pane { order: 0; padding: 12px; }
- #iptv-video { min-height: 0; max-height: none; }
- .channel-sidebar { order: 1; padding: 0 14px 16px; }
- #channel-list { max-height: 380px; min-height: 120px; }
- .video-caption { flex-wrap: wrap; }
+ #player-status { position: absolute; width: 1px; height: 1px; padding: 0; margin: -1px; overflow: hidden; clip-path: inset(50%); white-space: nowrap; }
+ #player-status.error { position: static; width: auto; height: auto; padding: 10px 16px; margin: 0; overflow: visible; clip-path: none; white-space: normal; }
+ #watch-player { display: flex; flex-direction: column; width: calc(100% + 32px); margin-left: -16px; min-height: 0; background: #100d15; }
+ .watch-stage { display: contents; }
+ .watch-stage .video-pane { order: 0; padding: 0 0 16px; }
+ .watch-stage .plasma-video-frame { border-radius: 0; }
+ #iptv-video { width: 100%; min-height: 0; max-height: none; border-radius: 0; }
+ .video-caption { flex-wrap: wrap; padding: 12px 16px 0; gap: 12px; }
+ #current-channel { width: 100%; font-size: 18px; font-weight: 700; line-height: 1.35; }
+ .playback-actions button { min-height: 40px; }
+ .channel-source-line, #stream-status { margin: 8px 16px 0; }
+ .watch-ad-top { order: 2; width: 100%; padding: 14px 0; }
+ .channel-sidebar { order: 2; display: flex; flex-direction: column; width: 100%; padding: 0 16px 20px; background: #100d15; }
+ .watch-sidebar-title { margin: 0; padding: 18px 0 10px; background: transparent; font-size: 18px; letter-spacing: 0; }
+ .channel-sidebar input[type=search], .channel-sidebar select { border-radius: 8px; }
+ .favorite-filter { min-height: 40px; }
+ #channel-list { display: contents; }
+ .channel-row { order: 3; gap: 8px; padding: 6px 0; border-bottom: 1px solid #332b3a; }
+ .channel-row:nth-child(-n+4) { order: 1; }
+ #load-more-channels { order: 4; }
+ .channel-sidebar .hilltop-banner { order: 5; }
+ .channel-play { gap: 14px; min-height: 68px; padding: 8px 4px; }
+ .channel-play img { width: 72px; height: 48px; flex: 0 0 72px; object-fit: contain; border-radius: 6px; background: #211928; }
+ .channel-play span { font-size: 15px; font-weight: 600; line-height: 1.35; }
+ .channel-favorite { min-width: 44px; min-height: 44px; }
  .playlist-setup { width: calc(100% - 24px); }
  .playlist-setup-heading span { width: 100%; order: 3; }
 }
+
 
 
 
