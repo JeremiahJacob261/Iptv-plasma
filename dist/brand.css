@@ -6,3 +6,11 @@
 @media (prefers-reduced-motion: reduce){html{scroll-behavior:auto}}
 .hilltop-banner{max-width:1100px;margin:24px auto;padding:12px 16px;text-align:center;overflow:hidden}.hilltop-banner p{margin:0 0 8px;color:#666}.hilltop-banner iframe,.hilltop-banner img{max-width:100%}@media(max-width:700px){.hilltop-banner{margin:16px auto;padding:8px 16px}}
 .hilltop-banner a{display:flex;width:fit-content;min-height:44px;align-items:center;justify-content:center;margin:8px auto;color:#693695;text-decoration:underline;text-underline-offset:3px}
+
+/* Compact playback bar */
+.plasma-video-frame{position:relative;background:#000;overflow:hidden}
+.plasma-controls{position:absolute;inset:auto 0 0;display:flex;align-items:center;gap:8px;padding:24px 14px 10px;background:linear-gradient(transparent,rgba(0,0,0,.94));color:#fff;z-index:4}
+.plasma-controls button{display:grid;place-items:center;width:44px;height:44px;border:0;border-radius:6px;color:#fff;background:transparent;cursor:pointer}
+.plasma-controls button:hover,.plasma-controls button:focus-visible{background:#693695;outline:2px solid #cfb0ed}
+.plasma-controls svg{width:22px;height:22px}.plasma-controls input{width:90px;accent-color:#bd88ec}.plasma-live-indicator{margin-left:auto;color:#fff;font-weight:700;letter-spacing:.06em}.plasma-live-indicator:before{content:'';display:inline-block;width:7px;height:7px;background:#f24b4b;border-radius:50%;margin-right:7px}.plasma-video-frame:fullscreen{display:flex;align-items:center;background:#000}.plasma-video-frame:fullscreen video{width:100%;max-height:100vh}@media(max-width:600px){.plasma-controls{padding:18px 6px 5px;gap:2px}.plasma-controls input{width:60px}}
+
