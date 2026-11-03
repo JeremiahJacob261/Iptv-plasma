@@ -60,11 +60,21 @@
   section.id='sparkexchange-promo';
   section.className='sparkexchange-promo';
   section.setAttribute('aria-labelledby','sparkexchange-promo-title');
-  section.innerHTML='<div class="sparkexchange-promo-copy"><h2 id="sparkexchange-promo-title">Anonymous swaps. Fast moves. No account.</h2><p>Swap crypto anonymously and quickly with SparkExchange. Skip the sign-up and get straight to your next trade.</p><a class="sparkexchange-promo-cta" href="https://sparkexchange.io/" target="_blank" rel="noopener noreferrer">Swap crypto now <span aria-hidden="true">↗</span></a></div><img class="sparkexchange-promo-logo" src="https://sparkexchange.io/logo.jpg" alt="SparkExchange logo" loading="lazy" decoding="async">';
+  section.innerHTML='<div class="sparkexchange-promo-heading"><img class="sparkexchange-promo-logo" src="https://www.sparkexchange.io/logo.jpg" alt="SparkExchange logo" loading="lazy" decoding="async"><div><h2 id="sparkexchange-promo-title">Swap crypto anonymously.</h2><p>Choose your coins, amount, and wallet below. Your exchange continues on SparkExchange when you press Exchange.</p></div></div><iframe id="sparkexchange-widget" title="SparkExchange crypto swap" src="https://www.sparkexchange.io/embed" loading="lazy" referrerpolicy="strict-origin-when-cross-origin"></iframe>';
   player.after(section);
  }
  placeSparkExchangePromo();
  new MutationObserver(placeSparkExchangePromo).observe(document.body,{childList:true,subtree:true});
+ window.addEventListener('message',event=>{
+  const frame=document.getElementById('sparkexchange-widget');
+  if(!frame||event.source!==frame.contentWindow||!['https://sparkexchange.io','https://www.sparkexchange.io'].includes(event.origin))return;
+  const data=event.data;
+  if(data?.type==='sparkexchange:resize'&&Number.isFinite(data.height)){
+   frame.style.height=Math.max(650,Math.min(1800,Math.ceil(data.height)+16))+'px';
+  }else if(data?.type==='sparkexchange:exchange-created'&&typeof data.id==='string'&&/^[a-zA-Z0-9_-]{4,120}$/.test(data.id)){
+   window.location.assign('https://www.sparkexchange.io/status/'+encodeURIComponent(data.id));
+  }
+ });
  const ads=data.advertising;
  if(ads?.enabled&&ads.provider==='hilltop'&&!document.querySelector('script[src="/hilltop.js"]')){
   const script=document.createElement('script');script.src='/hilltop.js';script.async=true;document.head.append(script);
