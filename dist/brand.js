@@ -60,7 +60,7 @@
   section.id='sparkexchange-promo';
   section.className='sparkexchange-promo';
   section.setAttribute('aria-labelledby','sparkexchange-promo-title');
-  section.innerHTML='<div class="sparkexchange-promo-heading"><img class="sparkexchange-promo-logo" src="https://www.sparkexchange.io/logo.jpg" alt="SparkExchange logo" loading="lazy" decoding="async"><div><h2 id="sparkexchange-promo-title">Swap crypto anonymously.</h2><p>Choose your coins, amount, and wallet below. Your exchange continues on SparkExchange when you press Exchange.</p></div></div><iframe id="sparkexchange-widget" title="SparkExchange crypto swap" src="https://www.sparkexchange.io/embed" loading="lazy" referrerpolicy="strict-origin-when-cross-origin"></iframe>';
+  section.innerHTML='<div class="sparkexchange-promo-heading"><img class="sparkexchange-promo-logo" src="https://www.sparkexchange.io/logo.jpg" alt="SparkExchange logo" loading="lazy" decoding="async"><div class="sparkexchange-promo-intro"><h2 id="sparkexchange-promo-title">Swap crypto anonymously.</h2><p>Start your swap here. Complete it on SparkExchange.</p></div><a class="sparkexchange-promo-visit" href="https://www.sparkexchange.io/" target="_blank" rel="noopener noreferrer">Visit SparkExchange</a></div><iframe id="sparkexchange-widget" title="SparkExchange crypto swap" src="https://www.sparkexchange.io/embed" loading="lazy" referrerpolicy="strict-origin-when-cross-origin"></iframe>';
   player.after(section);
  }
  placeSparkExchangePromo();
