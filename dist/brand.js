@@ -18,6 +18,16 @@
    const nav=document.querySelector('.plasma-platforms');if(!nav)continue;const a=document.createElement('a');a.href=url.href;a.textContent=label;a.target='_blank';a.rel='noopener noreferrer';a.className='plasma-profile-link';nav.append(a);
   }catch{/* Missing/invalid configured account links stay absent. */}
  }
+ // Keep navigation focused on the requested destinations and open social profiles directly.
+ function updateNavigation(){
+  document.querySelectorAll('nav a, [role="navigation"] a, .menu-item a').forEach(a=>{
+   const href=a.getAttribute('href') || '';
+   if(['/blog/','/guest-posts/','/iptv-player/','/contact-us/','/newsletter/'].includes(href)) { const item=a.closest('li'); if(item) item.remove(); else a.remove(); return; }
+   if(href==='/x/' || href==='/twitch/') { a.href=href==='/x/' ? data.xProfile : data.twitchURL; a.target='_blank'; a.rel='noopener noreferrer'; }
+  });
+ }
+ updateNavigation();
+ new MutationObserver(updateNavigation).observe(document.body,{childList:true,subtree:true});
  const ads=data.advertising;
  if(ads?.enabled&&ads.provider==='hilltop'&&!document.querySelector('script[src="/hilltop.js"]')){
   const script=document.createElement('script');script.src='/hilltop.js';script.async=true;document.head.append(script);
@@ -28,4 +38,5 @@
   const script=document.createElement('script');script.async=true;script.crossOrigin='anonymous';script.src='https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client='+ads.publisherId;script.onerror=()=>{slot.hidden=true;};document.head.append(script);(window.adsbygoogle=window.adsbygoogle||[]).push({});};
  if(typeof IntersectionObserver==='undefined')start();else{const io=new IntersectionObserver(entries=>{if(entries.some(e=>e.isIntersecting)){io.disconnect();start();}},{rootMargin:'200px'});io.observe(slot.parentElement);}
 })();
+
 
