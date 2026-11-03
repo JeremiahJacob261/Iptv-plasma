@@ -18,10 +18,14 @@
 .plasma-tap-feedback{position:absolute;left:50%;top:50%;transform:translate(-50%,-50%);display:grid;place-items:center;width:72px;height:72px;border-radius:50%;background:rgba(0,0,0,.65);color:white;opacity:0;pointer-events:none;transition:opacity .18s;z-index:5}.plasma-tap-feedback.visible{opacity:1}.plasma-tap-feedback svg{width:32px;height:32px}@media(prefers-reduced-motion:reduce){.plasma-tap-feedback{transition:none}}
 
 /* SparkExchange widget within the PlasmaX homepage. */
-.sparkexchange-promo{max-width:1168px;margin:32px auto 56px;padding:clamp(20px,4vw,48px);border:1px solid rgba(232,176,41,.35);border-radius:18px;background:linear-gradient(135deg,#17120b,#21190d 50%,#120f0b);color:#fff}
-.sparkexchange-promo-heading{display:flex;align-items:center;gap:22px;max-width:850px;margin:0 auto 18px}
-.sparkexchange-promo-logo{display:block;flex:0 0 auto;width:84px;height:84px;object-fit:contain;border-radius:12px}
-.sparkexchange-promo h2{margin:0 0 8px;font-size:clamp(1.7rem,3.5vw,2.6rem);line-height:1.12;letter-spacing:-.025em;text-wrap:balance}
-.sparkexchange-promo-heading p{margin:0;max-width:68ch;color:#e2d6ba;font-size:1rem;line-height:1.55}
-#sparkexchange-widget{display:block;width:100%;height:900px;min-height:650px;border:0;border-radius:12px;background:#0a0a0a}
-@media(max-width:700px){.sparkexchange-promo{margin:24px 12px 40px;padding:20px 12px}.sparkexchange-promo-heading{align-items:flex-start;gap:12px;padding:0 6px}.sparkexchange-promo-logo{width:56px;height:56px}.sparkexchange-promo h2{font-size:1.65rem}#sparkexchange-widget{height:1080px}}
+.sparkexchange-promo{max-width:1120px;margin:24px auto 36px;padding:clamp(16px,3vw,28px);border:1px solid rgba(232,176,41,.35);border-radius:16px;background:linear-gradient(135deg,#17120b,#21190d 50%,#120f0b);color:#fff}
+.sparkexchange-promo-heading{display:grid;grid-template-columns:64px minmax(0,1fr) auto;align-items:center;gap:16px;margin:0 0 16px}
+.sparkexchange-promo-logo{display:block;width:64px;height:64px;object-fit:contain;border-radius:12px}
+.sparkexchange-promo h2{margin:0 0 4px;font-size:clamp(1.55rem,3vw,2.2rem);line-height:1.15;letter-spacing:-.025em;text-wrap:balance}
+.sparkexchange-promo-intro p{margin:0;max-width:60ch;color:#e2d6ba;font-size:.98rem;line-height:1.45}
+.sparkexchange-promo-visit{display:inline-flex;min-height:44px;align-items:center;justify-content:center;padding:10px 18px;border-radius:9px;background:#eeb72f;color:#211608;text-decoration:none;font-weight:700;white-space:nowrap;transition:background-color .18s ease,transform .18s ease}
+.sparkexchange-promo-visit:hover{background:#ffcc4d;transform:translateY(-2px)}
+.sparkexchange-promo-visit:focus-visible{outline:3px solid #fff;outline-offset:3px}
+#sparkexchange-widget{display:block;width:100%;height:760px;min-height:650px;border:0;border-radius:12px;background:#0a0a0a}
+@media(max-width:700px){.sparkexchange-promo{margin:18px 12px 28px;padding:16px 12px}.sparkexchange-promo-heading{grid-template-columns:48px minmax(0,1fr);gap:8px 12px;margin-bottom:12px}.sparkexchange-promo-logo{width:48px;height:48px}.sparkexchange-promo h2{font-size:1.5rem}.sparkexchange-promo-visit{grid-column:2;justify-self:start}.sparkexchange-promo-intro p{font-size:.93rem}#sparkexchange-widget{height:820px}}
+@media(prefers-reduced-motion:reduce){.sparkexchange-promo-visit{transition:none}.sparkexchange-promo-visit:hover{transform:none}}
