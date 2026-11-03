@@ -20,12 +20,13 @@
   const slot=document.createElement('aside');slot.className='watch-ad '+className;slot.setAttribute('aria-label','Advertisement');
   const label=document.createElement('span');label.textContent='Advertisement';slot.append(label,isolatedBanner());return slot;
  }
- if(path==='/iptv-player'&&banner){
+ if((path==='/'||path==='/iptv-player')&&banner){
   const player=document.querySelector('#watch-player'),pane=player?.querySelector('.video-pane');
   if(player&&pane){
    const top=adPlacement('watch-ad-top');
    const stage=document.createElement('div');stage.className='watch-stage';pane.before(stage);
    stage.append(adPlacement('watch-ad-left'),pane,adPlacement('watch-ad-right'));
+   player.after(adPlacement('sitewide-ad'));
    const phone=window.matchMedia('(max-width: 700px)');
    const placeTop=()=>{if(phone.matches)player.querySelector('.channel-sidebar').append(top);else player.before(top);};
    placeTop();if(phone.addEventListener)phone.addEventListener('change',placeTop);else phone.addListener?.(placeTop);
@@ -58,8 +59,8 @@
   }
  }
  if(banner||direct){
-  const target=path==='/'?document.querySelector('#section-70-529'):path==='/iptv-player'?document.querySelector('.channel-sidebar'):['/x','/twitch'].includes(path)?document.querySelector('.social-actions'):null;
-  if(target){const slot=document.createElement('aside');slot.className='hilltop-banner';slot.setAttribute('aria-label','Advertisement');slot.innerHTML='<p>Advertisement</p>';if(direct){const a=document.createElement('a');a.href=direct;a.textContent='Visit sponsor';a.target='_blank';a.rel='sponsored noopener noreferrer';slot.append(a);}if(path==='/iptv-player')target.append(slot);else target.after(slot);
+  const target=(path==='/'||path==='/iptv-player')?document.querySelector('.channel-sidebar'):['/x','/twitch'].includes(path)?document.querySelector('.social-actions'):null;
+  if(target){const slot=document.createElement('aside');slot.className='hilltop-banner';slot.setAttribute('aria-label','Advertisement');slot.innerHTML='<p>Advertisement</p>';if(direct){const a=document.createElement('a');a.href=direct;a.textContent='Visit sponsor';a.target='_blank';a.rel='sponsored noopener noreferrer';slot.append(a);}if(path==='/'||path==='/iptv-player')target.append(slot);else target.after(slot);
    const start=()=>{const script=document.createElement('script');script.settings={};script.async=true;script.referrerPolicy='no-referrer-when-downgrade';script.src=banner;script.onerror=()=>{script.remove();if(!direct)slot.remove();};slot.append(script);};
    if(!banner)return;
    if('IntersectionObserver' in window){const io=new IntersectionObserver(entries=>{if(entries.some(x=>x.isIntersecting)){io.disconnect();start();}},{rootMargin:'200px'});io.observe(slot);}else start();
