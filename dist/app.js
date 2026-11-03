@@ -102,6 +102,7 @@ async function loadPlaylist(url, file, scroll = true, autoplay = false) {
  try {
   renderPlayer(scroll); store.set('iptv-playlist', channels);
   if (startAutomatically) {
+   document.querySelector('#iptv-video').muted = true;
    playChannel(channels[0]);
   } else message(channels.length+' channels loaded. Select a channel to watch.');
  } catch (error) { console.error('player_render_failed', error); message('The playlist loaded, but the player could not open. Refresh the page and try again.', true); }
