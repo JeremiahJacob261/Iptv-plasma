@@ -47,7 +47,7 @@ const favorites = new Set(Array.isArray(savedFavorites) ? savedFavorites : []);
 function safeScroll(element) { try { const reduced=window.matchMedia?.('(prefers-reduced-motion: reduce)').matches; element?.scrollIntoView({ behavior: reduced ? 'auto' : 'smooth', block: 'nearest' }); } catch {} }
 function message(text, error = false) {
  let el = document.querySelector('#player-status');
- if (!el && form) { el = document.createElement('p'); el.id = 'player-status'; el.setAttribute('role', 'status'); (document.querySelector('.playlist-setup')||form).after(el); }
+ if (!el && form) { el = document.createElement('p'); el.id = 'player-status'; el.setAttribute('role', 'status'); (document.querySelector('.playlist-setup')||form).before(el); }
  if (el) { el.textContent = text; el.classList.toggle('error', error); }
 }
 async function fetchWithTimeout(url, options = {}, timeout = 30000) {
@@ -63,7 +63,7 @@ async function fetchPlaylist(url, signal) {
  if (typeof data.text !== 'string') throw Error('The playlist server returned an invalid response. Please try again.');
  return data;
 }
-async function loadPlaylist(url, file) {
+async function loadPlaylist(url, file, scroll = true) {
  const attempt = ++loadAttempt;
  playlistRequest?.abort(); playlistRequest = new AbortController();
  const button = form?.querySelector('[type=submit]');
@@ -98,7 +98,7 @@ async function loadPlaylist(url, file) {
  if (attempt !== loadAttempt || !nextChannels) return;
  stopPlayback(false); channels = nextChannels; active = null; pageSize = 100;
  try {
-  renderPlayer(); store.set('iptv-playlist', channels);
+  renderPlayer(scroll); store.set('iptv-playlist', channels);
   message(channels.length+' channels loaded. Select a channel to watch.');
  } catch (error) { console.error('player_render_failed', error); message('The playlist loaded, but the player could not open. Refresh the page and try again.', true); }
 }
@@ -108,11 +108,11 @@ function stopPlayback(showMessage = true) {
  if (video) { video.onplaying = null; video.onerror = null; video.pause(); video.removeAttribute('src'); video.load(); }
  if (showMessage && document.querySelector('#stream-status')) { document.querySelector('#stream-status').textContent = 'Playback stopped.'; message(channels.length+' channels loaded. Playback stopped.'); }
 }
-function renderPlayer() {
+function renderPlayer(scroll = true) {
  let panel = document.querySelector('#watch-player');
  if (!panel) {
   panel = document.createElement('section'); panel.id = 'watch-player'; panel.setAttribute('aria-label','IPTV channel player');
-  panel.innerHTML = '<aside class="channel-sidebar"><input id="channel-search" type="search" placeholder="Filter Channels" aria-label="Filter Channels"><label class="favorite-filter"><input id="favorites-only" type="checkbox"> Favorite Channels</label><select id="channel-group" aria-label="Channel group"><option value="">All Channels</option></select><p id="channel-count" role="status"></p><div id="channel-list"></div><button id="load-more-channels" type="button" hidden>Load more channels</button></aside><div class="video-pane"><video id="iptv-video" controls playsinline preload="none"></video><div class="video-caption"><span id="current-channel">Select a channel to watch</span><span class="playback-actions"><button id="fullscreen-playback" type="button">Full screen</button><button id="stop-playback" type="button">Stop</button></span></div><p class="channel-source-line"><a id="channel-source" target="_blank" rel="noopener noreferrer" hidden>Channel source</a></p><p id="stream-status" role="status"></p></div>';
+  panel.innerHTML = '<aside class="channel-sidebar"><div class="watch-sidebar-title">Channel list</div><input id="channel-search" type="search" placeholder="Filter Channels" aria-label="Filter Channels"><label class="favorite-filter"><input id="favorites-only" type="checkbox"> Favorite Channels</label><select id="channel-group" aria-label="Channel group"><option value="">All Channels</option></select><p id="channel-count" role="status"></p><div id="channel-list"></div><button id="load-more-channels" type="button" hidden>Load more channels</button></aside><div class="video-pane"><video id="iptv-video" controls playsinline preload="none"></video><div class="video-caption"><span id="current-channel">Select a channel to watch</span><span class="playback-actions"><button id="fullscreen-playback" type="button">Full screen</button><button id="stop-playback" type="button">Stop</button></span></div><p class="channel-source-line"><a id="channel-source" target="_blank" rel="noopener noreferrer" hidden>Channel source</a></p><p id="stream-status" role="status"></p></div>';
   document.querySelector('#player-status').after(panel);
   decorateSearch(panel.querySelector('#channel-search'));
   setControlLabel(panel.querySelector('#stop-playback'),'Stop','stop');
@@ -130,7 +130,7 @@ function renderPlayer() {
  [...new Set(channels.flatMap(x=>x.group.split(';')).filter(Boolean))].sort().forEach(x=>group.add(new Option(x,x)));
  panel.querySelector('#channel-search').value=''; panel.querySelector('#favorites-only').checked=false;
  panel.querySelector('#current-channel').textContent='Select a channel to watch'; panel.querySelector('#stream-status').textContent=''; panel.querySelector('#channel-source').hidden=true;
- renderChannels(); safeScroll(panel);
+ renderChannels(); if (scroll) safeScroll(panel);
 }
 function renderChannels() {
  const query = document.querySelector('#channel-search').value.toLowerCase(), group = document.querySelector('#channel-group').value, only = document.querySelector('#favorites-only').checked;
@@ -245,9 +245,10 @@ async function playlistCatalog() {
 function setupSourcePicker() {
  const tools=document.createElement('div');tools.className='playlist-source-tools';
  tools.innerHTML='<label for="playlist-source-search">Find a channel playlist</label><input id="playlist-source-search" type="search" placeholder="Search countries, languages, categories or regions"><label for="builtin-playlist">IPTV-org playlists</label><select id="builtin-playlist"><option value="">Custom playlist</option><option value="https://iptv-org.github.io/iptv/index.category.m3u">All channels · by category</option><option value="https://iptv-org.github.io/iptv/index.m3u">All channels</option></select><button id="load-builtin-playlist" type="button">Load channels</button><p id="playlist-source-status" role="status"></p>';
- const setup=document.createElement('section');setup.className='playlist-setup';setup.setAttribute('aria-labelledby','playlist-setup-heading');
- setup.innerHTML='<div id="playlist-setup-heading" class="playlist-setup-heading" role="heading" aria-level="2">'+heroIcon('rectangle-stack')+'Playlist sources</div><div class="playlist-setup-grid"></div>';
+ const setup=document.createElement('details');setup.className='playlist-setup';
+ setup.innerHTML='<summary class="playlist-setup-heading">'+heroIcon('rectangle-stack')+'Playlist sources <span>Choose a source or add your own M3U</span></summary><div class="playlist-setup-grid"></div>'; 
  form.before(setup);setup.querySelector('.playlist-setup-grid').append(tools,form);
+ const ad = document.querySelector('#inner_content-3-536 > .plasma-ad'); if (ad) setup.after(ad);
  decorateSearch(tools.querySelector('input'));setControlLabel(tools.querySelector('button'),'Load channels','rectangle-stack');
  const select=tools.querySelector('select'),search=tools.querySelector('input'),status=tools.querySelector('[role=status]');
  const useSelection=()=>{if(select.value){document.querySelector('#playlist-url').value=select.value;document.querySelector('#playlist-file').value='';}};
@@ -274,6 +275,8 @@ function setupSourcePicker() {
 }
 if (form) {
  setupSourcePicker();
+ message('Loading channels…');
+ renderPlayer(false);
  setControlLabel(form.querySelector('[type=submit]'),'Watch','play');
  document.querySelectorAll('input[name="player-type"]').forEach(input => input.addEventListener('change', () => {message(input.dataset.type === 'http' ? 'HTTP compatibility mode selected. Streams will load through the secure player.' : 'HTTPS mode selected. Streams connect directly with an automatic compatibility fallback.');}));
  form.removeAttribute('action'); form.addEventListener('submit',event=>{
@@ -283,7 +286,7 @@ if (form) {
   loadPlaylist(url,file);
  });
  const url=new URLSearchParams(location.search).get('playlist') || DEFAULT_PLAYLIST;
- document.querySelector('#playlist-url').value=url;loadPlaylist(url);
+ document.querySelector('#playlist-url').value=url;loadPlaylist(url, undefined, false);
 }
 function directoryStatus(item, text) {let status=document.querySelector('#directory-status');if(!status){status=document.createElement('p');status.id='directory-status';status.setAttribute('role','status');item.parentElement.before(status);}status.textContent=text;safeScroll(status);}
 async function openDirectory(item) {
@@ -300,3 +303,4 @@ async function openDirectory(item) {
 }
 document.querySelectorAll('.world-item,.category-item,.language-item').forEach(item=>{item.removeAttribute('aria-haspopup');item.addEventListener('click',()=>openDirectory(item));item.addEventListener('keydown',e=>{if(e.key==='Enter'||e.key===' '){e.preventDefault();openDirectory(item);}});});
 document.querySelectorAll('form[data-local-form]').forEach(form=>form.addEventListener('submit',e=>{e.preventDefault();let status=form.querySelector('[role=status]');if(!status){status=document.createElement('p');status.setAttribute('role','status');form.append(status);}status.textContent='This recreated site is not connected to the original website’s contact or newsletter service. Your information has not been submitted.';}));
+

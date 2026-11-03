@@ -1,0 +1,45 @@
+/* A focused viewing surface, scoped to the IPTV player page. */
+body { background: #100d15; }
+#section-20-15 { display: none; }
+#section-2-536 { background: #100d15; }
+#section-2-536 > .ct-section-inner-wrap { width: 100%; max-width: none; padding: 0 0 40px; }
+#inner_content-3-536 { width: 100%; color: #eee8f4; }
+#player-status { max-width: none; margin: 0; padding: 9px 24px; background: #19131f; color: #d4c9dd; font-size: 13px; }
+#player-status.error { color: #ffb1b1; }
+#watch-player { width: 100%; max-width: none; min-height: min(720px, calc(100vh - 150px)); margin: 0; display: grid; grid-template-columns: minmax(260px, 320px) minmax(0, 1fr); gap: 0; border-radius: 0; background: #08070b; overflow: hidden; }
+.channel-sidebar { padding: 0 14px 16px; background: #15111b; color: #fff; min-width: 0; }
+.watch-sidebar-title { margin: 0 -14px 12px; padding: 12px 16px; color: #eee8f4; background: #241b2b; font-size: 13px; font-weight: 700; letter-spacing: .03em; }
+.channel-sidebar input[type=search], .channel-sidebar select { background: #29212f; color: #fff; border: 1px solid #51445b; border-radius: 5px; min-height: 42px; }
+.channel-sidebar input[type=search]::placeholder { color: #d0c4d8; }
+.channel-sidebar .control-with-icon > .hero-icon { stroke: #d0c4d8; }
+.favorite-filter { color: #eee8f4; }
+#channel-count { color: #cbbfd4; }
+#channel-list { max-height: calc(100vh - 350px); min-height: 250px; scrollbar-color: #796385 #211b27; }
+.channel-row { border-color: #332b3a; }
+.channel-row.active, .channel-row button:hover { background: #34243e; }
+.channel-play { padding: 12px 6px; }
+.video-pane { display: flex; flex-direction: column; justify-content: center; padding: 24px clamp(20px, 4vw, 64px); background: #08070b; }
+#iptv-video { width: 100%; max-height: calc(100vh - 230px); min-height: 280px; object-fit: contain; background: #000; }
+.video-caption { color: #fff; }
+.channel-source-line { margin: 8px 0 0; }
+#stream-status { color: #d7ccde; }
+.playlist-setup { max-width: 1200px; width: calc(100% - 48px); margin: 24px auto; color: #f5eef9; }
+.playlist-setup-heading { display: flex; flex-wrap: wrap; cursor: pointer; gap: 10px; padding: 16px 18px; min-height: 0; border: 1px solid #51445b; border-radius: 6px; background: #211928; list-style: none; }
+.playlist-setup-heading::-webkit-details-marker { display: none; }
+.playlist-setup-heading::after { content: '+'; margin-left: auto; font-size: 22px; line-height: 1; }
+.playlist-setup[open] .playlist-setup-heading::after { content: '−'; }
+.playlist-setup-heading span { color: #d3c4dc; font-size: 13px; font-weight: 400; }
+.playlist-setup-grid { padding: 24px 18px; color: #f5eef9; }
+.playlist-source-tools { margin-bottom: 0; }
+@media (max-width: 700px) {
+ #section-2-536 > .ct-section-inner-wrap { padding: 0 0 24px; }
+ #watch-player { display: flex; flex-direction: column; min-height: 0; }
+ .video-pane { order: 0; padding: 12px; }
+ #iptv-video { min-height: 0; max-height: none; }
+ .channel-sidebar { order: 1; padding: 0 14px 16px; }
+ #channel-list { max-height: 380px; min-height: 120px; }
+ .video-caption { flex-wrap: wrap; }
+ .playlist-setup { width: calc(100% - 24px); }
+ .playlist-setup-heading span { width: 100%; order: 3; }
+}
+
