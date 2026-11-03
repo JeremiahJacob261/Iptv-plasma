@@ -60,7 +60,7 @@
   section.id='sparkexchange-promo';
   section.className='sparkexchange-promo';
   section.setAttribute('aria-labelledby','sparkexchange-promo-title');
-  section.innerHTML='<div class="sparkexchange-promo-copy"><p class="sparkexchange-promo-kicker">A faster way to swap</p><h2 id="sparkexchange-promo-title">Your next crypto swap, without the slowdown.</h2><p>Make private, fast crypto swaps with SparkExchange. No account to create, no long setup—just choose your coins and get moving.</p><a class="sparkexchange-promo-cta" href="https://sparkexchange.io/" target="_blank" rel="noopener noreferrer">Explore SparkExchange <span aria-hidden="true">↗</span></a></div><div class="sparkexchange-promo-mark" aria-hidden="true"><span>SP</span><i></i><b></b></div>';
+  section.innerHTML='<div class="sparkexchange-promo-copy"><h2 id="sparkexchange-promo-title">Anonymous swaps. Fast moves. No account.</h2><p>Swap crypto anonymously and quickly with SparkExchange. Skip the sign-up and get straight to your next trade.</p><a class="sparkexchange-promo-cta" href="https://sparkexchange.io/" target="_blank" rel="noopener noreferrer">Swap crypto now <span aria-hidden="true">↗</span></a></div><img class="sparkexchange-promo-logo" src="https://sparkexchange.io/logo.jpg" alt="SparkExchange logo" loading="lazy" decoding="async">';
   player.after(section);
  }
  placeSparkExchangePromo();
