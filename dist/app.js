@@ -63,8 +63,9 @@ async function fetchPlaylist(url, signal) {
  if (typeof data.text !== 'string') throw Error('The playlist server returned an invalid response. Please try again.');
  return data;
 }
-async function loadPlaylist(url, file, scroll = true) {
+async function loadPlaylist(url, file, scroll = true, autoplay = false) {
  const attempt = ++loadAttempt;
+ const playAttemptAtStart = playAttempt;
  playlistRequest?.abort(); playlistRequest = new AbortController();
  const button = form?.querySelector('[type=submit]');
  if (button) { button.disabled = true; setControlLabel(button,'Loading…','arrow-path'); }
@@ -96,10 +97,14 @@ async function loadPlaylist(url, file, scroll = true) {
   }
  }
  if (attempt !== loadAttempt || !nextChannels) return;
+ const startAutomatically = autoplay && playAttempt === playAttemptAtStart;
  stopPlayback(false); channels = nextChannels; active = null; pageSize = 100;
  try {
   renderPlayer(scroll); store.set('iptv-playlist', channels);
-  message(channels.length+' channels loaded. Select a channel to watch.');
+  if (startAutomatically) {
+   document.querySelector('#iptv-video').muted = true;
+   playChannel(channels[0]);
+  } else message(channels.length+' channels loaded. Select a channel to watch.');
  } catch (error) { console.error('player_render_failed', error); message('The playlist loaded, but the player could not open. Refresh the page and try again.', true); }
 }
 function stopPlayback(showMessage = true) {
@@ -193,7 +198,7 @@ async function playChannel(channel, skipped = 0) {
   source.href=feed.url;source.innerHTML=heroIcon('arrow-top-right-on-square');source.append(document.createTextNode('Channel source: '+new URL(feed.url).hostname));source.hidden=false;
   const isHls=feed.type==='hls'||!/\.(?:mp4|mp3|aac|webm|ogg|mov|ts)(?:[?#]|$)/i.test(feed.url);
   const start=()=>{if(!current(epoch))return;Promise.resolve(video.play()).catch(error=>{if(!current(epoch)||error.name==='AbortError')return;if(error.name==='NotAllowedError'){clearTimeout(playTimeout);playTimeout=null;status.textContent='Press Play in the video controls to start watching.';}else fallback({type:'mediaError'},epoch);});};
-  video.onplaying=()=>{if(current(epoch)){clearTimeout(playTimeout);playTimeout=null;status.textContent=tried.size>1?'Playing an alternative public feed of this channel.':'Playing live';message(channels.length+' channels loaded. Now playing '+channel.name+'.');}};
+  video.onplaying=()=>{if(current(epoch)){clearTimeout(playTimeout);playTimeout=null;status.textContent=(tried.size>1?'Playing an alternative public feed of this channel.':'Playing live')+(video.muted?' · Sound is muted. Use the player controls to unmute.':'');message(channels.length+' channels loaded. Now playing '+channel.name+'.');}};
   try{
    if(isHls&&!video.canPlayType('application/vnd.apple.mpegurl'))HlsClass=await ensureHls();
    if(!current(epoch))return;
@@ -286,7 +291,10 @@ if (form) {
   loadPlaylist(url,file);
  });
  const url=new URLSearchParams(location.search).get('playlist') || DEFAULT_PLAYLIST;
- document.querySelector('#playlist-url').value=url;loadPlaylist(url, undefined, false);
+ document.querySelector('#playlist-url').value=url;
+ // Download the HLS player while the playlist request is in flight.
+ ensureHls().catch(()=>{});
+ loadPlaylist(url, undefined, false, true);
 }
 function directoryStatus(item, text) {let status=document.querySelector('#directory-status');if(!status){status=document.createElement('p');status.id='directory-status';status.setAttribute('role','status');item.parentElement.before(status);}status.textContent=text;safeScroll(status);}
 async function openDirectory(item) {
@@ -303,4 +311,5 @@ async function openDirectory(item) {
 }
 document.querySelectorAll('.world-item,.category-item,.language-item').forEach(item=>{item.removeAttribute('aria-haspopup');item.addEventListener('click',()=>openDirectory(item));item.addEventListener('keydown',e=>{if(e.key==='Enter'||e.key===' '){e.preventDefault();openDirectory(item);}});});
 document.querySelectorAll('form[data-local-form]').forEach(form=>form.addEventListener('submit',e=>{e.preventDefault();let status=form.querySelector('[role=status]');if(!status){status=document.createElement('p');status.setAttribute('role','status');form.append(status);}status.textContent='This recreated site is not connected to the original website’s contact or newsletter service. Your information has not been submitted.';}));
+
 
