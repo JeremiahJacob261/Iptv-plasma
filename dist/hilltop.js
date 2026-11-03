@@ -6,7 +6,7 @@
  const banner=valid(ads.bannerScript),pop=valid(ads.popunderURL),direct=valid(ads.directURL);
  const path=location.pathname.replace(/\/+$/,'')||'/';
  if(banner||direct){
-  const target=path==='/'?document.querySelector('#section-70-529'):path==='/iptv-player'?document.querySelector('#player-status'):['/x','/twitch'].includes(path)?document.querySelector('.social-actions'):null;
+  const target=path==='/'?document.querySelector('#section-70-529'):path==='/iptv-player'?document.querySelector('.playlist-setup'):['/x','/twitch'].includes(path)?document.querySelector('.social-actions'):null;
   if(target){const slot=document.createElement('aside');slot.className='hilltop-banner';slot.setAttribute('aria-label','Advertisement');slot.innerHTML='<p>Advertisement</p>';if(direct){const a=document.createElement('a');a.href=direct;a.textContent='Visit sponsor';a.target='_blank';a.rel='sponsored noopener noreferrer';slot.append(a);}target.after(slot);
    const start=()=>{const script=document.createElement('script');script.settings={};script.async=true;script.referrerPolicy='no-referrer-when-downgrade';script.src=banner;script.onerror=()=>{script.remove();if(!direct)slot.remove();};slot.append(script);};
    if(!banner)return;
