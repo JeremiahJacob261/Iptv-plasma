@@ -11,7 +11,10 @@
    const play=button('Play','<svg viewBox="0 0 24 24" aria-hidden="true"><path d="M8 5v14l11-7z" fill="currentColor"/></svg>');
    const mute=button('Mute','<svg viewBox="0 0 24 24" aria-hidden="true"><path d="M4 9v6h4l5 4V5L8 9H4zm12-1a6 6 0 010 8m2-11a10 10 0 010 14" fill="none" stroke="currentColor" stroke-width="2"/></svg>');
    const volume=document.createElement('input');volume.type='range';volume.min='0';volume.max='1';volume.step='0.05';volume.value=String(video.volume);volume.setAttribute('aria-label','Volume');bar.append(volume);
+   const seek=document.createElement('input');seek.type='range';seek.min='0';seek.max='100';seek.value='0';seek.hidden=true;seek.className='plasma-seek';seek.setAttribute('aria-label','Seek');bar.append(seek);
    const status=document.createElement('span');status.className='plasma-live-indicator';status.textContent='LIVE';bar.append(status);
+   const syncTime=()=>{const finite=Number.isFinite(video.duration)&&video.duration>0;seek.hidden=!finite;status.hidden=finite;if(finite)seek.value=String(video.currentTime/video.duration*100);};
+   video.addEventListener('durationchange',syncTime);video.addEventListener('timeupdate',syncTime);seek.oninput=()=>{if(Number.isFinite(video.duration))video.currentTime=Number(seek.value)*video.duration/100;};
    const full=button('Full screen','<svg viewBox="0 0 24 24" aria-hidden="true"><path d="M4 9V4h5m6 0h5v5M4 15v5h5m6 0h5v-5" fill="none" stroke="currentColor" stroke-width="2"/></svg>');
    play.onclick=()=>{if(video.paused)video.play().catch(()=>{});else video.pause();};
    video.addEventListener('play',()=>{play.setAttribute('aria-label','Pause');play.title='Pause';play.innerHTML='<svg viewBox="0 0 24 24" aria-hidden="true"><path d="M7 5h4v14H7zm6 0h4v14h-4z" fill="currentColor"/></svg>';});
