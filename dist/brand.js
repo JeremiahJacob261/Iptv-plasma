@@ -51,6 +51,20 @@
  }
  updateNavigation();
  new MutationObserver(updateNavigation).observe(document.body,{childList:true,subtree:true});
+ // SparkExchange cross-promotion on the homepage, placed after the live viewing area.
+ function placeSparkExchangePromo(){
+  if(document.getElementById('sparkexchange-promo'))return;
+  const player=document.querySelector('#watch-player');
+  if(!player)return;
+  const section=document.createElement('section');
+  section.id='sparkexchange-promo';
+  section.className='sparkexchange-promo';
+  section.setAttribute('aria-labelledby','sparkexchange-promo-title');
+  section.innerHTML='<div class="sparkexchange-promo-copy"><p class="sparkexchange-promo-kicker">A faster way to swap</p><h2 id="sparkexchange-promo-title">Your next crypto swap, without the slowdown.</h2><p>Make private, fast crypto swaps with SparkExchange. No account to create, no long setup—just choose your coins and get moving.</p><a class="sparkexchange-promo-cta" href="https://sparkexchange.io/" target="_blank" rel="noopener noreferrer">Explore SparkExchange <span aria-hidden="true">↗</span></a></div><div class="sparkexchange-promo-mark" aria-hidden="true"><span>SP</span><i></i><b></b></div>';
+  player.after(section);
+ }
+ placeSparkExchangePromo();
+ new MutationObserver(placeSparkExchangePromo).observe(document.body,{childList:true,subtree:true});
  const ads=data.advertising;
  if(ads?.enabled&&ads.provider==='hilltop'&&!document.querySelector('script[src="/hilltop.js"]')){
   const script=document.createElement('script');script.src='/hilltop.js';script.async=true;document.head.append(script);
