@@ -43,7 +43,7 @@
    const item=document.createElement('li');item.className='menu-item';item.dataset.plasmaxExchangeLink='';
    const link=document.createElement('a');link.href='/exchange/';link.textContent='Exchange';
    const existing=list.querySelector('li > a');if(existing)link.className=existing.className;
-   item.append(link);list.append(item);
+   item.append(link);list.insertBefore(item,list.querySelector('template')||list.firstChild);
   });
   document.querySelectorAll('nav a, [role="navigation"] a, .menu-item a').forEach(a=>{
    const href=a.getAttribute('href') || '';
