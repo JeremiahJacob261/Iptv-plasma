@@ -54,6 +54,8 @@ export function ExchangeWidget({ compact = false }: { compact?: boolean } = {}) 
     // State
     const [currencies, setCurrencies] = useState<Currency[]>([]);
     const [isLoadingCurrencies, setIsLoadingCurrencies] = useState(true);
+    const [currencyAttempt, setCurrencyAttempt] = useState(0);
+    const [currencyError, setCurrencyError] = useState<string | null>(null);
 
     const [fromCurrency, setFromCurrency] = useState<Currency | null>(null);
     const [toCurrency, setToCurrency] = useState<Currency | null>(null);
@@ -85,6 +87,8 @@ export function ExchangeWidget({ compact = false }: { compact?: boolean } = {}) 
     const [showFromDropdown, setShowFromDropdown] = useState(false);
     const [showToDropdown, setShowToDropdown] = useState(false);
     const [searchQuery, setSearchQuery] = useState("");
+
+    useEffect(() => { const close = (event: KeyboardEvent) => { if (event.key === "Escape") { setShowFromDropdown(false); setShowToDropdown(false); } }; window.addEventListener("keydown", close); return () => window.removeEventListener("keydown", close); }, []);
 
     // Min Amount State
     const [minAmount, setMinAmount] = useState<number>(0);
@@ -119,10 +123,12 @@ export function ExchangeWidget({ compact = false }: { compact?: boolean } = {}) 
     // Initialize Currencies
     useEffect(() => {
         const fetchCurrencies = async () => {
+            setIsLoadingCurrencies(true); setCurrencyError(null);
             try {
                 const res = await fetch('/api/changenow/currencies');
                 const data = await res.json();
 
+                if (!res.ok || !data.success || !data.currencies?.length) throw new Error("Currencies unavailable");
                 if (data.success && data.currencies.length > 0) {
                     setCurrencies(data.currencies);
 
@@ -139,13 +145,13 @@ export function ExchangeWidget({ compact = false }: { compact?: boolean } = {}) 
                 }
             } catch (error) {
                 console.error("Failed to fetch currencies", error);
-                setEstimateError("Failed to load currencies. Please refresh.");
+                setCurrencyError("Currencies could not be loaded. Check your connection and try again.");
             } finally {
                 setIsLoadingCurrencies(false);
             }
         };
         fetchCurrencies();
-    }, []);
+    }, [currencyAttempt]);
 
     // Estimate Exchange Amount
     useEffect(() => {
@@ -342,7 +348,7 @@ export function ExchangeWidget({ compact = false }: { compact?: boolean } = {}) 
     };
 
     const handleCreateExchange = async () => {
-        if (!fromCurrency || !toCurrency || !fromAmount || !destinationAddress || !isAddressValid || !termsAccepted) return;
+        if (!fromCurrency || !toCurrency || !fromAmount || !destinationAddress || !isAddressValid || !isRefundAddressValid || !termsAccepted) return;
 
         setIsCreatingTx(true);
         setEstimateError(null);
@@ -445,6 +451,8 @@ export function ExchangeWidget({ compact = false }: { compact?: boolean } = {}) 
             </div>
         );
     }
+
+    if (currencyError) return <div className="exchange-widget-error" role="alert"><p>{currencyError}</p><Button onClick={()=>setCurrencyAttempt(x=>x+1)}>Retry currencies</Button></div>;
 
     // Success View
     if (txResult) {
@@ -590,10 +598,10 @@ export function ExchangeWidget({ compact = false }: { compact?: boolean } = {}) 
                     <div className={`flex flex-col md:flex-row ${compact ? "gap-3" : "gap-4"} relative`}>
                         {/* You Send */}
                         <div className={`flex-1 bg-black/20 rounded-xl border border-white/5 ${compact ? "p-3" : "p-4"} hover:border-primary/30 transition-colors focus-within:border-primary/50`}>
-                            <label className="text-sm text-muted-foreground mb-2 block">You send</label>
+                            <label htmlFor="exchange-send" className="text-sm text-muted-foreground mb-2 block">You send</label>
                             <div className={`flex items-center ${compact ? "gap-2 spark-embed-amount-row" : "gap-4"}`}>
                                 <Input
-                                    type="number"
+                                    id="exchange-send" type="number" step="any" min="0"
                                     value={fromAmount}
                                     onChange={(e) => setFromAmount(e.target.value)}
                                     className={`${compact ? "text-xl" : "text-3xl"} min-w-0 font-bold bg-transparent border-0 h-auto p-0 focus-visible:ring-0 shadow-none text-white placeholder:text-gray-700`}
@@ -601,6 +609,7 @@ export function ExchangeWidget({ compact = false }: { compact?: boolean } = {}) 
                                 />
                                 <div className="relative shrink-0">
                                     <button
+                                        aria-label={showFromDropdown ? "Close sending currency menu" : "Choose sending currency"} aria-expanded={showFromDropdown}
                                         className="flex items-center gap-2 bg-white/5 hover:bg-white/10 px-3 py-2 rounded-lg border border-white/10 transition-colors"
                                         onClick={() => {
                                             setShowFromDropdown(!showFromDropdown);
@@ -616,7 +625,7 @@ export function ExchangeWidget({ compact = false }: { compact?: boolean } = {}) 
                                         <div className="absolute right-0 top-full mt-2 w-64 max-h-80 overflow-y-auto bg-[#1a1b1e] rounded-xl border border-white/10 shadow-2xl z-30 flex flex-col">
                                             <div className="p-3 sticky top-0 bg-[#1a1b1e] z-10 border-b border-white/5">
                                                 <Input
-                                                    placeholder="Search coins..."
+                                                    aria-label="Search currencies" placeholder="Search coins..."
                                                     value={searchQuery}
                                                     onChange={(e) => setSearchQuery(e.target.value)}
                                                     className="h-9 bg-black/20 border-white/10 text-xs"
@@ -624,6 +633,7 @@ export function ExchangeWidget({ compact = false }: { compact?: boolean } = {}) 
                                                 />
                                             </div>
                                             <div className="p-2 space-y-1 overflow-y-auto">
+                                                {!filteredCurrencies.length && <p role="status" className="p-3 text-sm">No currencies match your search.</p>}
                                                 {filteredCurrencies
                                                     .map(c => (
                                                         <button
@@ -648,7 +658,7 @@ export function ExchangeWidget({ compact = false }: { compact?: boolean } = {}) 
                         {/* Mobile Swap Icon */}
                         <div className="flex md:hidden justify-center -my-2 z-10">
                             <button
-                                onClick={handleSwapCurrencies}
+                                aria-label="Swap currencies" onClick={handleSwapCurrencies}
                                 className="w-10 h-10 bg-[#1a1b1e] rounded-full border border-white/10 flex items-center justify-center text-muted-foreground hover:text-primary hover:border-primary/50 transition-all shadow-lg active:scale-95"
                             >
                                 <ArrowLeftRight className="w-4 h-4 rotate-90" />
@@ -658,7 +668,7 @@ export function ExchangeWidget({ compact = false }: { compact?: boolean } = {}) 
                         {/* Swap Icon (Desktop) */}
                         <div className="absolute left-1/2 top-1/2 -translate-x-1/2 -translate-y-1/2 z-10 md:flex hidden">
                             <button
-                                onClick={handleSwapCurrencies}
+                                aria-label="Swap currencies" onClick={handleSwapCurrencies}
                                 className="w-10 h-10 bg-[#1a1b1e] rounded-lg border border-white/10 flex items-center justify-center text-muted-foreground hover:text-primary hover:border-primary/50 transition-all hover:scale-110"
                             >
                                 <ArrowLeftRight className="w-5 h-5" />
@@ -667,12 +677,12 @@ export function ExchangeWidget({ compact = false }: { compact?: boolean } = {}) 
 
                         {/* You Get */}
                         <div className={`flex-1 bg-black/20 rounded-xl border border-white/5 ${compact ? "p-3" : "p-4"} hover:border-primary/30 transition-colors`}>
-                            <label className="text-sm text-muted-foreground mb-2 block">You get (estimated)</label>
+                            <label htmlFor="exchange-receive" className="text-sm text-muted-foreground mb-2 block">You get (estimated)</label>
                             <div className={`flex items-center ${compact ? "gap-2 spark-embed-amount-row" : "gap-4"}`}>
                                 <div className="relative flex-1">
                                     {isEstimating && <Loader2 className="absolute left-0 top-1/2 -translate-y-1/2 w-5 h-5 animate-spin text-muted-foreground" />}
                                     <Input
-                                        type="text"
+                                        id="exchange-receive" type="text"
                                         value={toAmount}
                                         readOnly
                                         className={`${compact ? "text-xl" : "text-3xl"} min-w-0 font-bold bg-transparent border-0 h-auto p-0 focus-visible:ring-0 shadow-none text-white placeholder:text-gray-700 ${isEstimating ? 'opacity-0' : 'opacity-100'}`}
@@ -681,6 +691,7 @@ export function ExchangeWidget({ compact = false }: { compact?: boolean } = {}) 
                                 </div>
                                 <div className="relative shrink-0">
                                     <button
+                                        aria-label={showToDropdown ? "Close receiving currency menu" : "Choose receiving currency"} aria-expanded={showToDropdown}
                                         className="flex items-center gap-2 bg-white/5 hover:bg-white/10 px-3 py-2 rounded-lg border border-white/10 transition-colors"
                                         onClick={() => {
                                             setShowToDropdown(!showToDropdown);
@@ -696,7 +707,7 @@ export function ExchangeWidget({ compact = false }: { compact?: boolean } = {}) 
                                         <div className="absolute right-0 top-full mt-2 w-64 max-h-80 overflow-y-auto bg-[#1a1b1e] rounded-xl border border-white/10 shadow-2xl z-20 flex flex-col">
                                             <div className="p-3 sticky top-0 bg-[#1a1b1e] z-10 border-b border-white/5">
                                                 <Input
-                                                    placeholder="Search coins..."
+                                                    aria-label="Search currencies" placeholder="Search coins..."
                                                     value={searchQuery}
                                                     onChange={(e) => setSearchQuery(e.target.value)}
                                                     className="h-9 bg-black/20 border-white/10 text-xs"
@@ -704,6 +715,7 @@ export function ExchangeWidget({ compact = false }: { compact?: boolean } = {}) 
                                                 />
                                             </div>
                                             <div className="p-2 space-y-1 overflow-y-auto">
+                                                {!filteredCurrencies.length && <p role="status" className="p-3 text-sm">No currencies match your search.</p>}
                                                 {filteredCurrencies
                                                     .map(c => (
                                                         <button
@@ -738,17 +750,15 @@ export function ExchangeWidget({ compact = false }: { compact?: boolean } = {}) 
 
                     {/* Recipient Wallet */}
                     <div className={`space-y-4 ${compact ? "mb-5" : "mb-8"}`}>
-                        <label className="text-sm text-muted-foreground">Recipient Wallet</label>
+                        <label htmlFor="exchange-wallet" className="text-sm text-muted-foreground">Recipient Wallet</label>
                         <div className="relative">
-                            <Input
+                            <Input id="exchange-wallet" aria-invalid={!isAddressValid}
                                 value={destinationAddress}
                                 onChange={(e) => setDestinationAddress(e.target.value)}
                                 className={`h-14 bg-black/20 border-white/10 text-white rounded-xl px-4 focus-visible:ring-primary/50 text-base ${!isAddressValid ? 'border-red-500' : ''}`}
                                 placeholder={`Enter ${toCurrency?.ticker.toUpperCase()} payout address`}
                             />
-                            <div className="absolute right-4 top-1/2 -translate-y-1/2 text-muted-foreground">
-                                <QrCode className="w-5 h-5 opacity-50 hover:opacity-100 cursor-pointer" />
-                            </div>
+
                         </div>
                         {!isAddressValid && (
                             <p className="text-xs text-red-500 pl-1">{addressError}</p>
@@ -761,7 +771,7 @@ export function ExchangeWidget({ compact = false }: { compact?: boolean } = {}) 
                         variant="gradient"
                         className="w-full h-14 text-lg font-bold shadow-lg shadow-primary/25 hover:shadow-primary/40 transition-all hover:scale-[1.02] active:scale-[0.98] disabled:hover:scale-100 disabled:active:scale-100"
                         onClick={handleCreateExchange}
-                        disabled={isCreatingTx || isEstimating || !fromAmount || !toAmount || !destinationAddress || !isAddressValid || !termsAccepted}
+                        disabled={isCreatingTx || isEstimating || !fromAmount || !toAmount || !destinationAddress || !isAddressValid || !isRefundAddressValid || !termsAccepted}
                     >
                         {isCreatingTx ? (
                             <>
@@ -785,7 +795,7 @@ export function ExchangeWidget({ compact = false }: { compact?: boolean } = {}) 
                             htmlFor="terms"
                             className="text-xs text-muted-foreground leading-none peer-disabled:cursor-not-allowed peer-disabled:opacity-70"
                         >
-                            I've read and agree to the provider's <span className="underline hover:text-primary cursor-pointer">Terms of use</span> and <span className="underline hover:text-primary cursor-pointer">Privacy Policy</span>
+                            I've read and agree to the provider's <a href="https://changenow.io/terms-of-use" target="_blank" rel="noopener noreferrer" className="underline">Terms of use</a> and <a href="https://changenow.io/privacy-policy" target="_blank" rel="noopener noreferrer" className="underline">Privacy Policy</a>
                         </label>
                     </div>
 
@@ -801,8 +811,8 @@ export function ExchangeWidget({ compact = false }: { compact?: boolean } = {}) 
                             </AccordionTrigger>
                             <AccordionContent>
                                 <div className="pt-2 space-y-2">
-                                    <label className="text-sm text-muted-foreground">Refund Wallet (Optional)</label>
-                                    <Input
+                                    <label htmlFor="exchange-refund" className="text-sm text-muted-foreground">Refund Wallet (Optional)</label>
+                                    <Input id="exchange-refund" aria-invalid={!isRefundAddressValid}
                                         value={refundAddress}
                                         onChange={(e) => setRefundAddress(e.target.value)}
                                         className={`h-12 bg-black/20 border-white/10 text-white rounded-xl ${!isRefundAddressValid ? 'border-red-500' : ''}`}

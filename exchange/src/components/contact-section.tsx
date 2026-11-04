@@ -61,10 +61,10 @@ export function ContactSection() {
                     {/* Left Content */}
                     <div>
                         <h2 className="text-3xl md:text-4xl font-bold mb-4">
-                            Have Some <span className="gradient-text">Questions</span>?
+                            Contact support
                         </h2>
                         <p className="text-muted-foreground text-lg mb-8">
-                            Please use the contact form to reach us. We typically respond within 24 hours.
+                            Ask a question or include your exchange ID if you need help with a swap. Never send private keys or recovery phrases.
                         </p>
 
                         <div className="space-y-4">
@@ -75,21 +75,11 @@ export function ContactSection() {
                                 <div>
                                     <p className="font-medium">Email Support</p>
                                     <p className="text-sm text-muted-foreground">
-                                        plasma1337x@gmail.com
+                                        <a href="mailto:plasma1337x@gmail.com">plasma1337x@gmail.com</a>
                                     </p>
                                 </div>
                             </div>
-                            <div className="flex items-center gap-4">
-                                <div className="w-12 h-12 rounded-xl bg-primary/10 flex items-center justify-center">
-                                    <MessageSquare className="w-5 h-5 text-primary" />
-                                </div>
-                                <div>
-                                    <p className="font-medium">Live Chat</p>
-                                    <p className="text-sm text-muted-foreground">
-                                        Available 24/7
-                                    </p>
-                                </div>
-                            </div>
+
                         </div>
                     </div>
 
@@ -115,9 +105,9 @@ export function ContactSection() {
                                 )}
                                 <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
                                     <div className="space-y-2">
-                                        <label className="text-sm font-medium">Name</label>
+                                        <label htmlFor="support-name" className="text-sm font-medium">Name</label>
                                         <Input
-                                            name="name"
+                                            id="support-name" name="name"
                                             value={formData.name}
                                             onChange={handleInputChange}
                                             placeholder="Your name"
@@ -126,9 +116,9 @@ export function ContactSection() {
                                         />
                                     </div>
                                     <div className="space-y-2">
-                                        <label className="text-sm font-medium">Email</label>
+                                        <label htmlFor="support-email" className="text-sm font-medium">Email</label>
                                         <Input
-                                            name="email"
+                                            id="support-email" name="email"
                                             type="email"
                                             value={formData.email}
                                             onChange={handleInputChange}
@@ -139,9 +129,9 @@ export function ContactSection() {
                                     </div>
                                 </div>
                                 <div className="space-y-2">
-                                    <label className="text-sm font-medium">Subject</label>
+                                    <label htmlFor="support-subject" className="text-sm font-medium">Subject</label>
                                     <Input
-                                        name="subject"
+                                        id="support-subject" name="subject"
                                         value={formData.subject}
                                         onChange={handleInputChange}
                                         placeholder="How can we help?"
@@ -150,9 +140,9 @@ export function ContactSection() {
                                     />
                                 </div>
                                 <div className="space-y-2">
-                                    <label className="text-sm font-medium">Message</label>
+                                    <label htmlFor="support-message" className="text-sm font-medium">Message</label>
                                     <Textarea
-                                        name="message"
+                                        id="support-message" name="message"
                                         value={formData.message}
                                         onChange={handleInputChange}
                                         placeholder="Your message..."

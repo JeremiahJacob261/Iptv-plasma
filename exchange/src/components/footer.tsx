@@ -23,7 +23,7 @@ export function Footer() {
                             </span>
                         </Link>
                         <p className="text-sm text-muted-foreground leading-relaxed">
-                            Simple, Fast and Custody-Free Exchange. Swap between 900+ cryptocurrencies securely.
+                            Crypto swaps and live TV on PlasmaX.
                         </p>
                         {/* Social Icons */}
                         <div className="flex gap-4 mt-6">

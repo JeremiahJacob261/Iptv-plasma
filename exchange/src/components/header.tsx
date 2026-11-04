@@ -8,13 +8,14 @@ import { Button } from "@/components/ui/button";
 
 const navigation = [
     { href: "/", label: "Home" },
-    { href: "/", label: "IPTV" },
+    { href: "/iptv/", label: "IPTV" },
     { href: "/exchange/", label: "Exchange" },
     { href: "/x/", label: "X (Twitter)" },
     { href: "/twitch/", label: "Twitch" },
 ];
 
 export function Header() {
+    const exchangeHref = window.location.pathname.replace(/\/+$/, "") === "/exchange" ? "#exchange" : "/exchange/#exchange";
     const [isMenuOpen, setIsMenuOpen] = useState(false);
 
     useEffect(() => {
@@ -42,7 +43,7 @@ export function Header() {
                     </nav>
 
                     <div className="hidden lg:block">
-                        <Button variant="gradient" size="lg" asChild><Link href="/#exchange">Start Exchange</Link></Button>
+                        <Button variant="gradient" size="lg" asChild><Link href={exchangeHref}>Start Exchange</Link></Button>
                     </div>
                     <button type="button" className="flex min-h-11 min-w-11 items-center justify-center rounded-lg transition-colors hover:bg-secondary focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-primary lg:hidden" aria-label={isMenuOpen ? "Close navigation menu" : "Open navigation menu"} aria-expanded={isMenuOpen} aria-controls="mobile-navigation" onClick={() => setIsMenuOpen(open => !open)}>
                         {isMenuOpen ? <X aria-hidden="true" /> : <Menu aria-hidden="true" />}
@@ -55,10 +56,10 @@ export function Header() {
                         {navigation.map(item => (
                             <a key={item.label} href={item.href} onClick={() => setIsMenuOpen(false)} className="rounded-lg px-3 py-3 text-base font-medium text-foreground/85 hover:bg-secondary focus-visible:outline-2 focus-visible:outline-primary">{item.label}</a>
                         ))}
-                        <Button variant="gradient" size="lg" className="mt-3" asChild><Link href="/#exchange" onClick={() => setIsMenuOpen(false)}>Start Exchange</Link></Button>
+                        <Button variant="gradient" size="lg" className="mt-3" asChild><Link href={exchangeHref} onClick={() => setIsMenuOpen(false)}>Start Exchange</Link></Button>
                         <div className="mt-5 flex flex-wrap gap-x-6 gap-y-3 border-t border-border pt-5 text-sm text-muted-foreground">
-                            <Link href="/privacy-policy" onClick={() => setIsMenuOpen(false)} className="hover:text-foreground">Privacy Policy</Link>
-                            <Link href="/terms-and-conditions" onClick={() => setIsMenuOpen(false)} className="hover:text-foreground">Terms &amp; Conditions</Link>
+                            <Link href="/exchange/privacy-policy" onClick={() => setIsMenuOpen(false)} className="hover:text-foreground">Privacy Policy</Link>
+                            <Link href="/exchange/terms-and-conditions" onClick={() => setIsMenuOpen(false)} className="hover:text-foreground">Terms &amp; Conditions</Link>
                         </div>
                     </div>
                 </nav>
