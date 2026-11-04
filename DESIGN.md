@@ -93,3 +93,13 @@ The available review images in /workspace/plasmax-below-review show desktop and 
 
 ## Exchange information page — 2026-11-04
 The exchange widget stays in its existing position below the IPTV player. The guide, video, features, FAQ, contact, CTA and Exchange footer move to `/exchange/`. A prominent Exchange link in the existing header and mobile menu opens that page. Widget help links target its guide and video anchors; Start Exchange returns to the original widget at `/#exchange`. The page inherits the established PlasmaX palette, components and responsive layout. The player and channel controls remain unchanged.
+
+## Exchange and IPTV page polish — 2026-11-04
+
+This update supersedes the preceding note's Exchange-page widget and CTA placement. `/exchange/` now begins with a copy of the working exchange widget alongside a short introduction; the original widget below the IPTV player remains available. Keep the established supplied purple logo, purple actions, lavender links and dark surfaces. Clear headings, plain explanations and separated information sections replace decorative glow, gradient text, repeated cards and unsupported promotional claims. The desktop introduction and form stack on smaller screens.
+
+The widget shows each selected currency's network beside its ticker, readable amounts and the live estimated quote. Currency loading, quote failures and validation states remain explicit; an outdated or failed estimate cannot enable submission. Guide and video links reach their sections. The primary Start Exchange and closing Back to exchange actions stay at this page's `#exchange`; shared navigation on other pages targets `/exchange/#exchange`. Keep legal, support and viewing links pointed at their actual destinations.
+
+The new `/iptv/` promotional page uses the same identity, an actual player preview, concise directory/playlist/favourites explanations and links to the X and Twitch viewers. Its primary Open IPTV player action opens `/`. Availability copy states that channels depend on the broadcaster and location.
+
+Browser verification covered live currency loading, quote estimates and provider guide playback. Transaction creation and contact submission were tested with mocked responses; no real exchange transaction or support email was sent. Those checks establish the interface behavior, not completed swaps or email delivery.

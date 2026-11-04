@@ -22,7 +22,7 @@ The player loads IPTV-org's category-grouped worldwide list by default. Search t
 
 ## Exchange sections and admin
 
-The existing IPTV player and channel files remain unchanged. `dist/brand.js` mounts the exchange widget below the player, loading its bundle when it approaches the viewport. Supporting Exchange sections now live at `/exchange/`, linked from the top navigation. `exchange/src` contains the source, with a Shadow DOM boundary to keep its styles from changing the player. Rebuild with `npm ci --prefix exchange` and `npm run build --prefix exchange`. The copied `exchange-base.css` is the compiled SparkExchange stylesheet; its PlasmaX-specific additions are in `exchange-overrides.css`.
+The existing IPTV player and channel files remain unchanged. `dist/brand.js` mounts the exchange widget below the player, loading its bundle when it approaches the viewport. A second copy of the working widget appears at the top of `/exchange/`, alongside the guide, FAQ and support sections. Exchange calls to action remain on that page. `/iptv/` promotes the existing player and links back to `/`. `exchange/src` contains the source, with a Shadow DOM boundary to keep its styles from changing the player. Rebuild with `npm ci --prefix exchange` and `npm run build --prefix exchange`. The copied `exchange-base.css` is the compiled SparkExchange stylesheet; its PlasmaX-specific additions are in `exchange-overrides.css`.
 
 Exchange requests under `/api/changenow`, `/api/stealthex`, `/api/settings`, `/api/contact` and `/api/track-visit` are routed to the existing SparkExchange service. Status and Exchange legal pages are served locally under `/status/…` and `/exchange/…`. No transaction is created by loading or testing the page.
 
