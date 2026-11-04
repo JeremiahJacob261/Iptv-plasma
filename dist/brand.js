@@ -48,7 +48,7 @@
   document.querySelectorAll('nav a, [role="navigation"] a, .menu-item a').forEach(a=>{
    const href=a.getAttribute('href') || '';
    if(['/blog/','/guest-posts/','/contact-us/','/newsletter/'].includes(href) || (href==='/iptv-player/' && /^iptv players?$/i.test(a.textContent.trim()))) { const item=a.closest('li'); if(item) item.remove(); else a.remove(); return; }
-   if(href==='/x/' || href==='/twitch/') { a.removeAttribute('target'); a.removeAttribute('rel'); }
+   if(href==='/x/' || href==='/twitch/') { a.href=href==='/x/'?'https://twitter.com/plasma1337x':'https://www.twitch.tv/plasma1337x'; a.target='_blank'; a.rel='noopener noreferrer'; }
   });
  }
  updateNavigation();

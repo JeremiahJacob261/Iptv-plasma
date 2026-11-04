@@ -28,8 +28,8 @@ export function Footer() {
                         {/* Social Icons */}
                         <div className="flex gap-4 mt-6">
                             <a
-                                href="/x/"
-                                aria-label="Watch X on PlasmaX"
+                                href="https://twitter.com/plasma1337x" target="_blank"
+                                aria-label="PlasmaX on X"
                                 
                                 rel="noopener noreferrer"
                                 className="w-10 h-10 rounded-lg bg-secondary flex items-center justify-center hover:bg-primary hover:text-primary-foreground transition-all duration-200"
