@@ -90,3 +90,6 @@ The existing IPTV player and channel directory lead the page; the actual SparkEx
 The exchange bundle loads near the section or immediately for supported section hashes; the speed test loads separately as it approaches the viewport. An open Shadow DOM and its own stylesheet isolate exchange styling from the player. In-area links scroll to their sections and respect reduced-motion preferences; footer links reach the exchange legal pages, support and the supplied X profile.
 
 The available review images in /workspace/plasmax-below-review show desktop and mobile player, exchange preview and footer views. Visual inspection of the exchange preview and mobile footer confirms the displayed branding and layout only; these images do not establish successful swaps, provider availability, or end-to-end navigation and playback behavior.
+
+## Exchange information page — 2026-11-04
+The exchange widget stays in its existing position below the IPTV player. The guide, video, features, FAQ, contact, CTA and Exchange footer move to `/exchange/`. A prominent Exchange link in the existing header and mobile menu opens that page. Widget help links target its guide and video anchors; Start Exchange returns to the original widget at `/#exchange`. The page inherits the established PlasmaX palette, components and responsive layout. The player and channel controls remain unchanged.
