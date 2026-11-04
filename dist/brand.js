@@ -36,17 +36,12 @@
  new MutationObserver(records=>{for(const r of records)for(const node of r.addedNodes)scan(node);}).observe(document.body,{childList:true,subtree:true});
  const config=document.getElementById('plasma-config');if(!config)return;
  let data;try{data=JSON.parse(config.textContent);}catch{return;}
- for(const [key,label,base] of [['xProfile','Follow on X','x.com'],['twitchURL','Watch on Twitch','twitch.tv']]){
-  if(!data[key])continue;try{const url=new URL(data[key]);if(url.protocol!=='https:'||!(url.hostname===base||url.hostname==='www.'+base||(key==='xProfile'&&['twitter.com','www.twitter.com'].includes(url.hostname))))continue;
-   const nav=document.querySelector('.plasma-platforms');if(!nav)continue;const a=document.createElement('a');a.href=url.href;a.textContent=label;a.target='_blank';a.rel='noopener noreferrer';a.className='plasma-profile-link';nav.append(a);
-  }catch{/* Missing/invalid configured account links stay absent. */}
- }
  // Keep navigation focused on the requested destinations and open social profiles directly.
  function updateNavigation(){
   document.querySelectorAll('nav a, [role="navigation"] a, .menu-item a').forEach(a=>{
    const href=a.getAttribute('href') || '';
    if(['/blog/','/guest-posts/','/contact-us/','/newsletter/'].includes(href) || (href==='/iptv-player/' && /^iptv players?$/i.test(a.textContent.trim()))) { const item=a.closest('li'); if(item) item.remove(); else a.remove(); return; }
-   if(href==='/x/' || href==='/twitch/') { a.href=href==='/x/' ? data.xProfile : data.twitchURL; a.target='_blank'; a.rel='noopener noreferrer'; }
+   if(href==='/x/' || href==='/twitch/') { a.removeAttribute('target'); a.removeAttribute('rel'); }
   });
  }
  updateNavigation();
