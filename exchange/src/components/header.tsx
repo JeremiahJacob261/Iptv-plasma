@@ -9,7 +9,9 @@ import { Button } from "@/components/ui/button";
 const navigation = [
     { href: "/", label: "Home" },
     { href: "/", label: "IPTV" },
-    { href: "/#exchange", label: "Exchange" },
+    { href: "/exchange/", label: "Exchange" },
+    { href: "/x/", label: "X (Twitter)" },
+    { href: "/twitch/", label: "Twitch" },
 ];
 
 export function Header() {
@@ -35,7 +37,7 @@ export function Header() {
 
                     <nav aria-label="Main navigation" className="hidden items-center gap-1 lg:flex">
                         {navigation.map(item => (
-                            <a key={item.href} href={item.href} className="rounded-lg px-3 py-3 text-sm font-medium text-foreground/75 transition-colors hover:bg-secondary hover:text-foreground focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-primary">{item.label}</a>
+                            <a key={item.label} href={item.href} className="rounded-lg px-3 py-3 text-sm font-medium text-foreground/75 transition-colors hover:bg-secondary hover:text-foreground focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-primary">{item.label}</a>
                         ))}
                     </nav>
 
@@ -51,7 +53,7 @@ export function Header() {
                 <nav id="mobile-navigation" aria-label="Mobile navigation" className="absolute inset-x-0 top-full max-h-[calc(100dvh-4rem)] overflow-y-auto border-b border-border bg-background px-4 pb-6 pt-2 shadow-xl lg:hidden">
                     <div className="container mx-auto flex flex-col">
                         {navigation.map(item => (
-                            <a key={item.href} href={item.href} onClick={() => setIsMenuOpen(false)} className="rounded-lg px-3 py-3 text-base font-medium text-foreground/85 hover:bg-secondary focus-visible:outline-2 focus-visible:outline-primary">{item.label}</a>
+                            <a key={item.label} href={item.href} onClick={() => setIsMenuOpen(false)} className="rounded-lg px-3 py-3 text-base font-medium text-foreground/85 hover:bg-secondary focus-visible:outline-2 focus-visible:outline-primary">{item.label}</a>
                         ))}
                         <Button variant="gradient" size="lg" className="mt-3" asChild><Link href="/#exchange" onClick={() => setIsMenuOpen(false)}>Start Exchange</Link></Button>
                         <div className="mt-5 flex flex-wrap gap-x-6 gap-y-3 border-t border-border pt-5 text-sm text-muted-foreground">

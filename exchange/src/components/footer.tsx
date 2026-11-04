@@ -3,7 +3,7 @@ import Image from "next/image";
 import { Twitter, Github, MessageCircle } from "lucide-react";
 
 export function Footer() {
-    const section = (id: string) => /^\/(?:status|exchange)\//.test(window.location.pathname) ? `/#${id}` : `#${id}`;
+    const section = (id: string) => window.location.pathname.replace(/\/+$/, "") === "/exchange" ? `#${id}` : `/exchange/#${id}`;
     return (
         <footer className="bg-secondary/30 border-t border-border/50">
             <div className="container mx-auto px-4 py-12 md:py-16">
@@ -28,9 +28,9 @@ export function Footer() {
                         {/* Social Icons */}
                         <div className="flex gap-4 mt-6">
                             <a
-                                href="https://twitter.com/plasma1337x"
-                                aria-label="Follow PlasmaX on X"
-                                target="_blank"
+                                href="/x/"
+                                aria-label="Watch X on PlasmaX"
+                                
                                 rel="noopener noreferrer"
                                 className="w-10 h-10 rounded-lg bg-secondary flex items-center justify-center hover:bg-primary hover:text-primary-foreground transition-all duration-200"
                             >

@@ -38,6 +38,13 @@
  let data;try{data=JSON.parse(config.textContent);}catch{return;}
  // Keep navigation focused on the requested destinations and open social profiles directly.
  function updateNavigation(){
+  document.querySelectorAll('.oxy-site-navigation > ul').forEach(list=>{
+   if(list.querySelector('[data-plasmax-exchange-link]'))return;
+   const item=document.createElement('li');item.className='menu-item';item.dataset.plasmaxExchangeLink='';
+   const link=document.createElement('a');link.href='/exchange/';link.textContent='Exchange';
+   const existing=list.querySelector('li > a');if(existing)link.className=existing.className;
+   item.append(link);list.append(item);
+  });
   document.querySelectorAll('nav a, [role="navigation"] a, .menu-item a').forEach(a=>{
    const href=a.getAttribute('href') || '';
    if(['/blog/','/guest-posts/','/contact-us/','/newsletter/'].includes(href) || (href==='/iptv-player/' && /^iptv players?$/i.test(a.textContent.trim()))) { const item=a.closest('li'); if(item) item.remove(); else a.remove(); return; }
@@ -54,7 +61,7 @@
   const player=document.querySelector('#watch-player');if(!player)return;
   const section=document.createElement('section');section.id='plasmax-exchange-sections';section.setAttribute('aria-label','PlasmaX Exchange');player.after(section);
   const load=()=>{const script=document.createElement('script');script.src='/exchange-sections.js';script.defer=true;document.body.append(script);};
-  if(location.hash&&['#exchange','#how-it-works','#video-section','#speedtest','#about','#faq','#contact'].includes(location.hash))load();
+  if(location.hash&&['#exchange'].includes(location.hash))load();
   else if('IntersectionObserver' in window){const io=new IntersectionObserver(entries=>{if(entries.some(e=>e.isIntersecting)){io.disconnect();load();}},{rootMargin:'500px'});io.observe(section);}else load();
  }
  mountExchangeSections();new MutationObserver(mountExchangeSections).observe(document.body,{childList:true,subtree:true});

@@ -24,7 +24,7 @@ export function CTASection() {
                     </p>
                     <div className="flex flex-col sm:flex-row gap-4 justify-center">
                         <Button variant="gradient" size="xl" asChild>
-                            <Link href="#exchange">
+                            <Link href="/#exchange">
                                 Start Exchange
                                 <ArrowRight className="w-5 h-5" />
                             </Link>
