@@ -103,3 +103,6 @@ The widget shows each selected currency's network beside its ticker, readable am
 The new `/iptv/` promotional page uses the same identity, an actual player preview, concise directory/playlist/favourites explanations and links to the X and Twitch viewers. Its primary Open IPTV player action opens `/`. Availability copy states that channels depend on the broadcaster and location.
 
 Browser verification covered live currency loading, quote estimates and provider guide playback. Transaction creation and contact submission were tested with mocked responses; no real exchange transaction or support email was sent. Those checks establish the interface behavior, not completed swaps or email delivery.
+
+## Direct IPTV entry — 2026-11-04
+The user removed the standalone IPTV promotional page. IPTV navigation and the Exchange-page IPTV action open the existing player at `/` directly. Both `/iptv` and `/iptv/` redirect to the player. The player and channel files remain unchanged.

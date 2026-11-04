@@ -65,5 +65,17 @@
       "source": "/status/:id",
       "destination": "/status/index.html"
     }
+  ],
+  "redirects": [
+    {
+      "source": "/iptv",
+      "destination": "/",
+      "permanent": false
+    },
+    {
+      "source": "/iptv/",
+      "destination": "/",
+      "permanent": false
+    }
   ]
 }

@@ -8,7 +8,7 @@ import { Button } from "@/components/ui/button";
 
 const navigation = [
     { href: "/", label: "Home" },
-    { href: "/iptv/", label: "IPTV" },
+    { href: "/", label: "IPTV" },
     { href: "/exchange/", label: "Exchange" },
     { href: "/x/", label: "X (Twitter)" },
     { href: "/twitch/", label: "Twitch" },
