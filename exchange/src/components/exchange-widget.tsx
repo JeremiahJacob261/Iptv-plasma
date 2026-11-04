@@ -625,7 +625,7 @@ export function ExchangeWidget({ compact = false }: { compact?: boolean } = {}) 
                                         }}
                                     >
                                         {fromCurrency?.image && <img src={fromCurrency.image} alt="" className="w-6 h-6 rounded-full" />}
-                                        <span className="font-bold uppercase text-white">{fromCurrency?.ticker || 'SEL'}</span>
+                                        <span className="currency-choice"><strong>{fromCurrency?.ticker.toUpperCase() || 'Select'}</strong><small>{fromCurrency?.network.toUpperCase()} network</small></span>
                                         <ChevronDown className="w-4 h-4 text-muted-foreground" />
                                     </button>
                                     {showFromDropdown && (
@@ -707,7 +707,7 @@ export function ExchangeWidget({ compact = false }: { compact?: boolean } = {}) 
                                         }}
                                     >
                                         {toCurrency?.image && <img src={toCurrency.image} alt="" className="w-6 h-6 rounded-full" />}
-                                        <span className="font-bold uppercase text-white">{toCurrency?.ticker || 'SEL'}</span>
+                                        <span className="currency-choice"><strong>{toCurrency?.ticker.toUpperCase() || 'Select'}</strong><small>{toCurrency?.network.toUpperCase()} network</small></span>
                                         <ChevronDown className="w-4 h-4 text-muted-foreground" />
                                     </button>
                                     {showToDropdown && (
@@ -763,7 +763,7 @@ export function ExchangeWidget({ compact = false }: { compact?: boolean } = {}) 
                                 value={destinationAddress}
                                 onChange={(e) => setDestinationAddress(e.target.value)}
                                 className={`h-14 bg-black/20 border-white/10 text-white rounded-xl px-4 focus-visible:ring-primary/50 text-base ${!isAddressValid ? 'border-red-500' : ''}`}
-                                placeholder={`Enter ${toCurrency?.ticker.toUpperCase()} payout address`}
+                                placeholder={`Enter ${toCurrency?.ticker.toUpperCase()} address on ${toCurrency?.network.toUpperCase()}`}
                             />
 
                         </div>
@@ -823,7 +823,7 @@ export function ExchangeWidget({ compact = false }: { compact?: boolean } = {}) 
                                         value={refundAddress}
                                         onChange={(e) => setRefundAddress(e.target.value)}
                                         className={`h-12 bg-black/20 border-white/10 text-white rounded-xl ${!isRefundAddressValid ? 'border-red-500' : ''}`}
-                                        placeholder={`Enter ${fromCurrency?.ticker.toUpperCase()} refund address`}
+                                        placeholder={`Enter ${fromCurrency?.ticker.toUpperCase()} refund address on ${fromCurrency?.network.toUpperCase()}`}
                                     />
                                     {!isRefundAddressValid && <p className="text-xs text-red-500">Invalid address</p>}
                                 </div>
