@@ -155,12 +155,15 @@ export function ExchangeWidget({ compact = false }: { compact?: boolean } = {}) 
 
     // Estimate Exchange Amount
     useEffect(() => {
+        let active = true;
+        const controller = new AbortController();
         async function getEstimate() {
             if (!fromCurrency || !toCurrency || !debouncedFromAmount || parseFloat(debouncedFromAmount) <= 0) {
-                setToAmount("");
+                setToAmount(""); setIsEstimating(false);
                 return;
             }
 
+            setToAmount("");
             setIsEstimating(true);
             setEstimateError(null);
 
@@ -172,10 +175,11 @@ export function ExchangeWidget({ compact = false }: { compact?: boolean } = {}) 
                 if (fromCurrency.network) params.append('fromNetwork', fromCurrency.network);
                 if (toCurrency.network) params.append('toNetwork', toCurrency.network);
 
-                const res = await fetch(`/api/changenow/estimate?${params.toString()}`);
+                const res = await fetch(`/api/changenow/estimate?${params.toString()}`, {signal: controller.signal});
                 const data = await res.json();
 
-                if (data.success) {
+                if (!active) return;
+                if (res.ok && data.success) {
                     setToAmount(parseFloat(data.estimate.toAmount).toFixed(6));
                     if (data.estimate.toAmount === 0) {
                         setEstimateError("Amount too low");
@@ -189,14 +193,17 @@ export function ExchangeWidget({ compact = false }: { compact?: boolean } = {}) 
                     // setDialogConfig({ open: true, title: "Error", message: errorMessage, type: "error" });
                 }
             } catch (error) {
+                if (!active) return;
+                setToAmount("");
                 console.error("Estimation error", error);
                 setEstimateError("Failed to get quote");
             } finally {
-                setIsEstimating(false);
+                if (active) setIsEstimating(false);
             }
         }
 
         getEstimate();
+        return () => { active = false; controller.abort(); };
     }, [debouncedFromAmount, fromCurrency, toCurrency]);
 
     // Validate Address
@@ -348,7 +355,7 @@ export function ExchangeWidget({ compact = false }: { compact?: boolean } = {}) 
     };
 
     const handleCreateExchange = async () => {
-        if (!fromCurrency || !toCurrency || !fromAmount || !destinationAddress || !isAddressValid || !isRefundAddressValid || !termsAccepted) return;
+        if (!fromCurrency || !toCurrency || !fromAmount || !toAmount || isEstimating || estimateError || fromAmount !== debouncedFromAmount || !destinationAddress || !isAddressValid || !isRefundAddressValid || !termsAccepted) return;
 
         setIsCreatingTx(true);
         setEstimateError(null);
@@ -771,7 +778,7 @@ export function ExchangeWidget({ compact = false }: { compact?: boolean } = {}) 
                         variant="gradient"
                         className="w-full h-14 text-lg font-bold shadow-lg shadow-primary/25 hover:shadow-primary/40 transition-all hover:scale-[1.02] active:scale-[0.98] disabled:hover:scale-100 disabled:active:scale-100"
                         onClick={handleCreateExchange}
-                        disabled={isCreatingTx || isEstimating || !fromAmount || !toAmount || !destinationAddress || !isAddressValid || !isRefundAddressValid || !termsAccepted}
+                        disabled={isCreatingTx || isEstimating || !!estimateError || fromAmount !== debouncedFromAmount || !fromAmount || !toAmount || !destinationAddress || !isAddressValid || !isRefundAddressValid || !termsAccepted}
                     >
                         {isCreatingTx ? (
                             <>
