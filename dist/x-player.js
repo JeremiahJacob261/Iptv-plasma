@@ -13,11 +13,11 @@ window.initXViewer=window.initMediaViewer=function(root){
   panel.setAttribute('aria-label',brand+' video and creator details');root.querySelector('.viewer-placeholder')?.setAttribute('hidden','');
   if(data.author?.avatar){const avatar=el('img','x-avatar');avatar.src=data.author.avatar;avatar.alt='';avatar.referrerPolicy='no-referrer';avatar.addEventListener('error',()=>avatar.remove());byline.append(avatar);}
   identity.append(el('strong','x-author',data.author?.name||brand+' creator'));
-  if(data.author?.username){const handle=el('a','x-handle','@'+data.author.username);handle.href=(platform==='twitch'?'https://www.twitch.tv/':'https://x.com/')+encodeURIComponent(data.author.username);handle.target='_blank';handle.rel='noopener noreferrer';identity.append(handle);}byline.append(identity);
+  if(data.author?.username){identity.append(el('span','x-handle','@'+data.author.username));}byline.append(identity);
   const state=el('span','x-video-state',data.state==='live'?'Live':data.state==='replay'?'Replay':'Video');byline.append(state);info.append(byline,el('p','x-video-title',data.title));
   const facts=el('div','media-facts');if(data.category)facts.append(el('span','',data.category));if(Number.isFinite(data.viewers))facts.append(el('span','',new Intl.NumberFormat().format(data.viewers)+' viewers'));if(facts.children.length)info.append(facts);
   if(data.createdAt&&!Number.isNaN(Date.parse(data.createdAt))){const date=el('time','x-published',new Date(data.createdAt).toLocaleString(undefined,{dateStyle:'medium',timeStyle:'short'}));date.dateTime=data.createdAt;info.append(date);}
-  original.href=data.url;original.hidden=false;clear.hidden=false;
+  original.hidden=true;clear.hidden=false;
   if(!data.videos?.length){state.textContent='Post';panel.append(info);embed.append(panel);status.textContent='This public post has no playable video. Paste a video post or live broadcast link.';return;}
   video=el('video','x-video');video.id=platform+'-video';video.controls=true;video.playsInline=true;video.preload='metadata';video.setAttribute('aria-label',brand+' video player');media.append(video);panel.append(media,info);embed.append(panel);
   const controls=el('div','x-player-controls'),full=el('button'),stop=el('button');full.type=stop.type='button';setControlLabel(full,'Full screen','arrows-pointing-out');setControlLabel(stop,'Stop','stop');controls.append(full,stop);info.append(controls);
