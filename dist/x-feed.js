@@ -1,0 +1,7 @@
+'use strict';
+(function(){
+ const frame=document.getElementById('plasma-x-timeline');if(!frame)return;
+ const source='<!doctype html><html lang="en"><head><meta name="viewport" content="width=device-width,initial-scale=1"><style>html,body{margin:0;background:#191120;color:#e0d5e8;font:16px/1.5 Arial,sans-serif}a{color:#cfb0ed}p{padding:16px}</style></head><body><a class="twitter-timeline" data-theme="dark" data-dnt="true" data-height="900" href="https://twitter.com/plasma1337x">Posts by @plasma1337x</a><script async src="https://platform.twitter.com/widgets.js" charset="utf-8" onerror="document.getElementById(\'unavailable\').hidden=false"><\/script><p id="unavailable" hidden>X could not load the feed. Try reloading it.</p></body></html>';
+ function load(){frame.srcdoc=source;}
+ document.getElementById('reload-x-feed').addEventListener('click',load);load();
+})();

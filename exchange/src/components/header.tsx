@@ -11,7 +11,7 @@ const navigation = [
     { href: "/", label: "IPTV" },
     { href: "/exchange/", label: "Exchange" },
     { href: "/categories/", label: "Categories" },
-    { href: "https://twitter.com/plasma1337x", label: "X (Twitter)" },
+    { href: "/x-feed/", label: "X (Twitter)" },
     { href: "https://www.twitch.tv/plasma1337x", label: "Twitch" },
 ];
 

@@ -28,7 +28,7 @@ export function Footer() {
                         {/* Social Icons */}
                         <div className="flex gap-4 mt-6">
                             <a
-                                href="https://twitter.com/plasma1337x" target="_blank"
+                                href="/x-feed/"
                                 aria-label="PlasmaX on X"
                                 
                                 rel="noopener noreferrer"
