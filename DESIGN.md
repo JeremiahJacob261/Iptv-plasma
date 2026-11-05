@@ -109,3 +109,6 @@ The user removed the standalone IPTV promotional page. IPTV navigation and the E
 
 ## Official account embeds — 2026-11-05
 The X and Twitch links in the top navigation now open `/x-feed/` and `/twitch-feed/` on PlasmaX. The X page uses the standard X timeline embed for `plasma1337x`, isolated from the main origin. The Twitch page uses the official channel player for `plasma1337x`, with the current hostname supplied as its required parent and autoplay disabled. Each page has a reload action. The separate native X/Twitch viewing tools remain on Categories. Display, offline status and access restrictions are controlled by each provider; the experimental public-feed reader is removed.
+
+## Edge-to-edge social frames — 2026-11-05
+The official account embed pages now use minimal HTML with the provider iframe filling the available viewport, including dynamic mobile viewport height. PlasmaX header/footer, margins, side padding, borders and rounded frames are removed from those two pages. The top navigation elsewhere still opens them, and browser Back returns to the previous page. X retains its standard provider embed and availability restrictions; Twitch retains its required current-host parent parameter.
