@@ -106,3 +106,6 @@ Browser verification covered live currency loading, quote estimates and provider
 
 ## Direct IPTV entry — 2026-11-04
 The user removed the standalone IPTV promotional page. IPTV navigation and the Exchange-page IPTV action open the existing player at `/` directly. Both `/iptv` and `/iptv/` redirect to the player. The player and channel files remain unchanged.
+
+## Official account embeds — 2026-11-05
+The X and Twitch links in the top navigation now open `/x-feed/` and `/twitch-feed/` on PlasmaX. The X page uses the standard X timeline embed for `plasma1337x`, isolated from the main origin. The Twitch page uses the official channel player for `plasma1337x`, with the current hostname supplied as its required parent and autoplay disabled. Each page has a reload action. The separate native X/Twitch viewing tools remain on Categories. Display, offline status and access restrictions are controlled by each provider; the experimental public-feed reader is removed.

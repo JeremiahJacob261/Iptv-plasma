@@ -12,7 +12,7 @@ const navigation = [
     { href: "/exchange/", label: "Exchange" },
     { href: "/categories/", label: "Categories" },
     { href: "/x-feed/", label: "X (Twitter)" },
-    { href: "https://www.twitch.tv/plasma1337x", label: "Twitch" },
+    { href: "/twitch-feed/", label: "Twitch" },
 ];
 
 export function Header() {

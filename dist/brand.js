@@ -49,7 +49,7 @@
    const href=a.getAttribute('href') || '';
    if(['/blog/','/guest-posts/','/contact-us/','/newsletter/'].includes(href) || (href==='/iptv-player/' && /^iptv players?$/i.test(a.textContent.trim()))) { const item=a.closest('li'); if(item) item.remove(); else a.remove(); return; }
    if(href==='/x/' || href==='https://twitter.com/plasma1337x') { a.href='/x-feed/'; a.removeAttribute('target'); a.removeAttribute('rel'); }
-   if(href==='/twitch/') { a.href='https://www.twitch.tv/plasma1337x'; a.target='_blank'; a.rel='noopener noreferrer'; }
+   if(href==='/twitch/' || href==='https://www.twitch.tv/plasma1337x') { a.href='/twitch-feed/'; a.removeAttribute('target'); a.removeAttribute('rel'); }
   });
  }
  updateNavigation();
