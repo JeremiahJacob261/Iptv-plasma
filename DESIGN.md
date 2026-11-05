@@ -112,3 +112,6 @@ The X and Twitch links in the top navigation now open `/x-feed/` and `/twitch-fe
 
 ## Edge-to-edge social frames — 2026-11-05
 The official account embed pages now use minimal HTML with the provider iframe filling the available viewport, including dynamic mobile viewport height. PlasmaX header/footer, margins, side padding, borders and rounded frames are removed from those two pages. The top navigation elsewhere still opens them, and browser Back returns to the previous page. X retains its standard provider embed and availability restrictions; Twitch retains its required current-host parent parameter.
+
+## Twitch stream and chat — 2026-11-05
+The account Twitch page shows the official player and chat side by side on wide screens and stacked below 800px. Both use the current hostname as their required parent. They initialize once near the viewport, without autoplay or polling. Existing navigation, footer and document scrolling remain available; the embed area has no side gutters. Twitch controls offline state and chat login requirements.
