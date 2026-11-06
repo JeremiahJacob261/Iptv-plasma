@@ -1,4 +1,5 @@
 // Fixed public profile only: no credentials, arbitrary URLs, or visitor tracking.
+import snapshot from '../lib/x-feed-snapshot.mjs';
 let cached;
 export default async function handler(req,res){
  res.setHeader('Content-Type','application/json; charset=utf-8');res.setHeader('X-Content-Type-Options','nosniff');
@@ -18,7 +19,8 @@ export default async function handler(req,res){
   res.setHeader('Cache-Control','public, s-maxage=300, stale-while-revalidate=3600');res.end(JSON.stringify({posts:cached.posts,updatedAt:cached.at,stale:false}));
  }catch{
   res.setHeader('Cache-Control','no-store');
-  if(cached)return res.end(JSON.stringify({posts:cached.posts,updatedAt:cached.at,stale:true}));
+  const saved=cached||snapshot;
+  if(saved?.posts?.length)return res.end(JSON.stringify({posts:saved.posts,updatedAt:saved.at,stale:true}));
   res.statusCode=503;res.end(JSON.stringify({error:'X is not sharing this timeline right now. Please try again shortly.'}));
  }
 }
