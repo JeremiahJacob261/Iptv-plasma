@@ -11,8 +11,8 @@ const navigation = [
     { href: "/", label: "IPTV" },
     { href: "/exchange/", label: "Exchange" },
     { href: "/categories/", label: "Categories" },
-    { href: "/x-feed/", label: "X (Twitter)" },
-    { href: "/twitch-feed/", label: "Twitch" },
+    { href: "https://x.com/plasma1337x", label: "X (Twitter)" },
+    { href: "https://www.twitch.tv/plasma1337x", label: "Twitch" },
 ];
 
 export function Header() {
@@ -39,7 +39,7 @@ export function Header() {
 
                     <nav aria-label="Main navigation" className="hidden items-center gap-1 lg:flex">
                         {navigation.map(item => (
-                            <a key={item.label} href={item.href} target={item.href.startsWith("https:")?"_blank":undefined} rel={item.href.startsWith("https:")?"noopener noreferrer":undefined} className="rounded-lg px-3 py-3 text-sm font-medium text-foreground/75 transition-colors hover:bg-secondary hover:text-foreground focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-primary">{item.label}</a>
+                            <a key={item.label} href={item.href} target={item.href.startsWith("https:")?"_blank":undefined} rel={item.href.startsWith("https:")?"noopener noreferrer":undefined} className="rounded-lg px-3 py-3 text-sm font-medium text-foreground/75 transition-colors hover:bg-secondary hover:text-foreground focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-primary" aria-label={item.label}>{item.href.startsWith("https:") ? <img src={item.label === "Twitch" ? "/assets/social-twitch.svg" : "/assets/social-x.svg"} alt={item.label} width={20} height={20} /> : item.label}</a>
                         ))}
                     </nav>
 
@@ -55,7 +55,7 @@ export function Header() {
                 <nav id="mobile-navigation" aria-label="Mobile navigation" className="absolute inset-x-0 top-full max-h-[calc(100dvh-4rem)] overflow-y-auto border-b border-border bg-background px-4 pb-6 pt-2 shadow-xl lg:hidden">
                     <div className="container mx-auto flex flex-col">
                         {navigation.map(item => (
-                            <a key={item.label} href={item.href} target={item.href.startsWith("https:")?"_blank":undefined} rel={item.href.startsWith("https:")?"noopener noreferrer":undefined} onClick={() => setIsMenuOpen(false)} className="rounded-lg px-3 py-3 text-base font-medium text-foreground/85 hover:bg-secondary focus-visible:outline-2 focus-visible:outline-primary">{item.label}</a>
+                            <a key={item.label} href={item.href} target={item.href.startsWith("https:")?"_blank":undefined} rel={item.href.startsWith("https:")?"noopener noreferrer":undefined} onClick={() => setIsMenuOpen(false)} className="rounded-lg px-3 py-3 text-base font-medium text-foreground/85 hover:bg-secondary focus-visible:outline-2 focus-visible:outline-primary" aria-label={item.label}>{item.href.startsWith("https:") ? <img src={item.label === "Twitch" ? "/assets/social-twitch.svg" : "/assets/social-x.svg"} alt={item.label} width={20} height={20} /> : item.label}</a>
                         ))}
                         <Button variant="gradient" size="lg" className="mt-3" asChild><Link href={exchangeHref} onClick={() => setIsMenuOpen(false)}>Start Exchange</Link></Button>
                         <div className="mt-5 flex flex-wrap gap-x-6 gap-y-3 border-t border-border pt-5 text-sm text-muted-foreground">
