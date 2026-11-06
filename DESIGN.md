@@ -115,3 +115,6 @@ The official account embed pages now use minimal HTML with the provider iframe f
 
 ## Twitch stream and chat — 2026-11-05
 The account Twitch page shows the official player and chat side by side on wide screens and stacked below 800px. Both use the current hostname as their required parent. They initialize once near the viewport, without autoplay or polling. Existing navigation, footer and document scrolling remain available; the embed area has no side gutters. Twitch controls offline state and chat login requirements.
+
+## Direct social profile links — 2026-11-06
+At the user's request, `/x-feed/` and `/twitch-feed/` now show the respective brand logo and a direct link to the plasma1337x profile. No social frames, timeline fetching, provider scripts, or chat load on these pages. Shared navigation and footer remain. The separate native viewing tools remain available under Categories.
