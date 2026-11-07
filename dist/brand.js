@@ -50,7 +50,12 @@
    if(['/blog/','/guest-posts/','/contact-us/','/newsletter/'].includes(href) || (href==='/iptv-player/' && /^iptv players?$/i.test(a.textContent.trim()))) { const item=a.closest('li'); if(item) item.remove(); else a.remove(); return; }
    const social = ['/x/','/x-feed/','https://twitter.com/plasma1337x','https://x.com/plasma1337x'].includes(href)?'x':(['/twitch/','/twitch-feed/','https://www.twitch.tv/plasma1337x'].includes(href)?'twitch':null);
    if(social && !a.dataset.socialIcon){a.dataset.socialIcon=social;a.href=social==='x'?'https://x.com/plasma1337x':'https://www.twitch.tv/plasma1337x';a.setAttribute('aria-label',social==='x'?'PlasmaX on X':'PlasmaX on Twitch');a.title=a.getAttribute('aria-label');a.innerHTML='<svg width="20" height="20" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true">'+(social==='x'?'<path d="M18.9 2H22l-6.8 7.8L23.2 22h-6.3L12 14.6 5.5 22H2.3l7.3-8.5L1.8 2h6.5l4.5 6.8L18.9 2Zm-1.1 18h1.7L7.3 3.9H5.5L17.8 20Z"/>':'<path d="M4.3 0 0 4.3v15.4h5.1V24l4.3-4.3h3.4L20.6 12V0H4.3Zm14.6 11.1-3.4 3.5H12l-3 3v-3H5.1V1.7h13.8v9.4ZM15.4 4.3h1.7v5.1h-1.7V4.3Zm-4.7 0h1.7v5.1h-1.7V4.3Z"/>')+'</svg>';}
-
+  });
+  document.querySelectorAll('.oxy-site-navigation > ul').forEach(list=>{
+   const items=['x','twitch'].map(name=>list.querySelector(`li:has(> a[data-social-icon="${name}"])`)).filter(Boolean);
+   const tail=items.at(-1);if(!tail)return;
+   const template=list.querySelector(':scope > template');
+   if(tail.nextElementSibling!==template){for(const item of items)list.insertBefore(item,template);}
   });
  }
  updateNavigation();
