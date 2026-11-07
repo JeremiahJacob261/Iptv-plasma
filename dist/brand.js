@@ -54,8 +54,7 @@
   document.querySelectorAll('.oxy-site-navigation > ul').forEach(list=>{
    const items=['x','twitch'].map(name=>list.querySelector(`li:has(> a[data-social-icon="${name}"])`)).filter(Boolean);
    const tail=items.at(-1);if(!tail)return;
-   const template=list.querySelector(':scope > template');
-   if(tail.nextElementSibling!==template){for(const item of items)list.insertBefore(item,template);}
+   if(tail.nextElementSibling){for(const item of items)list.appendChild(item);}
   });
  }
  updateNavigation();
