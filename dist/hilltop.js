@@ -32,24 +32,6 @@
    placeTop();if(phone.addEventListener)phone.addEventListener('change',placeTop);else phone.addListener?.(placeTop);
   }
  }
- if(banner){
-   const dialog=document.createElement('dialog');dialog.className='watch-ad-break';dialog.setAttribute('aria-label','Advertisement break');
-   const content=document.createElement('div');content.className='watch-ad-break-content';
-   const title=document.createElement('p');title.textContent='Advertisement';
-   const close=document.createElement('button');close.type='button';close.className='watch-ad-close';close.textContent='Close ad';close.setAttribute('aria-label','Close advertisement');
-   const ad=document.createElement('div');ad.className='watch-ad-break-unit';content.append(close,title,ad);dialog.append(content);document.body.append(dialog);
-   let timer,pending=false;
-   const key='plasmax-next-ad-break';
-   const getDue=()=>{try{return Number(sessionStorage.getItem(key))||0;}catch{return 0;}};
-   const setDue=due=>{try{sessionStorage.setItem(key,String(due));}catch{}};
-   const schedule=(fresh=false)=>{clearTimeout(timer);let due=fresh?0:getDue();if(!due){due=Date.now()+(10+Math.random()*25)*60*1000;setDue(due);}timer=setTimeout(showBreak,Math.max(0,due-Date.now()));};
-   let resumeAfterBreak=false;
-   function showBreak(){if(document.hidden){pending=true;return;}pending=false;const video=document.querySelector('#iptv-video');resumeAfterBreak=!!video&&!video.paused;if(resumeAfterBreak)video.pause();ad.replaceChildren(isolatedBanner());if(!dialog.open)dialog.showModal();}
-   close.addEventListener('click',()=>dialog.close());
-   dialog.addEventListener('close',()=>{ad.replaceChildren();if(resumeAfterBreak){const video=document.querySelector('#iptv-video');video?.play().catch(()=>{});}resumeAfterBreak=false;schedule(true);});
-   document.addEventListener('visibilitychange',()=>{if(!document.hidden&&pending&&!dialog.open)showBreak();});
-   schedule();
- }
  if(banner&&!['/','/iptv','/iptv-player','/x','/twitch'].includes(path)){
   const content=document.querySelector('.ct-inner-content, main, article')||document.querySelector('header');
   if(content){
@@ -76,16 +58,7 @@
   const close=document.createElement('button');close.type='button';close.textContent='Close ad';close.setAttribute('aria-label','Close floating advertisement');
   close.addEventListener('click',()=>floating.remove());floating.prepend(close);document.body.append(floating);
  }
- if(pop){
-  const key='plasmax-hilltop-popunder-last',interval=Math.max(24,Number(ads.popunderIntervalHours)||24)*3600000;let tried=false;
-  document.addEventListener('click',event=>{
-   if(tried||!event.isTrusted||event.defaultPrevented||event.target.closest('a,button,input,select,textarea,summary,video,[role="button"],.plasma-video-frame,.hilltop-banner'))return;
-   let last=0;try{last=Number(localStorage.getItem(key))||0;}catch{}
-   if(Date.now()-last<interval){tried=true;return;}
-   tried=true;try{localStorage.setItem(key,String(Date.now()));}catch{}
-   window.open(pop,'_blank','noopener,noreferrer');
-  },{passive:true});
- }
+
 })();
 
 
