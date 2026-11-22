@@ -5,7 +5,7 @@ import { useRouter } from "next/navigation";
 import { Loader2, RefreshCcw, LogOut, TrendingUp, Activity, CheckCircle, XCircle, Settings, Save, Globe } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
-import VisitorsGlobe from "@/components/admin/visitors-globe";
+import VisitorMap from "@/components/admin/visitor-map";
 
 interface Transaction {
     id: string;
@@ -225,17 +225,17 @@ export default function AdminDashboard() {
                 </div>
             </div>
 
-            {/* Globe and Transactions Layout */}
+            {/* Visitor geography and transactions */}
             <div className="grid grid-cols-1 lg:grid-cols-3 gap-6 mb-8">
-                {/* Visitors Globe */}
+                {/* Visitor geography */}
                 <div className="lg:col-span-1">
                     <div className="bg-card border border-white/10 rounded-xl overflow-hidden shadow-xl">
                         <div className="px-6 py-4 border-b border-white/5 flex items-center gap-2">
                             <Globe className="w-5 h-5 text-primary" />
-                            <h2 className="font-semibold">Global Visitors</h2>
+                            <h2 className="font-semibold">Visitor Geography</h2>
                         </div>
                         <div className="p-4">
-                            <VisitorsGlobe />
+                            <VisitorMap />
                         </div>
                     </div>
                 </div>
