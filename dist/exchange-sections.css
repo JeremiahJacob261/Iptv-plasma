@@ -49,3 +49,11 @@
 .visitor-location-counts strong span { font-weight: 400; color: #d8c8e5; }
 .visitor-location-note { margin: 6px 0 0; color: #d8c8e5; font-size: 12px; }
 .visitor-location-detail .visitor-map-status { margin: 0; }
+.visitor-map-stage { position: relative; }
+.visitor-map-stage svg { overflow: visible; }
+.visitor-map-marker { cursor: pointer; stroke-width: 1.25; }
+.visitor-map-marker.is-active { fill: #fff; stroke: #251836; opacity: 1; }
+.visitor-map-marker:focus-visible { outline: none; stroke: #fff; opacity: 1; }
+.visitor-map-tooltip { position: absolute; z-index: 1; width: 160px; max-width: calc(100% - 10px); padding: 7px 9px; border: 1px solid #b59ac6; border-radius: 7px; background: #261c31; color: #fff; font-size: 12px; line-height: 1.35; overflow-wrap: anywhere; pointer-events: none; transform: translate(-50%, calc(-100% - 8px)); }
+.visitor-map-tooltip[data-below="true"] { transform: translate(-50%, 8px); }
+.visitor-map-tooltip span { display: block; margin-top: 2px; color: #e2d4ed; }

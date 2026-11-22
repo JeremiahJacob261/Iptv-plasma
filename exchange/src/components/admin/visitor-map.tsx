@@ -20,6 +20,10 @@ interface VisitorData {
 }
 
 const countFormat = new Intl.NumberFormat();
+const locationName = ({ city, country }: Location) => city ? `${city}, ${country}` : country;
+const visitorCount = (count: number) => `${countFormat.format(count)} ${count === 1 ? "visitor" : "visitors"}`;
+const mapX = (longitude: number) => 360 + longitude * 2;
+const mapY = (latitude: number) => 168 - latitude * 2;
 
 export default function VisitorMap() {
     const [data, setData] = useState<VisitorData>();
@@ -27,6 +31,7 @@ export default function VisitorMap() {
     const [request, setRequest] = useState(0);
     const [selected, setSelected] = useState<string>();
     const [expanded, setExpanded] = useState(false);
+    const [activeDot, setActiveDot] = useState<number>();
 
     useEffect(() => {
         const controller = new AbortController();
@@ -55,6 +60,8 @@ export default function VisitorMap() {
         const [lat, lon] = marker.location;
         return lat >= -66 && lat <= 84 && lon >= -180 && lon <= 180;
     });
+    const tooltipLocation = activeDot === undefined ? undefined : locations[activeDot];
+    const tooltipY = tooltipLocation ? mapY(tooltipLocation.location[0]) / 3 : 0;
     const topCount = Math.max(1, ...countries.map(country => country.visitorCount));
     const activeCountry = countries.find(country => country.countryCode === selected);
     const topCountries = countries.slice(0, 5);
@@ -65,19 +72,41 @@ export default function VisitorMap() {
     return (
         <div className="visitor-geography">
             <figure className="visitor-map">
-                <svg viewBox="0 0 720 300" role="img" aria-label={activeCountry ? `Visitor locations in ${activeCountry.country}` : "Worldwide visitor locations"}>
-                    <image href="/assets/visitor-world-map.svg" width="720" height="300" />
-                    {locations.map(({ location: [lat, lon], count, city, country, countryCode }, index) => {
-                        const isHighlighted = !activeCountry || selected === countryCode;
-                        return (
-                            <circle key={index} cx={360 + lon * 2} cy={168 - lat * 2}
-                                r={5 + Math.min(7, Math.sqrt(count))}
-                                className={isHighlighted ? "visitor-map-dot" : "visitor-map-dot-muted"}>
-                                <title>{city ? `${city}, ${country}` : country} · {countFormat.format(count)} visitors</title>
-                            </circle>
-                        );
-                    })}
-                </svg>
+                <div className="visitor-map-stage" onPointerDown={() => setActiveDot(undefined)}>
+                    <svg viewBox="0 0 720 300" role="group" aria-label={activeCountry ? `Visitor locations in ${activeCountry.country}` : "Worldwide visitor locations"}>
+                        <image href="/assets/visitor-world-map.svg" width="720" height="300" />
+                        {locations.map((marker, index) => {
+                            const { location: [lat, lon], count, countryCode } = marker;
+                            const isActive = activeDot === index;
+                            const className = !activeCountry || selected === countryCode ? "visitor-map-dot" : "visitor-map-dot-muted";
+                            return (
+                                <circle key={index} cx={mapX(lon)} cy={mapY(lat)}
+                                    r={3.5 + Math.min(3, Math.sqrt(count) * .5)}
+                                    className={`${className} visitor-map-marker${isActive ? " is-active" : ""}`}
+                                    tabIndex={0} role="img" aria-label={`${locationName(marker)}, ${visitorCount(count)}`}
+                                    onPointerEnter={event => { if (event.pointerType !== "touch") setActiveDot(index); }}
+                                    onPointerLeave={event => {
+                                        const root = event.currentTarget.getRootNode() as ShadowRoot | Document;
+                                        if (event.pointerType !== "touch" && root.activeElement !== event.currentTarget) {
+                                            setActiveDot(current => current === index ? undefined : current);
+                                        }
+                                    }}
+                                    onPointerDown={event => { event.stopPropagation(); setActiveDot(index); }}
+                                    onFocus={() => setActiveDot(index)}
+                                    onBlur={() => setActiveDot(current => current === index ? undefined : current)}
+                                    onKeyDown={event => { if (event.key === "Escape") setActiveDot(undefined); }}
+                                />
+                            );
+                        })}
+                    </svg>
+                    {tooltipLocation && (
+                        <div className="visitor-map-tooltip" role="tooltip" data-below={tooltipY < 45}
+                            style={{ left: `clamp(min(50%, 85px), ${mapX(tooltipLocation.location[1]) / 7.2}%, max(50%, 100% - 85px))`, top: `${tooltipY}%` }}>
+                            <strong>{locationName(tooltipLocation)}</strong>
+                            <span>{visitorCount(tooltipLocation.count)}</span>
+                        </div>
+                    )}
+                </div>
                 <figcaption>
                     {activeCountry ? activeCountry.country : "Worldwide"}
                     {status === "ready" && countries.length > 0 && (
