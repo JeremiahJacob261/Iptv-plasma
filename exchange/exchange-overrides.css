@@ -35,3 +35,15 @@
 .visitor-map-status { margin: 14px 4px 0; color: #ddd0e8; font-size: 13px; }
 .visitor-map-status button, .visitor-map-more { color: #e2c4ff; text-decoration: underline; text-underline-offset: 3px; cursor: pointer; }
 .visitor-map-more { min-height: 44px; margin-left: 4px; font-size: 13px; }
+.visitor-location-detail { margin: 12px 0 0; padding: 0 10px 9px; border: 1px solid #483952; border-radius: 10px; background: #211929; }
+.visitor-location-header { display: flex; flex-wrap: wrap; align-items: center; justify-content: space-between; gap: 0 8px; }
+.visitor-location-header h3 { font-size: 13px; font-weight: 600; }
+.visitor-location-header button, .visitor-location-more summary { min-height: 44px; color: #e2c4ff; font-size: 13px; text-decoration: underline; text-underline-offset: 3px; cursor: pointer; }
+.visitor-location-more summary { line-height: 44px; }
+.visitor-location-header button:focus-visible, .visitor-location-more summary:focus-visible { outline: 2px solid #d1a7fa; outline-offset: 1px; }
+.visitor-location-counts { list-style: none; padding: 0; margin: 0; }
+.visitor-location-counts li { display: flex; justify-content: space-between; gap: 10px; border-top: 1px solid #483952; padding: 8px 0; font-size: 13px; overflow-wrap: anywhere; }
+.visitor-location-counts strong { flex-shrink: 0; font-variant-numeric: tabular-nums; }
+.visitor-location-counts strong span { font-weight: 400; color: #d8c8e5; }
+.visitor-location-note { margin: 6px 0 0; color: #d8c8e5; font-size: 12px; }
+.visitor-location-detail .visitor-map-status { margin: 0; }

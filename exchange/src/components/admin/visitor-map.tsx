@@ -59,7 +59,8 @@ export default function VisitorMap() {
     const activeCountry = countries.find(country => country.countryCode === selected);
     const topCountries = countries.slice(0, 5);
     const displayedCountries = expanded ? countries : topCountries;
-    const hasSelectedLocations = locations.some(location => location.countryCode === selected);
+    const selectedLocations = locations.filter(location => location.countryCode === selected)
+        .sort((a, b) => b.count - a.count);
 
     return (
         <div className="visitor-geography">
@@ -85,7 +86,28 @@ export default function VisitorMap() {
                 </figcaption>
             </figure>
 
-            {activeCountry && !hasSelectedLocations && <p className="visitor-map-status">No map coordinates available for this country.</p>}
+            {activeCountry && (
+                <section className="visitor-location-detail" key={activeCountry.countryCode} aria-label={`Locations in ${activeCountry.country}`}>
+                    <div className="visitor-location-header">
+                        <h3>Mapped locations</h3>
+                        <button type="button" onClick={() => setSelected(undefined)}>Worldwide view</button>
+                    </div>
+                    {selectedLocations.length === 0 ? (
+                        <p className="visitor-map-status">No map coordinates available for this country.</p>
+                    ) : (
+                        <>
+                            <LocationCounts locations={selectedLocations.slice(0, 4)} />
+                            {selectedLocations.length > 4 && (
+                                <details className="visitor-location-more">
+                                    <summary>Show {countFormat.format(selectedLocations.length - 4)} more locations</summary>
+                                    <LocationCounts locations={selectedLocations.slice(4)} />
+                                </details>
+                            )}
+                            <p className="visitor-location-note">Counts cover the locations shown on the map.</p>
+                        </>
+                    )}
+                </section>
+            )}
             {status === "loading" && <p className="visitor-map-status" role="status">Loading visitor locations…</p>}
             {status === "error" && (
                 <p className="visitor-map-status" role="status">Visitor locations couldn’t load.{" "}
@@ -123,5 +145,18 @@ export default function VisitorMap() {
                 </>
             )}
         </div>
+    );
+}
+
+function LocationCounts({ locations }: { locations: Location[] }) {
+    return (
+        <ul className="visitor-location-counts">
+            {locations.map(({ city, count, location }, index) => (
+                <li key={`${location.join(",")}-${index}`}>
+                    <span>{city || "City unknown"}</span>
+                    <strong>{countFormat.format(count)} <span>{count === 1 ? "visitor" : "visitors"}</span></strong>
+                </li>
+            ))}
+        </ul>
     );
 }
