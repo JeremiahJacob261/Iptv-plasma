@@ -1,11 +1,12 @@
 "use client";
 
-import { useEffect, useState } from "react";
+import { useCallback, useEffect, useState } from "react";
 import { useRouter } from "next/navigation";
-import { Loader2, RefreshCcw, LogOut, TrendingUp, Activity, CheckCircle, XCircle, Settings, Save, Globe } from "lucide-react";
+import { Loader2, RefreshCcw, LogOut, Save, Globe, Tv, SlidersHorizontal, ArrowLeftRight } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import VisitorMap from "@/components/admin/visitor-map";
+import IptvOverview from "@/components/admin/iptv-overview";
 
 interface Transaction {
     id: string;
@@ -32,15 +33,18 @@ interface Analytics {
 }
 
 export default function AdminDashboard() {
-    const [iptv, setIptv] = useState<{visits:number,plays:number}|null>(null);
-    useEffect(()=>{fetch('/api/admin/iptv-analytics').then(r=>r.ok?r.json():null).then(setIptv).catch(()=>{});},[]);
+    const [section, setSection] = useState<"iptv" | "exchange" | "audience">("iptv");
+    const [refresh, setRefresh] = useState(0);
+    const [exchangeError, setExchangeError] = useState(false);
+    const [settingsAvailable, setSettingsAvailable] = useState(false);
     const [transactions, setTransactions] = useState<Transaction[]>([]);
     const [analytics, setAnalytics] = useState<Analytics | null>(null);
     const [commission, setCommission] = useState<string>("0");
-    const [isLoading, setIsLoading] = useState(true);
+    const [isLoading, setIsLoading] = useState(false);
     const [isRefreshing, setIsRefreshing] = useState<string | null>(null);
     const [isSaving, setIsSaving] = useState(false);
     const router = useRouter();
+    const onUnauthorized = useCallback(() => window.location.replace("/admin/"), []);
 
     // Force sync a transaction from ChangeNOW or StealthEX
     const syncTransaction = async (id: string, externalId: string) => {
@@ -58,6 +62,8 @@ export default function AdminDashboard() {
 
     const fetchData = async () => {
         setIsLoading(true);
+        setExchangeError(false);
+        setSettingsAvailable(false);
         try {
             // Check auth
             const res = await fetch("/api/admin/transactions");
@@ -65,22 +71,27 @@ export default function AdminDashboard() {
                 router.push("/admin");
                 return;
             }
+            if (!res.ok) throw new Error("Exchange data unavailable");
             const data = await res.json();
             if (data.success) {
                 setTransactions(data.transactions);
                 setAnalytics(data.analytics);
-                console.log(data.analytics);
+
+            } else {
+                setExchangeError(true);
             }
 
             // Fetch Config
             const configRes = await fetch("/api/admin/config");
+            if (!configRes.ok) throw new Error("Commission settings unavailable");
             const configData = await configRes.json();
             if (configData.commission_percentage !== undefined) {
                 setCommission(configData.commission_percentage.toString());
+                setSettingsAvailable(true);
             }
 
         } catch (error) {
-            console.error("Failed to load dashboard data", error);
+            setExchangeError(true);
         } finally {
             setIsLoading(false);
         }
@@ -90,7 +101,7 @@ export default function AdminDashboard() {
         setIsSaving(true);
         try {
             const val = parseFloat(commission);
-            if (isNaN(val) || val < 0) {
+            if (!Number.isFinite(val) || val < 0) {
                 alert("Invalid commission value");
                 return;
             }
@@ -112,139 +123,63 @@ export default function AdminDashboard() {
     };
 
     useEffect(() => {
-        fetchData();
-    }, []);
+        if (section === "exchange") void fetchData();
+    }, [section, refresh]);
 
     const handleLogout = async () => {
         await fetch('/api/admin/logout', {method:'POST'}).catch(()=>{});
         router.push("/admin");
     };
 
-    if (isLoading && transactions.length === 0) {
-        return (
-            <div className="min-h-screen flex items-center justify-center bg-background text-white">
-                <Loader2 className="w-8 h-8 animate-spin text-primary" />
-            </div>
-        );
-    }
+    const currency = new Intl.NumberFormat("en-US", { style: "currency", currency: "USD" });
+    const views = [
+        { id: "iptv", label: "IPTV analytics", Icon: Tv },
+        { id: "exchange", label: "Exchange", Icon: ArrowLeftRight },
+        { id: "audience", label: "Visitor geography", Icon: Globe },
+    ] as const;
 
     return (
-        <div className="min-h-screen bg-background p-6 text-white font-sans">
-            <header className="flex justify-between items-center mb-8">
-                <div>
-                    <h1 className="text-2xl font-bold">PlasmaX Admin</h1>
-                    {iptv && <p className="text-sm text-muted-foreground">IPTV, past 30 days: {iptv.visits.toLocaleString()} visits · {iptv.plays.toLocaleString()} playback starts</p>}
-                    <p className="text-muted-foreground text-sm">Dashboard & Analytics</p>
-                </div>
-                <div className="flex gap-4">
-                    <Button variant="outline" size="sm" onClick={fetchData} disabled={isLoading}>
-                        <RefreshCcw className={`w-4 h-4 mr-2 ${isLoading ? 'animate-spin' : ''}`} />
-                        Refresh
-                    </Button>
-                    <Button variant="destructive" size="sm" onClick={handleLogout}>
-                        <LogOut className="w-4 h-4 mr-2" />
-                        Logout
-                    </Button>
-                </div>
-            </header>
-
-            <div className="grid grid-cols-1 md:grid-cols-4 gap-6 mb-8">
-                {/* Analytics Cards */}
-                {analytics && (
-                    <>
-                        <div className="bg-card border border-white/10 p-6 rounded-xl relative overflow-hidden">
-                            <div className="absolute top-0 right-0 p-4 opacity-10">
-                                <Activity className="w-24 h-24" />
-                            </div>
-                            <h3 className="text-sm font-medium text-muted-foreground mb-2">Total Transactions</h3>
-                            <p className="text-3xl font-bold">{analytics.totalTransactions}</p>
-                        </div>
-
-                        <div className="bg-card border border-white/10 p-6 rounded-xl relative overflow-hidden">
-                            <div className="absolute top-0 right-0 p-4 opacity-10">
-                                <TrendingUp className="w-24 h-24" />
-                            </div>
-                            <h3 className="text-sm font-medium text-muted-foreground mb-2">Total Visits</h3>
-                            <div className="flex items-end gap-2">
-                                <span className="text-3xl font-bold">{analytics.totalVisits}</span>
-                                <span className="text-sm text-muted-foreground mb-1">({analytics.totalUniqueVisits} unique)</span>
-                            </div>
-                        </div>
-
-                        <div className="bg-card border border-white/10 p-6 rounded-xl relative overflow-hidden">
-                            <div className="absolute top-0 right-0 p-4 opacity-10">
-                                <CheckCircle className="w-24 h-24" />
-                            </div>
-                            <h3 className="text-sm font-medium text-muted-foreground mb-2">Success Rate</h3>
-                            <p className="text-3xl font-bold text-green-500">{analytics.successRate}%</p>
-                        </div>
-
-                        <div className="bg-card border border-white/10 p-6 rounded-xl relative overflow-hidden">
-                            <div className="absolute top-0 right-0 p-4 opacity-10">
-                                <span className="text-6xl font-bold">$</span>
-                            </div>
-                            <h3 className="text-sm font-medium text-muted-foreground mb-2">Total Volume</h3>
-                            <p className="text-3xl font-bold">${(analytics.totalVolumeUSD || 0).toLocaleString('en-US', { minimumFractionDigits: 2, maximumFractionDigits: 2 })}</p>
-                            <p className="text-xs text-muted-foreground mt-1">Estimated USD Value</p>
-                        </div>
-
-                        <div className="bg-card border border-white/10 p-6 rounded-xl relative overflow-hidden border-primary/20 bg-primary/5">
-                            <div className="absolute top-0 right-0 p-4 opacity-10">
-                                <span className="text-6xl font-bold text-primary">$</span>
-                            </div>
-                            <h3 className="text-sm font-medium text-primary mb-2">Total Earnings</h3>
-                            <p className="text-3xl font-bold text-primary">${(analytics.totalCommissionUSD || 0).toLocaleString('en-US', { minimumFractionDigits: 2, maximumFractionDigits: 2 })}</p>
-                            <p className="text-xs text-primary/70 mt-1">Commission Earned</p>
-                        </div>
-                    </>
-                )}
-
-                {/* Commission Settings */}
-                <div className="bg-card border border-white/10 p-6 rounded-xl relative overflow-hidden md:col-span-2">
-                    <div className="absolute top-0 right-0 p-4 opacity-10">
-                        <Settings className="w-24 h-24" />
-                    </div>
-                    <h3 className="text-sm font-medium text-muted-foreground mb-4">Platform Settings</h3>
-                    <div className="flex items-end gap-4">
-                        <div className="flex-1">
-                            <label className="text-xs text-muted-foreground mb-1 block">Your Commission (%)</label>
-                            <Input
-                                type="number"
-                                value={commission}
-                                onChange={(e) => setCommission(e.target.value)}
-                                min="0"
-                                step="0.1"
-                                className="bg-black/20"
-                            />
-                        </div>
-                        <Button onClick={handleUpdateCommission} disabled={isSaving}>
-                            {isSaving ? <Loader2 className="w-4 h-4 animate-spin" /> : <Save className="w-4 h-4 mr-2" />}
-                            Save
-                        </Button>
-                    </div>
-                </div>
-            </div>
-
-            {/* Visitor geography and transactions */}
-            <div className="grid grid-cols-1 lg:grid-cols-3 gap-6 mb-8">
-                {/* Visitor geography */}
-                <div className="lg:col-span-1">
-                    <div className="bg-card border border-white/10 rounded-xl overflow-hidden shadow-xl">
-                        <div className="px-6 py-4 border-b border-white/5 flex items-center gap-2">
-                            <Globe className="w-5 h-5 text-primary" />
-                            <h2 className="font-semibold">Visitor Geography</h2>
-                        </div>
-                        <div className="p-4">
-                            <VisitorMap />
-                        </div>
-                    </div>
+        <div className="admin-dashboard">
+            <aside className="admin-nav">
+                <a className="admin-brand" href="/"><img src="/assets/plasmax-mark.svg" alt="" width="36" height="36" /><span>PlasmaX Admin</span></a>
+                <nav aria-label="Admin sections">
+                    {views.map(({ id, label, Icon }) => <button key={id} type="button"
+                        aria-current={section === id ? "page" : undefined}
+                        onClick={() => setSection(id)}><Icon size={18} aria-hidden="true" />{label}</button>)}
+                </nav>
+            </aside>
+            <div className="admin-content">
+                <div className="admin-toolbar">
+                    <a href="/">Open player</a>
+                    <button type="button" onClick={() => setRefresh(n => n + 1)} disabled={section === "exchange" && isLoading}><RefreshCcw size={16} aria-hidden="true" />Refresh</button>
+                    <button type="button" onClick={handleLogout}><LogOut size={16} aria-hidden="true" />Sign out</button>
                 </div>
 
-                {/* Transactions Table */}
-                <div className="lg:col-span-2 bg-card border border-white/10 rounded-xl overflow-hidden shadow-xl">
-                    <div className="px-6 py-4 border-b border-white/5">
-                        <h2 className="font-semibold">Recent Transactions</h2>
-                    </div>
+                {section === "iptv" && <IptvOverview refresh={refresh} onUnauthorized={onUnauthorized} />}
+                {section === "audience" && <section>
+                    <div className="admin-section-head"><div><h1>Visitor geography</h1><p>Explore recorded Exchange visitor locations by country.</p></div></div>
+                    <div className="admin-panel admin-audience-panel"><VisitorMap key={refresh} /></div>
+                </section>}
+                {section === "exchange" && <section>
+                    <div className="admin-section-head"><div><h1>Exchange</h1><p>Monitor transactions and manage commission.</p></div></div>
+                    {isLoading && <p role="status" className="admin-notice">Loading Exchange data…</p>}
+                    {exchangeError && <p role="status" className="admin-notice">Some Exchange data couldn’t load. Use Refresh to try again.</p>}
+                    {analytics && <dl className="admin-totals admin-exchange-totals">
+                        <div><dt>Transactions</dt><dd>{analytics.totalTransactions.toLocaleString()}</dd></div>
+                        <div><dt>Exchange visits</dt><dd>{analytics.totalVisits.toLocaleString()}</dd><small>{analytics.totalUniqueVisits.toLocaleString()} unique</small></div>
+                        <div><dt>Success rate</dt><dd>{analytics.successRate}%</dd></div>
+                        <div><dt>Estimated volume</dt><dd>{currency.format(analytics.totalVolumeUSD || 0)}</dd></div>
+                        <div><dt>Commission earned</dt><dd>{currency.format(analytics.totalCommissionUSD || 0)}</dd></div>
+                    </dl>}
+                    <section className="admin-panel">
+                        <div className="admin-panel-head"><h2><SlidersHorizontal size={17} aria-hidden="true" />Commission</h2></div>
+                        <div className="admin-commission">
+                            <div><label htmlFor="exchange-commission">Commission (%)</label><Input id="exchange-commission" type="number" min="0" step="0.1" value={commission} disabled={!settingsAvailable} onChange={event => setCommission(event.target.value)} /></div>
+                            <Button onClick={handleUpdateCommission} disabled={isSaving || !settingsAvailable}>{isSaving ? <Loader2 className="w-4 h-4 animate-spin" /> : <Save className="w-4 h-4" />}Save</Button>
+                        </div>
+                    </section>
+                    <section className="admin-panel admin-transactions">
+                        <div className="admin-panel-head"><h2>Recent transactions</h2></div>
                     <div className="overflow-x-auto">
                         <table className="w-full text-sm">
                             <thead className="bg-muted/50 text-left">
@@ -293,7 +228,7 @@ export default function AdminDashboard() {
                                                 size="icon"
                                                 className="h-8 w-8 text-muted-foreground hover:text-white"
                                                 onClick={() => syncTransaction(tx.id, (tx.stealthex_id || tx.changenow_id) as string)}
-                                                disabled={isRefreshing === tx.id}
+                                                disabled={isRefreshing === tx.id || !(tx.stealthex_id || tx.changenow_id)}
                                                 title="Sync Status"
                                             >
                                                 <RefreshCcw className={`w-4 h-4 ${isRefreshing === tx.id ? 'animate-spin' : ''}`} />
@@ -311,7 +246,8 @@ export default function AdminDashboard() {
                             </tbody>
                         </table>
                     </div>
-                </div>
+                    </section>
+                </section>}
             </div>
         </div>
     );

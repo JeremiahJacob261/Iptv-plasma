@@ -72,7 +72,7 @@ async function loadPlaylist(url, file, scroll = true, autoplay = false) {
  message('Loading playlist…');
  const sourceSelect = document.querySelector('#builtin-playlist');
  if (sourceSelect) sourceSelect.value = [...sourceSelect.options].some(option=>option.value===url) ? url : '';
- let nextChannels;
+ let nextChannels, publicPlaylist = false;
  try {
   let text, base = location.href;
   if (file) {
@@ -84,8 +84,11 @@ async function loadPlaylist(url, file, scroll = true, autoplay = false) {
    try { parsed = new URL(url); } catch { throw Error('Enter a valid HTTP or HTTPS playlist URL.'); }
    if (!['http:', 'https:'].includes(parsed.protocol)) throw Error('Enter an HTTP or HTTPS playlist URL.');
    const result = await fetchPlaylist(parsed.href, playlistRequest.signal); text = result.text; base = result.url || parsed.href;
+   const source = new URL(base);
+   publicPlaylist = source.origin === 'https://iptv-org.github.io' && source.pathname.startsWith('/iptv/') && source.pathname.endsWith('.m3u');
   }
   nextChannels = parsePlaylist(text, base);
+  if (publicPlaylist) nextChannels.forEach(channel => { channel.analyticsPublic = true; });
   if (!nextChannels.length) throw Error('No playable channels were found. Try another M3U playlist or directory selection.');
  } catch (error) {
   if (attempt !== loadAttempt) return;
@@ -189,7 +192,7 @@ async function playChannel(channel, skipped = 0) {
  document.querySelector('#current-channel').textContent=channel.name;status.textContent='Connecting directly to the channel…';
  let feed=channel,proxied=forceRelay(feed),connection=0,recoveredMedia=false,fallbackBusy=false,lastFailure='',alternatives;
  const tried=new Set([channel.url]);
- let HlsClass;
+ let HlsClass, recordedStart = false;
  function forceRelay(item){return item.url.startsWith('http:')||Boolean(item.userAgent||item.referer)||document.querySelector('#player-http')?.checked;}
  const current=epoch=>attempt===playAttempt&&epoch===connection;
  const connect=async()=>{
@@ -199,7 +202,18 @@ async function playChannel(channel, skipped = 0) {
   source.href=feed.url;source.innerHTML=heroIcon('arrow-top-right-on-square');source.append(document.createTextNode('Channel source: '+new URL(feed.url).hostname));source.hidden=false;
   const isHls=feed.type==='hls'||!/\.(?:mp4|mp3|aac|webm|ogg|mov|ts)(?:[?#]|$)/i.test(feed.url);
   const start=()=>{if(!current(epoch))return;Promise.resolve(video.play()).catch(error=>{if(!current(epoch)||error.name==='AbortError')return;if(error.name==='NotAllowedError'){clearTimeout(playTimeout);playTimeout=null;status.textContent='Press Play in the video controls to start watching.';}else fallback({type:'mediaError'},epoch);});};
-  video.onplaying=()=>{if(current(epoch)){clearTimeout(playTimeout);playTimeout=null;status.textContent=(tried.size>1?'Playing an alternative public feed of this channel.':'Playing live')+(video.muted?' · Sound is muted. Use the player controls to unmute.':'');message(channels.length+' channels loaded. Now playing '+channel.name+'.');}};
+  video.onplaying = () => {
+   if (!current(epoch)) return;
+   clearTimeout(playTimeout);
+   playTimeout = null;
+   status.textContent = (tried.size > 1 ? 'Playing an alternative public feed of this channel.' : 'Playing live') +
+    (video.muted ? ' · Sound is muted. Use the player controls to unmute.' : '');
+   message(channels.length + ' channels loaded. Now playing ' + channel.name + '.');
+   if (recordedStart) return;
+   recordedStart = true;
+   const detail = channel.analyticsPublic && channel.id ? { id: channel.id, name: channel.name } : null;
+   document.dispatchEvent(new CustomEvent('plasmax:iptv-start', { detail }));
+  };
   try{
    if(isHls&&!video.canPlayType('application/vnd.apple.mpegurl'))HlsClass=await ensureHls();
    if(!current(epoch))return;
