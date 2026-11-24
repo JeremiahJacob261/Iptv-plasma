@@ -1,4 +1,4 @@
-.plasma-page-ad { box-sizing: border-box; padding: 14px 16px 20px; width: 100%; background: #15111b; color: #d0c4d8; text-align: center; font: 12px/1.4 Arial, sans-serif; }
+.plasma-page-ad { box-sizing: border-box; width: 100%; margin: 24px auto; padding: 14px 16px 20px; background: #15111b; color: #d0c4d8; text-align: center; font: 12px/1.4 Arial, sans-serif; }
 .plasma-page-ad span { display: block; margin-bottom: 8px; }
 .plasma-page-ad iframe { display: block; width: 100%; max-width: 1200px; height: 250px; border: 0; margin: auto; }
 .plasma-aads iframe { width: 100% !important; max-width: 1200px; }

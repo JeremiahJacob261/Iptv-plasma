@@ -11,7 +11,7 @@ Configured on 2026-10-25: https://twitter.com/plasma1337x and https://www.twitch
 Set xProfile and twitchURL in data/site-config.json to the buyer's actual HTTPS links and rebuild. Only supported X/Twitter and Twitch hostnames are linked. Do not guess account handles. Existing /x/ and /twitch/ pages support public video links in the native player; a profile itself is not a specific video. Personal follow/watch links appear on the homepage when configured.
 
 ## Advertising
-A-ADS is the only active ad provider. Responsive unit 2463134 is used on desktop and unit 2463138 on phones. The player-page banner sits directly below the IPTV feed. Other public pages get one contextual placement after the page content (or after the fourth substantial paragraph in longer articles). There is no page-switch interstitial. Admin pages do not show ads.
+A-ADS is the only active ad provider. Responsive unit 2463134 is used on desktop and unit 2463138 on phones. Every public page has two in-page placements, separated within the content. On the IPTV home page, one banner sits directly below the feed and the second follows playlist controls; on desktop, about 40% of the first banner is visible in the initial viewport. Mobile keeps the feed's 16:9 layout. Other pages place units in the article or service content. There is no page-switch interstitial. Admin pages do not show ads.
 
 Google AdSense is not configured: no publisher or ad-unit IDs were supplied. `ads.txt` does not contain an AdSense seller entry. No Hilltop scripts, popunders, banners, or direct-link ads are included.
 
@@ -19,4 +19,4 @@ Google AdSense is not configured: no publisher or ad-unit IDs were supplied. `ad
 brand.js wraps newly created IPTV videos and brands existing social media frames without replacing the video, changing its source or blocking controls. The custom Full screen button targets the branded wrapper when the browser supports element fullscreen. Native iOS video fullscreen and native video control fullscreen can leave the DOM wrapper, so the page watermark cannot be guaranteed in those modes; it is a UI overlay, not burned into broadcaster video.
 
 ## A-ADS placement update — 2026-11-24
-A-ADS is the only active ad provider. Responsive unit 2463134 is used on desktop and unit 2463138 on phones. The player-page banner sits immediately below the IPTV feed; other public pages use one contextual in-content placement. Page navigation is direct and never interrupts viewing with an interstitial. No Hilltop scripts, popunders, banners, or direct-link ads are included.
+A-ADS uses two responsive in-page placements per public page. Page navigation is direct and never interrupts viewing with an interstitial. No Hilltop scripts, popunders, banners, or direct-link ads are included.

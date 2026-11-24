@@ -53,7 +53,7 @@ The replacement promotional artwork at /assets/plasmax-player-preview.png is an 
 
 The inline video watermark pairs the geometric mark and PlasmaX text at the lower right of native IPTV, X and Twitch video, above the native control area. It uses the existing dark purple/white roles, a 6px corner, 85% opacity and a 28px mark. The logo is noninteractive and hidden from assistive technology. dist/brand.js observes added video nodes with MutationObserver, wraps the existing IPTV video or brands the existing social media frame, and preserves the video node and source. It is a page overlay rather than a burned-in broadcast mark. Custom element fullscreen targets the branded wrapper where supported; native iOS video fullscreen can omit DOM overlays.
 
-Personal X and Twitch account links remain empty until genuine user-supplied HTTPS links are configured. A-ADS responsive units 2463134 (desktop) and 2463138 (mobile) are active. Keep one banner below the IPTV feed and one contextual placement on each other public page. Do not interrupt page navigation with ads. No Hilltop, popunder, or direct-link ads.
+Personal X and Twitch account links remain empty until genuine user-supplied HTTPS links are configured. A-ADS responsive units 2463134 (desktop) and 2463138 (mobile) are active. Keep two in-page placements on each public page, separated within the content. The IPTV home page keeps one directly below the feed and another after playlist controls; the first viewport shows about 40% of the first desktop banner. Do not interrupt page navigation with ads. No Hilltop, popunder, or direct-link ads.
 
 ### Completed identity review
 
