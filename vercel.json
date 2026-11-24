@@ -54,10 +54,6 @@
       "destination": "https://www.sparkexchange.io/api/settings/:path*"
     },
     {
-      "source": "/api/contact",
-      "destination": "https://www.sparkexchange.io/api/contact"
-    },
-    {
       "source": "/api/track-visit",
       "destination": "https://www.sparkexchange.io/api/track-visit"
     },
