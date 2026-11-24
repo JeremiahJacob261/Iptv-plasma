@@ -57,7 +57,7 @@
 
     const blocks = [...(content || document.body).children]
       .filter(node => !['SCRIPT', 'STYLE'].includes(node.tagName) && !node.classList.contains('plasma-page-ad'));
-    if (blocks.length >= 2) return [blocks[0], blocks[Math.floor((blocks.length - 1) / 2)]];
+    if (blocks.length >= 2) return [blocks[0], blocks[Math.floor(blocks.length / 2)]];
     if (blocks.length === 1) return [blocks[0], content || blocks[0]];
     return [article || content || document.body, content || article || document.body];
   }
