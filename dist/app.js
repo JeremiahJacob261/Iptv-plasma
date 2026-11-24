@@ -105,7 +105,6 @@ async function loadPlaylist(url, file, scroll = true, autoplay = false) {
  try {
   renderPlayer(scroll); store.set('iptv-playlist', channels);
   if (startAutomatically) {
-   document.querySelector('#iptv-video').muted = true;
    playChannel(channels[0]);
   } else message(channels.length+' channels loaded. Select a channel to watch.');
  } catch (error) { console.error('player_render_failed', error); message('The playlist loaded, but the player could not open. Refresh the page and try again.', true); }
@@ -120,25 +119,18 @@ function renderPlayer(scroll = true) {
  let panel = document.querySelector('#watch-player');
  if (!panel) {
   panel = document.createElement('section'); panel.id = 'watch-player'; panel.setAttribute('aria-label','IPTV channel player');
-  panel.innerHTML = '<aside class="channel-sidebar"><div class="watch-sidebar-title">Channel list</div><input id="channel-search" type="search" placeholder="Filter Channels" aria-label="Filter Channels"><label class="favorite-filter"><input id="favorites-only" type="checkbox"> Favorite Channels</label><select id="channel-group" aria-label="Channel group"><option value="">All Channels</option></select><p id="channel-count" role="status"></p><div id="channel-list"></div><button id="load-more-channels" type="button" hidden>Load more channels</button></aside><div class="video-pane"><video id="iptv-video" controls playsinline preload="none"></video><div class="video-caption"><span id="current-channel">Select a channel to watch</span><span class="playback-actions"><button id="fullscreen-playback" type="button">Full screen</button><button id="stop-playback" type="button">Stop</button></span></div><p class="channel-source-line"><a id="channel-source" target="_blank" rel="noopener noreferrer" hidden>Channel source</a></p><p id="stream-status" role="status"></p></div>';
+  panel.innerHTML = '<aside class="channel-sidebar"><div class="watch-sidebar-title">Channel list</div><input id="channel-search" type="search" placeholder="Filter Channels" aria-label="Filter Channels"><label class="favorite-filter"><input id="favorites-only" type="checkbox"> Favorite Channels</label><select id="channel-group" aria-label="Channel group"><option value="">All Channels</option></select><p id="channel-count" role="status"></p><div id="channel-list"></div><button id="load-more-channels" type="button" hidden>Load more channels</button></aside><div class="video-pane"><video id="iptv-video" controls playsinline preload="none"></video><div class="video-caption"><span id="current-channel">Select a channel to watch</span></div><p id="stream-status" role="status"></p></div>';
   (document.querySelector('.playlist-setup') || document.querySelector('#player-status')).before(panel);
   decorateSearch(panel.querySelector('#channel-search'));
-  setControlLabel(panel.querySelector('#stop-playback'),'Stop','stop');
-  setControlLabel(panel.querySelector('#fullscreen-playback'),'Full screen','arrows-pointing-out');
   setControlLabel(panel.querySelector('#load-more-channels'),'Load more channels','chevron-down');
   ['#channel-search','#favorites-only','#channel-group'].forEach(selector=>panel.querySelector(selector).addEventListener(selector==='#channel-search'?'input':'change',()=>{pageSize=10;renderChannels();}));
   panel.querySelector('#load-more-channels').addEventListener('click',()=>{pageSize+=10;renderChannels();});
 
-  panel.querySelector('#stop-playback').addEventListener('click', () => stopPlayback());
-  panel.querySelector('#fullscreen-playback').addEventListener('click', async()=>{
-   const video=panel.querySelector('video');
-   try{if(video.requestFullscreen)await (video.closest('[data-plasma-player]')||video).requestFullscreen();else if(video.webkitEnterFullscreen)video.webkitEnterFullscreen();else document.querySelector('#stream-status').textContent='Use your browser’s video controls to enter full screen.';}catch{document.querySelector('#stream-status').textContent='Full screen was blocked. Tap the video’s full-screen control.';}
-  });
  }
  const group = panel.querySelector('#channel-group'); group.replaceChildren(new Option('All Channels',''));
  [...new Set(channels.flatMap(x=>x.group.split(';')).filter(Boolean))].sort().forEach(x=>group.add(new Option(x,x)));
  panel.querySelector('#channel-search').value=''; panel.querySelector('#favorites-only').checked=false;
- panel.querySelector('#current-channel').textContent='Select a channel to watch'; panel.querySelector('#stream-status').textContent=''; panel.querySelector('#channel-source').hidden=true;
+ panel.querySelector('#current-channel').textContent='Select a channel to watch'; panel.querySelector('#stream-status').textContent='';
  renderChannels(); if (scroll) safeScroll(panel);
 }
 function renderChannels() {
@@ -188,7 +180,7 @@ async function playChannel(channel, skipped = 0) {
  stopPlayback(false);const attempt=playAttempt;
  active=channel.url;renderChannels();
  message(channels.length+' channels loaded. Connecting to '+channel.name+'.');
- const video=document.querySelector('#iptv-video'),status=document.querySelector('#stream-status'),source=document.querySelector('#channel-source');
+ const video=document.querySelector('#iptv-video'),status=document.querySelector('#stream-status');
  document.querySelector('#current-channel').textContent=channel.name;status.textContent='Connecting directly to the channel…';
  let feed=channel,proxied=forceRelay(feed),connection=0,recoveredMedia=false,fallbackBusy=false,lastFailure='',alternatives;
  const tried=new Set([channel.url]);
@@ -199,15 +191,13 @@ async function playChannel(channel, skipped = 0) {
   if(attempt!==playAttempt)return;
   const epoch=++connection;fallbackBusy=false;recoveredMedia=false;
   video.onerror=null;video.onplaying=null;hls?.destroy();hls=null;video.pause();video.removeAttribute('src');video.load();
-  source.href=feed.url;source.innerHTML=heroIcon('arrow-top-right-on-square');source.append(document.createTextNode('Channel source: '+new URL(feed.url).hostname));source.hidden=false;
   const isHls=feed.type==='hls'||!/\.(?:mp4|mp3|aac|webm|ogg|mov|ts)(?:[?#]|$)/i.test(feed.url);
   const start=()=>{if(!current(epoch))return;Promise.resolve(video.play()).catch(error=>{if(!current(epoch)||error.name==='AbortError')return;if(error.name==='NotAllowedError'){clearTimeout(playTimeout);playTimeout=null;status.textContent='Press Play in the video controls to start watching.';}else fallback({type:'mediaError'},epoch);});};
   video.onplaying = () => {
    if (!current(epoch)) return;
    clearTimeout(playTimeout);
    playTimeout = null;
-   status.textContent = (tried.size > 1 ? 'Playing an alternative public feed of this channel.' : 'Playing live') +
-    (video.muted ? ' · Sound is muted. Use the player controls to unmute.' : '');
+   status.textContent = '';
    message(channels.length + ' channels loaded. Now playing ' + channel.name + '.');
    if (recordedStart) return;
    recordedStart = true;

@@ -25,7 +25,14 @@
    video.addEventListener('pause',()=>{play.setAttribute('aria-label','Play');play.title='Play';play.innerHTML='<svg viewBox="0 0 24 24" aria-hidden="true"><path d="M8 5v14l11-7z" fill="currentColor"/></svg>';});
    mute.onclick=()=>{video.muted=!video.muted;};volume.oninput=()=>{video.volume=Number(volume.value);video.muted=video.volume===0;};
    video.addEventListener('volumechange',()=>{mute.setAttribute('aria-label',video.muted?'Unmute':'Mute');mute.title=video.muted?'Unmute':'Mute';volume.value=String(video.muted?0:video.volume);});
-   full.onclick=()=>document.querySelector('#fullscreen-playback')?.click();
+   full.onclick=async()=>{
+    try{
+     if(document.fullscreenElement){await document.exitFullscreen();return;}
+     if(frame.requestFullscreen)await frame.requestFullscreen();
+     else if(video.webkitEnterFullscreen)video.webkitEnterFullscreen();
+     else document.querySelector('#stream-status').textContent='Full screen is unavailable in this browser.';
+    }catch{document.querySelector('#stream-status').textContent='Full screen was blocked by the browser.';}
+   };
    frame.append(bar);video.controls=false;
   }
   const mark=document.createElement('span');mark.className='plasma-watermark';mark.setAttribute('aria-hidden','true');
