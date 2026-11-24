@@ -260,7 +260,7 @@ function setupSourcePicker() {
  const tools=document.createElement('div');tools.className='playlist-source-tools';
  tools.innerHTML='<label for="playlist-source-search">Find a channel playlist</label><input id="playlist-source-search" type="search" placeholder="Search countries, languages, categories or regions"><label for="builtin-playlist">IPTV-org playlists</label><select id="builtin-playlist"><option value="">Custom playlist</option><option value="https://iptv-org.github.io/iptv/index.category.m3u">All channels · by category</option><option value="https://iptv-org.github.io/iptv/index.m3u">All channels</option></select><button id="load-builtin-playlist" type="button">Load channels</button><p id="playlist-source-status" role="status"></p>';
  const setup=document.createElement('details');setup.className='playlist-setup';
- setup.innerHTML='<summary class="playlist-setup-heading">'+heroIcon('rectangle-stack')+'Playlist sources <span>Choose a source or add your own M3U</span></summary><div class="playlist-setup-grid"></div>'; 
+ setup.innerHTML='<summary class="playlist-setup-heading">'+heroIcon('rectangle-stack')+'Playlist sources <span>Choose a source or add your own M3U</span></summary><div class="playlist-setup-grid"></div>';
  form.before(setup);setup.querySelector('.playlist-setup-grid').append(tools,form);
  const ad = document.querySelector('#inner_content-3-536 > .plasma-ad'); if (ad) setup.after(ad);
  decorateSearch(tools.querySelector('input'));setControlLabel(tools.querySelector('button'),'Load channels','rectangle-stack');
@@ -303,7 +303,7 @@ if (form) {
  document.querySelector('#playlist-url').value=url;
  // Download the HLS player while the playlist request is in flight.
  ensureHls().catch(()=>{});
- loadPlaylist(url, undefined, false, true);
+ loadPlaylist(url, undefined, false);
 }
 function directoryStatus(item, text) {let status=document.querySelector('#directory-status');if(!status){status=document.createElement('p');status.id='directory-status';status.setAttribute('role','status');item.parentElement.before(status);}status.textContent=text;safeScroll(status);}
 async function openDirectory(item) {
