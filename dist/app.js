@@ -121,7 +121,7 @@ function renderPlayer(scroll = true) {
  if (!panel) {
   panel = document.createElement('section'); panel.id = 'watch-player'; panel.setAttribute('aria-label','IPTV channel player');
   panel.innerHTML = '<aside class="channel-sidebar"><div class="watch-sidebar-title">Channel list</div><input id="channel-search" type="search" placeholder="Filter Channels" aria-label="Filter Channels"><label class="favorite-filter"><input id="favorites-only" type="checkbox"> Favorite Channels</label><select id="channel-group" aria-label="Channel group"><option value="">All Channels</option></select><p id="channel-count" role="status"></p><div id="channel-list"></div><button id="load-more-channels" type="button" hidden>Load more channels</button></aside><div class="video-pane"><video id="iptv-video" controls playsinline preload="none"></video><div class="video-caption"><span id="current-channel">Select a channel to watch</span><span class="playback-actions"><button id="fullscreen-playback" type="button">Full screen</button><button id="stop-playback" type="button">Stop</button></span></div><p class="channel-source-line"><a id="channel-source" target="_blank" rel="noopener noreferrer" hidden>Channel source</a></p><p id="stream-status" role="status"></p></div>';
-  document.querySelector('#player-status').after(panel);
+  (document.querySelector('.playlist-setup') || document.querySelector('#player-status')).before(panel);
   decorateSearch(panel.querySelector('#channel-search'));
   setControlLabel(panel.querySelector('#stop-playback'),'Stop','stop');
   setControlLabel(panel.querySelector('#fullscreen-playback'),'Full screen','arrows-pointing-out');

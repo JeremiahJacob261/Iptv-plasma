@@ -85,3 +85,23 @@ body { background: #100d15; }
 
 
 
+
+/* Player-first homepage: the channel directory and video share the main viewport. */
+body:has(#watch-player) #section-2-536 > .ct-section-inner-wrap { padding-top: 0; }
+body:has(#watch-player) #watch-player {
+  grid-template-columns: minmax(250px, 300px) minmax(0, 1fr);
+  min-height: min(760px, calc(100vh - 92px));
+  border-top: 1px solid #42334c;
+}
+body:has(#watch-player) .channel-sidebar { padding: 0 14px 20px; }
+body:has(#watch-player) #channel-list { max-height: max(250px, calc(100vh - 350px)); }
+body:has(#watch-player) .video-pane { justify-content: flex-start; padding: 16px 20px 20px; }
+body:has(#watch-player) #iptv-video { min-height: 0; max-height: min(70vh, 720px); aspect-ratio: 16 / 9; }
+body:has(#watch-player) .player-banner { margin: 24px auto; }
+@media (max-width: 700px) {
+  body:has(#watch-player) #watch-player { display: flex; width: 100%; margin: 0; min-height: 0; }
+  body:has(#watch-player) .video-pane { order: 0; padding: 0 0 16px; }
+  body:has(#watch-player) #iptv-video { max-height: none; }
+  body:has(#watch-player) .channel-sidebar { order: 1; padding: 0 16px 20px; }
+  body:has(#watch-player) #channel-list { max-height: none; }
+}

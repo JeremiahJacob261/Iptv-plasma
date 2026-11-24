@@ -65,7 +65,7 @@
  function mountExchangeSections(){
   if(document.getElementById('plasmax-exchange-sections'))return;
   const player=document.querySelector('#watch-player');if(!player)return;
-  const section=document.createElement('section');section.id='plasmax-exchange-sections';section.setAttribute('aria-label','PlasmaX Exchange');player.after(section);
+  const section=document.createElement('section');section.id='plasmax-exchange-sections';section.setAttribute('aria-label','PlasmaX Exchange');(document.querySelector('.playlist-setup') || player).after(section);
   const load=()=>{const script=document.createElement('script');script.src='/exchange-sections.js';script.defer=true;document.body.append(script);};
   if(location.hash&&['#exchange'].includes(location.hash))load();
   else if('IntersectionObserver' in window){const io=new IntersectionObserver(entries=>{if(entries.some(e=>e.isIntersecting)){io.disconnect();load();}},{rootMargin:'500px'});io.observe(section);}else load();

@@ -3,7 +3,7 @@
  const tag=document.getElementById('plasma-config');let ads;try{ads=JSON.parse(tag.textContent).advertising;}catch{return;}
  if(!ads?.enabled||ads.provider!=='hilltop')return;
  function valid(value){try{const u=new URL(value);return u.protocol==='https:'&&u.hostname==='admired-raise.com'?u.href:null;}catch{return null;}}
- const banner=valid(ads.bannerScript),pop=valid(ads.popunderURL),direct=valid(ads.directURL);
+ const banner=valid(ads.bannerScript);
  const path=location.pathname.replace(/\/+$/,'')||'/';
  const style=document.createElement('link');style.rel='stylesheet';style.href='/ads.css';document.head.append(style);
  // The supplied Hilltop tag is a 300x250 unit and only initializes once per
@@ -20,17 +20,9 @@
   const slot=document.createElement('aside');slot.className='watch-ad '+className;slot.setAttribute('aria-label','Advertisement');
   const label=document.createElement('span');label.textContent='Advertisement';slot.append(label,isolatedBanner());return slot;
  }
- if((path==='/'||(path==='/iptv-player'||path==='/iptv'))&&banner){
-  const player=document.querySelector('#watch-player'),pane=player?.querySelector('.video-pane');
-  if(player&&pane){
-   const top=adPlacement('watch-ad-top');
-   const stage=document.createElement('div');stage.className='watch-stage';pane.before(stage);
-   stage.append(adPlacement('watch-ad-left'),pane,adPlacement('watch-ad-right'));
-   player.after(adPlacement('sitewide-ad'));
-   const phone=window.matchMedia('(max-width: 700px)');
-   const placeTop=()=>{if(phone.matches)player.querySelector('.channel-sidebar').append(top);else player.before(top);};
-   placeTop();if(phone.addEventListener)phone.addEventListener('change',placeTop);else phone.addListener?.(placeTop);
-  }
+ if ((path === '/' || path === '/iptv-player' || path === '/iptv') && banner) {
+  const player = document.querySelector('#watch-player');
+  if (player) player.after(adPlacement('sitewide-ad player-banner'));
  }
  if(banner&&!['/','/iptv','/iptv-player','/x','/twitch'].includes(path)){
   const content=document.querySelector('.ct-inner-content, main, article')||document.querySelector('header');
@@ -40,23 +32,6 @@
    if(first)first.after(adPlacement('sitewide-ad'));else content.after(adPlacement('sitewide-ad'));
    if(middle)middle.after(adPlacement('sitewide-ad'));
   }
- }
- if(banner||direct){
-  const target=(path==='/'||(path==='/iptv-player'||path==='/iptv'))?document.querySelector('.channel-sidebar'):['/x','/twitch'].includes(path)?document.querySelector('.social-actions'):null;
-  if(target){const slot=document.createElement('aside');slot.className='hilltop-banner';slot.setAttribute('aria-label','Advertisement');slot.innerHTML='<p>Advertisement</p>';if(direct){const a=document.createElement('a');a.href=direct;a.textContent='Visit sponsor';a.target='_blank';a.rel='sponsored noopener noreferrer';slot.append(a);}if(path==='/'||(path==='/iptv-player'||path==='/iptv'))target.append(slot);else target.after(slot);
-   const start=()=>{slot.append(isolatedBanner());};
-   if(!banner)return;
-   if('IntersectionObserver' in window){const io=new IntersectionObserver(entries=>{if(entries.some(x=>x.isIntersecting)){io.disconnect();start();}},{rootMargin:'200px'});io.observe(slot);}else start();
-  }
- }
- // Additional supplied Hilltop tag, loaded once per page.
- const extra=isolatedBanner('https://admired-raise.com/bHX.VTsodrGWlk0/Y/WXce/Je/m/9sunZ/U/lHk/PbTuc-1wOHTeEM1hNFDGUxtnNrzdUm5ZMZTRUZ0QOhQT');
- extra.title='Advertisement'; extra.style.cssText='width:300px;height:250px;border:0;display:block;max-width:100%;margin:1rem auto';
- document.body.append(extra);
- if(banner){
-  const floating=adPlacement('floating-ad');
-  const close=document.createElement('button');close.type='button';close.textContent='Close ad';close.setAttribute('aria-label','Close floating advertisement');
-  close.addEventListener('click',()=>floating.remove());floating.prepend(close);document.body.append(floating);
  }
 
 })();
