@@ -96,7 +96,7 @@
     if (!main || !main.children.length) return false;
 
     const shadowStyle = document.createElement('style');
-    shadowStyle.textContent = '.plasma-page-ad{box-sizing:border-box;width:100%;max-width:1200px;margin:24px auto;padding:14px 16px 20px;background:#15111b;color:#d0c4d8;text-align:center;font:12px/1.4 Arial,sans-serif}.plasma-page-ad span{display:block;margin-bottom:8px}.plasma-page-ad iframe{display:block;width:100%;height:250px;border:0;margin:auto}@media(max-width:700px){.plasma-page-ad{padding:12px 12px 18px}.plasma-page-ad iframe{height:150px}}';
+    shadowStyle.textContent = '.plasma-page-ad{box-sizing:border-box;width:100%;max-width:1200px;margin:24px auto;padding:14px 16px 20px;background:#15111b;color:#d0c4d8;text-align:center;font:12px/1.4 Arial,sans-serif}.plasma-page-ad span{display:block;margin-bottom:8px}.plasma-page-ad iframe{display:block;width:100%;height:125px;border:0;margin:auto}@media(max-width:700px){.plasma-page-ad{padding:12px 12px 18px}.plasma-page-ad iframe{height:75px}}';
     root.append(shadowStyle);
 
     const article = main.querySelector('article');

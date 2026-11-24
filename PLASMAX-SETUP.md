@@ -11,7 +11,7 @@ Configured on 2026-10-25: https://twitter.com/plasma1337x and https://www.twitch
 Set xProfile and twitchURL in data/site-config.json to the buyer's actual HTTPS links and rebuild. Only supported X/Twitter and Twitch hostnames are linked. Do not guess account handles. Existing /x/ and /twitch/ pages support public video links in the native player; a profile itself is not a specific video. Personal follow/watch links appear on the homepage when configured.
 
 ## Advertising
-A-ADS is the only active ad provider. Responsive unit 2463134 is used on desktop and unit 2463138 on phones. Every public page has two in-page placements, separated within the content. On the IPTV home page, one banner sits directly below the feed and the second follows playlist controls; on desktop, about 40% of the first banner is visible in the initial viewport. Mobile keeps the feed's 16:9 layout. Other pages place units in the article or service content. There is no page-switch interstitial. Admin pages do not show ads.
+A-ADS is the only active ad provider. Responsive unit 2463134 is used on desktop at 125px high and unit 2463138 on phones at 75px high. Every public page has two in-page placements, separated within the content. On the IPTV home page, one banner sits directly below the feed and the second follows playlist controls; on desktop, the first banner is sized to fit fully within the initial viewport. Mobile keeps the feed's 16:9 layout. Other pages place units in the article or service content. There is no page-switch interstitial. Admin pages do not show ads.
 
 Google AdSense is not configured: no publisher or ad-unit IDs were supplied. `ads.txt` does not contain an AdSense seller entry. No Hilltop scripts, popunders, banners, or direct-link ads are included.
 
