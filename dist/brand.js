@@ -1,5 +1,11 @@
 'use strict';
 (function(){
+ if (!document.querySelector('script[src="/navigation-ad.js"]')) {
+  const navigationAd = document.createElement('script');
+  navigationAd.src = '/navigation-ad.js';
+  navigationAd.defer = true;
+  document.head.append(navigationAd);
+ }
  function brandPlayer(video){
   if(video.closest('[data-plasma-player]'))return;
   let frame=video.parentElement;

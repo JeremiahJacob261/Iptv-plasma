@@ -160,3 +160,4 @@ body:has(#watch-player) .player-banner { margin: 24px auto; }
 .plasma-aads { padding: 24px 16px; text-align: center; background: #15111b; color: #d0c4d8; font-size: 12px; }
 .plasma-aads > span { display: block; margin-bottom: 8px; }
 @media (max-width: 700px) { .plasma-aads iframe { width: 100% !important; } }
+body:has(#watch-player) .video-pane > .plasma-aads { width: 100%; margin-top: 12px; padding: 16px; }

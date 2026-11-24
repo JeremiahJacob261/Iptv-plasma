@@ -121,6 +121,8 @@ function renderPlayer(scroll = true) {
   panel = document.createElement('section'); panel.id = 'watch-player'; panel.setAttribute('aria-label','IPTV channel player');
   panel.innerHTML = '<aside class="channel-sidebar"><div class="watch-sidebar-title">Channel list</div><input id="channel-search" type="search" placeholder="Filter Channels" aria-label="Filter Channels"><label class="favorite-filter"><input id="favorites-only" type="checkbox"> Favorite Channels</label><select id="channel-group" aria-label="Channel group"><option value="">All Channels</option></select><p id="channel-count" role="status"></p><div id="channel-list"></div><button id="load-more-channels" type="button" hidden>Load more channels</button></aside><div class="video-pane"><video id="iptv-video" controls playsinline preload="none"></video><div class="video-caption"><span id="current-channel">Select a channel to watch</span></div><p id="stream-status" role="status"></p></div>';
   (document.querySelector('.playlist-setup') || document.querySelector('#player-status')).before(panel);
+  const ad = document.querySelector('.plasma-aads');
+  if (ad) panel.querySelector('.video-pane').append(ad);
   decorateSearch(panel.querySelector('#channel-search'));
   setControlLabel(panel.querySelector('#load-more-channels'),'Load more channels','chevron-down');
   ['#channel-search','#favorites-only','#channel-group'].forEach(selector=>panel.querySelector(selector).addEventListener(selector==='#channel-search'?'input':'change',()=>{pageSize=10;renderChannels();}));
@@ -312,7 +314,7 @@ async function openDirectory(item) {
   const aliases={'Afghan Persian':'prs','Iranian Persian':'pes','Parsi-Dari':'prd','Undefined':'und'};
   const match=catalog.sources.find(source=>source.kind===kind&&(source.name.toLowerCase()===name.toLowerCase()||(item.dataset.playlist&&source.url===item.dataset.playlist)||(kind==='language'&&source.code===aliases[name])));
   const url=match?.url;
-  if(url)location.href='/iptv-player/?playlist='+encodeURIComponent(url);
+  if(url){const destination='/iptv-player/?playlist='+encodeURIComponent(url);if(window.plasmaNavigate)window.plasmaNavigate(destination);else location.href=destination;}
   else directoryStatus(item,'No public playlist is available for '+item.textContent.trim()+'. Please choose another selection.');
  }catch{directoryStatus(item,'Unable to load the directory. Please try again.');}
 }
