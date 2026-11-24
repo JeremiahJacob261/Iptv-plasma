@@ -93,9 +93,4 @@
   else if('IntersectionObserver' in window){const io=new IntersectionObserver(entries=>{if(entries.some(e=>e.isIntersecting)){io.disconnect();load();}},{rootMargin:'500px'});io.observe(section);}else load();
  }
  mountExchangeSections();new MutationObserver(mountExchangeSections).observe(document.body,{childList:true,subtree:true});
- const ads=data.advertising;
- if(ads?.enabled&&ads.provider==='hilltop'&&!document.querySelector('script[src="/hilltop.js"]')){
-  const script=document.createElement('script');script.src='/hilltop.js';script.async=true;document.head.append(script);
- }
- // Other advertising providers remain disabled until their scripts can be isolated.
 })();

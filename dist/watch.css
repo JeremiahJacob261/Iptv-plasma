@@ -18,9 +18,6 @@ body { background: #100d15; }
 .channel-row { border-color: #332b3a; }
 .channel-row.active, .channel-row button:hover { background: #34243e; }
 .channel-play { padding: 12px 6px; }
-.channel-sidebar .hilltop-banner { width: 100%; max-width: 300px; margin: 18px auto 0; text-align: center; overflow: hidden; }
-.channel-sidebar .hilltop-banner p { margin: 0 0 4px; color: #d0c4d8; font-size: 12px; }
-.channel-sidebar .hilltop-banner a { display: inline-block; margin-bottom: 8px; color: #d9b6f1; }
 .watch-ad { display: flex; flex-direction: column; align-items: center; gap: 5px; color: #d0c4d8; font-size: 12px; }
 .watch-ad-frame { display: block; width: 300px; height: 250px; max-width: 100%; border: 0; background: #100d15; }
 .watch-ad-top { padding: 10px; background: #19131f; }
@@ -73,7 +70,6 @@ body { background: #100d15; }
  .channel-row { order: 3; gap: 8px; padding: 6px 0; border-bottom: 1px solid #332b3a; }
  .channel-row:nth-child(-n+4) { order: 1; }
  #load-more-channels { order: 4; }
- .channel-sidebar .hilltop-banner { order: 5; }
  .channel-play { gap: 14px; min-height: 68px; padding: 8px 4px; }
  .channel-play img { width: 72px; height: 48px; flex: 0 0 72px; object-fit: contain; border-radius: 6px; background: #211928; }
  .channel-play span { font-size: 15px; font-weight: 600; line-height: 1.35; }
@@ -157,7 +153,16 @@ body:has(#watch-player) .player-banner { margin: 24px auto; }
 .plasma-blocked-play:focus-visible { outline: 3px solid #d5b2f6; outline-offset: 4px; }
 .plasma-video-frame:has(#iptv-video[data-blocked="true"]) .plasma-blocked-play { display: grid; }
 
-.plasma-aads { padding: 24px 16px; text-align: center; background: #15111b; color: #d0c4d8; font-size: 12px; }
+.plasma-aads { box-sizing: border-box; width: 100%; padding: 10px 16px 0; text-align: center; background: #15111b; color: #d0c4d8; font-size: 12px; }
 .plasma-aads > span { display: block; margin-bottom: 8px; }
-@media (max-width: 700px) { .plasma-aads iframe { width: 100% !important; } }
-body:has(#watch-player) .video-pane > .plasma-aads { width: 100%; margin-top: 12px; padding: 16px; }
+@media (max-width: 700px) { .plasma-aads iframe { width: 100% !important; height: 150px !important; } }
+body:has(#watch-player) .video-pane > .plasma-aads { width: 100%; margin-top: 8px; padding: 8px 0 0; }
+body:has(#watch-player) .video-pane > .plasma-aads iframe { width: 100% !important; max-width: 1200px; height: 250px !important; border: 0; }
+@media (min-width: 701px) {
+ body:has(#watch-player) #iptv-video { height: min(clamp(320px, 58dvh, 720px), max(250px, calc(100dvh - 373px))); min-height: 0; max-height: 720px; aspect-ratio: 16 / 9; }
+}
+@media (max-width: 700px) {
+ body:has(#watch-player) #iptv-video { width: 100%; height: auto; min-height: 0; max-height: min(55dvh, 420px); aspect-ratio: 16 / 9; }
+ body:has(#watch-player) .video-pane > .plasma-aads { margin-top: 4px; padding-top: 4px; }
+ body:has(#watch-player) .video-pane > .plasma-aads iframe { height: 150px !important; }
+}

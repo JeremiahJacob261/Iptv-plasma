@@ -1,1 +1,1 @@
-# Ads.txt entries have not been provided.
+# No AdSense seller records are configured; A-ADS units are managed separately.
