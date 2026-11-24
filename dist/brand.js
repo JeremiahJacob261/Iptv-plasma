@@ -6,6 +6,15 @@
   if(!frame.classList.contains('x-media-frame')){frame=document.createElement('div');video.before(frame);frame.append(video);}
   frame.classList.add('plasma-video-frame');frame.dataset.plasmaPlayer='';
   if(video.id==='iptv-video'){
+   const blockedPlay=document.createElement('button');
+   blockedPlay.type='button';blockedPlay.className='plasma-blocked-play';blockedPlay.setAttribute('aria-label','Play channel');
+   blockedPlay.innerHTML='<svg viewBox="0 0 24 24" aria-hidden="true"><path d="M8 5v14l11-7z" fill="currentColor"/></svg>';
+   blockedPlay.onclick=()=>{video.dataset.blocked='false';video.dataset.loading='true';video.play().catch(()=>{video.dataset.loading='false';video.dataset.blocked='true';});};
+   frame.append(blockedPlay);
+   video.addEventListener('waiting',()=>{if(!video.paused)video.dataset.loading='true';});
+   video.addEventListener('playing',()=>{video.dataset.loading='false';video.dataset.blocked='false';});
+   video.addEventListener('pause',()=>{if(video.readyState >= 2)video.dataset.loading='false';});
+   video.addEventListener('error',()=>{video.dataset.loading='false';});
    const bar=document.createElement('div');bar.className='plasma-controls';bar.setAttribute('role','group');bar.setAttribute('aria-label','Video controls');
    const button=(label,icon)=>{const b=document.createElement('button');b.type='button';b.setAttribute('aria-label',label);b.title=label;b.innerHTML=icon;bar.append(b);return b;};
    const play=button('Play','<svg viewBox="0 0 24 24" aria-hidden="true"><path d="M8 5v14l11-7z" fill="currentColor"/></svg>');

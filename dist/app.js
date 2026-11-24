@@ -112,7 +112,7 @@ async function loadPlaylist(url, file, scroll = true, autoplay = false) {
 function stopPlayback(showMessage = true) {
  ++playAttempt; clearTimeout(playTimeout); playTimeout = null; hls?.destroy(); hls = null;
  const video = document.querySelector('#iptv-video');
- if (video) { video.onplaying = null; video.onerror = null; video.pause(); video.removeAttribute('src'); video.load(); }
+ if (video) { video.dataset.loading='false'; video.dataset.blocked='false'; video.onplaying = null; video.onerror = null; video.pause(); video.removeAttribute('src'); video.load(); }
  if (showMessage && document.querySelector('#stream-status')) { document.querySelector('#stream-status').textContent = 'Playback stopped.'; message(channels.length+' channels loaded. Playback stopped.'); }
 }
 function renderPlayer(scroll = true) {
@@ -182,6 +182,7 @@ async function playChannel(channel, skipped = 0) {
  message(channels.length+' channels loaded. Connecting to '+channel.name+'.');
  const video=document.querySelector('#iptv-video'),status=document.querySelector('#stream-status');
  document.querySelector('#current-channel').textContent=channel.name;status.textContent='Connecting directly to the channel…';
+ video.dataset.loading='true'; video.dataset.blocked='false';
  let feed=channel,proxied=forceRelay(feed),connection=0,recoveredMedia=false,fallbackBusy=false,lastFailure='',alternatives;
  const tried=new Set([channel.url]);
  let HlsClass, recordedStart = false;
@@ -192,12 +193,13 @@ async function playChannel(channel, skipped = 0) {
   const epoch=++connection;fallbackBusy=false;recoveredMedia=false;
   video.onerror=null;video.onplaying=null;hls?.destroy();hls=null;video.pause();video.removeAttribute('src');video.load();
   const isHls=feed.type==='hls'||!/\.(?:mp4|mp3|aac|webm|ogg|mov|ts)(?:[?#]|$)/i.test(feed.url);
-  const start=()=>{if(!current(epoch))return;Promise.resolve(video.play()).catch(error=>{if(!current(epoch)||error.name==='AbortError')return;if(error.name==='NotAllowedError'){clearTimeout(playTimeout);playTimeout=null;status.textContent='Press Play in the video controls to start watching.';}else fallback({type:'mediaError'},epoch);});};
+  const start=()=>{if(!current(epoch))return;Promise.resolve(video.play()).catch(error=>{if(!current(epoch)||error.name==='AbortError')return;if(error.name==='NotAllowedError'){clearTimeout(playTimeout);playTimeout=null;status.textContent='';video.dataset.loading='false';video.dataset.blocked='true';}else fallback({type:'mediaError'},epoch);});};
   video.onplaying = () => {
    if (!current(epoch)) return;
    clearTimeout(playTimeout);
    playTimeout = null;
    status.textContent = '';
+   video.dataset.loading='false'; video.dataset.blocked='false';
    message(channels.length + ' channels loaded. Now playing ' + channel.name + '.');
    if (recordedStart) return;
    recordedStart = true;
@@ -214,7 +216,7 @@ async function playChannel(channel, skipped = 0) {
     hls.on(HlsClass.Events.ERROR,(_,data)=>{if(!current(epoch)||!data.fatal)return;if(data.type===HlsClass.ErrorTypes.MEDIA_ERROR&&!recoveredMedia){recoveredMedia=true;hls.recoverMediaError();return;}fallback(data,epoch);});
     hls.loadSource(url);hls.attachMedia(video);
    }else{video.onerror=()=>fallback({type:'mediaError'},epoch);video.src=url;start();}
-  }catch(error){if(current(epoch))status.textContent=error.message;}
+  }catch(error){if(current(epoch)){video.dataset.loading='false';status.textContent=error.message;}}
  };
  const fallback=async(data,epoch)=>{
   if(!current(epoch)||fallbackBusy)return;
