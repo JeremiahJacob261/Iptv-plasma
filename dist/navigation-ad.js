@@ -34,6 +34,30 @@
   style.rel = 'stylesheet';
   style.href = '/navigation-ad.css';
   document.head.append(style);
+  if (!document.querySelector('.plasma-aads')) {
+    const ad = document.createElement('aside');
+    ad.className = 'plasma-page-ad';
+    ad.setAttribute('aria-label', 'Advertisement');
+    const label = document.createElement('span');
+    label.textContent = 'Advertisement';
+    const frame = document.createElement('iframe');
+    frame.title = 'Advertisement';
+    frame.loading = 'eager';
+    const mobile = matchMedia('(max-width: 700px)');
+    const loadUnit = () => {
+      const id = mobile.matches ? '2463138' : '2463134';
+      if (frame.getAttribute('data-aa') === id) return;
+      frame.setAttribute('data-aa', id);
+      frame.src = 'https://acceptable.a-ads.com/' + id + '/?size=Adaptive';
+    };
+    loadUnit();
+    if (mobile.addEventListener) mobile.addEventListener('change', loadUnit);
+    else if (mobile.addListener) mobile.addListener(loadUnit);
+    ad.append(label, frame);
+    const footer = document.querySelector('#section-12-15, footer');
+    if (footer) footer.before(ad);
+    else document.body.append(ad);
+  }
   window.plasmaNavigate = openAd;
   document.addEventListener('click', event => {
     if (event.defaultPrevented || event.button !== 0 || event.metaKey || event.ctrlKey || event.shiftKey || event.altKey) return;
