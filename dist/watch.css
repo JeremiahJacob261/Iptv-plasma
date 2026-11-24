@@ -115,3 +115,31 @@ body:has(#watch-player) .player-banner { margin: 24px auto; }
   #_header_row-3-15 .oxy-site-navigation > ul > li > a { min-height: 44px; display: flex; align-items: center; padding-top: 8px; padding-bottom: 8px; }
   #_header_row-3-15 #image-8-15 { width: 132px; height: 44px; object-fit: contain; }
 }
+
+/* Player information and answers */
+.plasma-guide, .plasma-faq { width: 100%; padding: clamp(48px, 6vw, 88px) 24px; color: #f6f0fa; }
+.plasma-guide { background: #211928; }
+.plasma-faq { background: #15111b; }
+.plasma-guide-inner, .plasma-faq-inner { max-width: 1200px; margin: 0 auto; display: grid; grid-template-columns: minmax(0, .85fr) minmax(0, 1.15fr); gap: clamp(32px, 7vw, 100px); align-items: start; }
+.plasma-guide h2, .plasma-faq h2 { margin: 0 0 16px; color: #fff; font-size: clamp(28px, 3vw, 42px); line-height: 1.15; letter-spacing: -.025em; }
+.plasma-guide-intro p, .plasma-faq-heading p { color: #d6c9df; line-height: 1.7; max-width: 45ch; margin: 0; }
+.plasma-guide-action { display: inline-flex; align-items: center; gap: 12px; min-height: 44px; margin-top: 24px; color: #ebd6ff; font-weight: 600; text-decoration: underline; text-underline-offset: 5px; }
+.plasma-features { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 0 28px; }
+.plasma-features > div { padding: 20px 0; border-top: 1px solid #6a5578; }
+.plasma-features strong, .plasma-features span { display: block; }
+.plasma-features strong { margin-bottom: 7px; color: #f7edff; font-size: 16px; }
+.plasma-features span { color: #d6c9df; font-size: 14px; line-height: 1.55; }
+.plasma-faq-list details { border-bottom: 1px solid #57455f; }
+.plasma-faq-list details:first-child { border-top: 1px solid #57455f; }
+.plasma-faq-list summary { display: flex; justify-content: space-between; gap: 16px; align-items: center; min-height: 62px; padding: 14px 0; color: #f8f1ff; font-weight: 600; cursor: pointer; list-style: none; }
+.plasma-faq-list summary::-webkit-details-marker { display: none; }
+.plasma-faq-list summary span { width: 12px; height: 12px; flex: 0 0 12px; border-right: 2px solid #d6b7ed; border-bottom: 2px solid #d6b7ed; transform: rotate(45deg); margin-right: 4px; }
+.plasma-faq-list details[open] summary span { transform: rotate(225deg); }
+.plasma-faq-list details p { color: #d6c9df; line-height: 1.65; margin: 0; padding: 0 24px 20px 0; }
+.plasma-faq-list a { color: #e4bfff; text-decoration: underline; text-underline-offset: 3px; }
+.plasma-guide :is(a, summary):focus-visible, .plasma-faq :is(a, summary):focus-visible { outline: 2px solid #dfbeff; outline-offset: 4px; }
+@media (max-width: 700px) {
+  .plasma-guide, .plasma-faq { padding: 48px 20px; }
+  .plasma-guide-inner, .plasma-faq-inner { grid-template-columns: minmax(0, 1fr); gap: 28px; }
+  .plasma-features { grid-template-columns: minmax(0, 1fr); }
+}
