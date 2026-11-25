@@ -58,6 +58,53 @@
  new MutationObserver(records=>{for(const r of records)for(const node of r.addedNodes)scan(node);}).observe(document.body,{childList:true,subtree:true});
  const config=document.getElementById('plasma-config');if(!config)return;
  let data;try{data=JSON.parse(config.textContent);}catch{return;}
+ // The homepage header is the shared public navigation, including exchange routes.
+ function mountPublicNavigation(){
+  if(/^\/admin(?:\/|$)/.test(location.pathname)||document.querySelector('#plasmax-admin'))return;
+  if(document.getElementById('plasma-public-header'))return;
+  const legacy=document.querySelector('header#_header-2-15');
+  const exchangeHost=document.querySelector('#plasmax-exchange-page, #plasmax-exchange-status, #plasmax-exchange-legal');
+  if(!legacy&&!exchangeHost)return;
+  const header=document.createElement('header');
+  header.id='plasma-public-header';
+  header.className='plasma-public-header';
+  const links=[['Exchange','/exchange/'],['Home','/'],['Countries','/countries/'],['Categories','/categories/'],['Languages','/languages/']];
+  const social=[['X','https://x.com/plasma1337x','x'],['Twitch','https://www.twitch.tv/plasma1337x','twitch']];
+  const path=location.pathname.replace(/\/+$/,'')||'/';
+  const menuLinks=links.map(([label,href])=>'<li><a href="'+href+'"'+((href.replace(/\/+$/,'')||'/')===path?' aria-current="page"':'')+'>'+label+'</a></li>').join('');
+  const socialLinks=social.map(([label,href,key])=>'<li><a href="'+href+'" target="_blank" rel="noopener noreferrer" data-social-icon="'+key+'" aria-label="PlasmaX on '+label+'" title="'+label+'"><svg width="20" height="20" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true">'+(key==='x'?'<path d="M18.9 2H22l-6.8 7.8L23.2 22h-6.3L12 14.6 5.5 22H2.3l7.3-8.5L1.8 2h6.5l4.5 6.8L18.9 2Zm-1.1 18h1.7L7.3 3.9H5.5L17.8 20Z"/>':'<path d="M4.3 0 0 4.3v15.4h5.1V24l4.3-4.3h3.4L20.6 12V0H4.3Zm14.6 11.1-3.4 3.5H12l-3 3v-3H5.1V1.7h13.8v9.4ZM15.4 4.3h1.7v5.1h-1.7V4.3Zm-4.7 0h1.7v5.1h-1.7V4.3Z"/>')+'</svg></a></li>').join('');
+  header.innerHTML='<div class="plasma-public-header-row"><a class="plasma-public-logo" href="/" aria-label="PlasmaX home"><img src="/assets/plasmax-logo.svg" alt="PlasmaX"></a><nav class="plasma-public-nav" aria-label="Main navigation"><button type="button" class="plasma-public-menu-open" aria-label="Open navigation menu" aria-expanded="false" aria-controls="plasma-public-menu"><svg viewBox="0 0 24 24" aria-hidden="true"><path fill="currentColor" d="M2 4h20v3H2zm0 7h20v3H2zm0 7h20v3H2z"/></svg></button><ul id="plasma-public-menu"><li class="plasma-public-menu-close-row"><button type="button" class="plasma-public-menu-close" aria-label="Close navigation menu"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="m5 5 14 14M19 5 5 19" fill="none" stroke="currentColor" stroke-width="2.5"/></svg></button></li>'+menuLinks+socialLinks+'</ul></nav><a class="plasma-public-watch" href="/iptv-player/"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M6 3v18l15-9z" fill="currentColor"/></svg><span>Watch Now</span></a></div>';
+  const toggle=header.querySelector('.plasma-public-menu-open');
+  const close=header.querySelector('.plasma-public-menu-close');
+  const menu=header.querySelector('#plasma-public-menu');
+  function setOpen(open,restore=false){
+   menu.classList.toggle('is-open',open);
+   toggle.setAttribute('aria-expanded',String(open));
+   if(open)close.focus();
+   else if(restore)toggle.focus();
+  }
+  toggle.addEventListener('click',()=>setOpen(true));
+  close.addEventListener('click',()=>setOpen(false,true));
+  menu.addEventListener('click',event=>{if(event.target.closest('a'))setOpen(false);});
+  header.addEventListener('keydown',event=>{
+   if(!menu.classList.contains('is-open'))return;
+   if(event.key==='Escape'){event.preventDefault();setOpen(false,true);}
+   if(event.key==='Tab'){
+    const items=[...menu.querySelectorAll('button,a[href]')];
+    if(event.shiftKey&&document.activeElement===items[0]){event.preventDefault();items.at(-1).focus();}
+    else if(!event.shiftKey&&document.activeElement===items.at(-1)){event.preventDefault();items[0].focus();}
+   }
+  });
+  if(typeof matchMedia==='function'){
+   const desktop=matchMedia('(min-width: 992px)');
+   const reset=event=>{if(event.matches)setOpen(false);};
+   if(desktop.addEventListener)desktop.addEventListener('change',reset);
+   else if(desktop.addListener)desktop.addListener(reset);
+  }
+  if(legacy)legacy.replaceWith(header);
+  else exchangeHost.before(header);
+ }
+ mountPublicNavigation();
  // Keep navigation focused on the requested destinations and open social profiles directly.
  function updateNavigation(){
   document.querySelectorAll('.oxy-site-navigation > ul').forEach(list=>{
