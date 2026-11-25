@@ -6,7 +6,7 @@ interface IptvMetrics {
     channelCount: number;
     days: number;
     daily: { date: string; visits: number; plays: number }[];
-    channels: { id: string; name: string; plays: number }[];
+    channels: { id: string; name: string; plays: number; viewers: number; watchSeconds: number; score: number }[];
 }
 
 const number = new Intl.NumberFormat();
@@ -38,7 +38,7 @@ export default function IptvOverview({ refresh, onUnauthorized }: { refresh: num
 
     const report = data?.days === range ? data : undefined;
     const peak = Math.max(1, ...(report?.daily.map(day => day[metric]) ?? []));
-    const peakChannel = report?.channels[0]?.plays ?? 1;
+    const peakChannel = Math.max(1, ...(report?.channels.map(channel => channel.score) ?? []));
 
     return (
         <section aria-labelledby="iptv-title">
@@ -77,16 +77,16 @@ export default function IptvOverview({ refresh, onUnauthorized }: { refresh: num
                         <div className="admin-chart-dates"><span>{dateLabel(report.daily[0].date)}</span><span>{dateLabel(report.daily.at(-1)!.date)} UTC</span></div>
                     </section>
                     <section className="admin-panel">
-                        <div className="admin-panel-head"><h2>Top channels</h2><span>Playback starts</span></div>
+                        <div className="admin-panel-head"><h2>Top channels</h2><span>Popularity score</span></div>
                         {report.channels.length ? (
                             <ol className="admin-channel-rank">
                                 {report.channels.map((channel, index) => <li key={channel.id}>
-                                    <span>{index + 1}</span><strong>{channel.name}</strong><b>{number.format(channel.plays)}</b>
-                                    <meter aria-label={`${channel.name} playback starts`} min={0} max={peakChannel} value={channel.plays} />
+                                    <span>{index + 1}</span><strong>{channel.name}<br /><small>{number.format(channel.viewers)} viewer sessions · {number.format(Math.round(channel.watchSeconds / 60))} min watched</small></strong><b>{channel.score}</b>
+                                    <meter aria-label={`${channel.name} popularity score`} min={0} max={peakChannel} value={channel.score} />
                                 </li>)}
                             </ol>
                         ) : <p className="admin-notice">No public channel plays recorded for this period yet.</p>}
-                        <p className="admin-caption">Rankings count successful starts from IPTV-org playlists since channel tracking was added. Custom playlists are included in totals only.</p>
+                        <p className="admin-caption">Popularity combines watch time (65%) and anonymous viewer sessions (35%). Watch time is recorded in 30-second intervals for public IPTV-org channels. Custom playlists are included in totals only.</p>
                     </section>
                 </div>
             </>}
