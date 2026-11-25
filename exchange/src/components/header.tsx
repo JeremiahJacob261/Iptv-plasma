@@ -31,31 +31,31 @@ export function Header() {
     }, [isMenuOpen]);
 
     return (
-        <header className="fixed inset-x-0 top-0 z-50 border-b border-border/70 bg-background/95 backdrop-blur-lg">
-            <div className="container mx-auto px-4">
-                <div className="flex h-16 items-center justify-between gap-6 md:h-20">
-                    <Link href="/" onClick={() => setIsMenuOpen(false)} className="flex shrink-0 items-center gap-3 rounded-lg focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-primary" aria-label="PlasmaX home">
+        <header className="plasmax-site-header fixed inset-x-0 top-0 z-50 border-b border-border/70 bg-background/95 backdrop-blur-lg">
+            <div className="plasmax-site-header-inner container mx-auto px-4">
+                <div className="plasmax-site-header-row flex h-16 items-center justify-between gap-6 md:h-20">
+                    <Link href="/" onClick={() => setIsMenuOpen(false)} className="plasmax-brand flex shrink-0 items-center gap-3 rounded-lg focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-primary" aria-label="PlasmaX home">
                         <Image src="/assets/plasmax-mark.svg" alt="" width={40} height={40} className="rounded-xl" />
-                        <span className="text-base font-bold tracking-tight sm:text-lg">PlasmaX</span>
+                        <span>PlasmaX</span>
                     </Link>
 
-                    <nav aria-label="Main navigation" className="hidden items-center gap-1 lg:flex">
+                    <nav aria-label="Main navigation" className="plasmax-primary-nav hidden items-center gap-1 lg:flex">
                         {navigation.map(item => (
-                            <a key={item.label} href={item.href} target={item.href.startsWith("https:")?"_blank":undefined} rel={item.href.startsWith("https:")?"noopener noreferrer":undefined} className="rounded-lg px-3 py-3 text-sm font-medium text-foreground/75 transition-colors hover:bg-secondary hover:text-foreground focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-primary" aria-label={item.label}>{item.href.startsWith("https:") ? <img src={item.label === "Twitch" ? "/assets/social-twitch.svg" : "/assets/social-x.svg"} alt={item.label} width={20} height={20} /> : item.label}</a>
+                            <a key={item.label} href={item.href} className="plasmax-nav-link rounded-lg px-3 py-3 text-sm font-medium text-foreground/75 transition-colors hover:bg-secondary hover:text-foreground focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-primary" aria-label={item.label}>{item.label}</a>
                         ))}
-                        {socialNavigation.map(item => <a key={item.label} href={item.href} target="_blank" rel="noopener noreferrer" aria-label={`PlasmaX on ${item.label}`} title={item.label} className="rounded-lg p-3 text-foreground/75 hover:bg-secondary focus-visible:outline-2 focus-visible:outline-primary"><img src={item.label === "Twitch" ? "/assets/social-twitch.svg" : "/assets/social-x.svg"} alt="" width={20} height={20} /></a>)}
+                        {socialNavigation.map(item => <a key={item.label} href={item.href} target="_blank" rel="noopener noreferrer" aria-label={`PlasmaX on ${item.label}`} title={item.label} className="plasmax-social-link rounded-lg p-3 text-foreground/75 hover:bg-secondary focus-visible:outline-2 focus-visible:outline-primary"><img src={item.label === "Twitch" ? "/assets/social-twitch.svg" : "/assets/social-x.svg"} alt="" width={20} height={20} /></a>)}
                     </nav>
 
                     <div className="hidden lg:block">
                         <Button variant="gradient" size="lg" asChild><Link href={exchangeHref}>Start Exchange</Link></Button>
                     </div>
-                    <button type="button" className="flex min-h-11 min-w-11 items-center justify-center rounded-lg transition-colors hover:bg-secondary focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-primary lg:hidden" aria-label={isMenuOpen ? "Close navigation menu" : "Open navigation menu"} aria-expanded={isMenuOpen} aria-controls="mobile-navigation" onClick={() => setIsMenuOpen(open => !open)}>
+                    <button type="button" className="plasmax-menu-toggle flex min-h-11 min-w-11 items-center justify-center rounded-lg transition-colors hover:bg-secondary focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-primary lg:hidden" aria-label={isMenuOpen ? "Close navigation menu" : "Open navigation menu"} aria-expanded={isMenuOpen} aria-controls="mobile-navigation" onClick={() => setIsMenuOpen(open => !open)}>
                         {isMenuOpen ? <X aria-hidden="true" /> : <Menu aria-hidden="true" />}
                     </button>
                 </div>
             </div>
             {isMenuOpen && (
-                <nav id="mobile-navigation" aria-label="Mobile navigation" className="absolute inset-x-0 top-full max-h-[calc(100dvh-4rem)] overflow-y-auto border-b border-border bg-background px-4 pb-6 pt-2 shadow-xl lg:hidden">
+                <nav id="mobile-navigation" aria-label="Mobile navigation" className="plasmax-mobile-navigation absolute inset-x-0 top-full max-h-[calc(100dvh-4rem)] overflow-y-auto border-b border-border bg-background px-4 pb-6 pt-2 shadow-xl lg:hidden">
                     <div className="container mx-auto flex flex-col">
                         {navigation.map(item => (
                             <a key={item.label} href={item.href} target={item.href.startsWith("https:")?"_blank":undefined} rel={item.href.startsWith("https:")?"noopener noreferrer":undefined} onClick={() => setIsMenuOpen(false)} className="rounded-lg px-3 py-3 text-base font-medium text-foreground/85 hover:bg-secondary focus-visible:outline-2 focus-visible:outline-primary" aria-label={item.label}>{item.href.startsWith("https:") ? <img src={item.label === "Twitch" ? "/assets/social-twitch.svg" : "/assets/social-x.svg"} alt={item.label} width={20} height={20} /> : item.label}</a>
