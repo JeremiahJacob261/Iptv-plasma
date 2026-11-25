@@ -157,7 +157,7 @@ export default function AdminDashboard() {
 
                 {section === "iptv" && <IptvOverview refresh={refresh} onUnauthorized={onUnauthorized} />}
                 {section === "audience" && <section>
-                    <div className="admin-section-head"><div><h1>Visitor geography</h1><p>Explore recorded Exchange visitor locations by country.</p></div></div>
+                    <div className="admin-section-head"><div><h1>Visitor geography</h1><p>Explore Exchange visitor locations by day, week, or all time.</p></div></div>
                     <div className="admin-panel admin-audience-panel"><VisitorMap key={refresh} /></div>
                 </section>}
                 {section === "exchange" && <section>

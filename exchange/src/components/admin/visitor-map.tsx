@@ -19,6 +19,13 @@ interface VisitorData {
     countries: Country[];
 }
 
+type VisitorPeriod = "daily" | "weekly" | "all-time";
+const visitorPeriods: { id: VisitorPeriod; label: string }[] = [
+    { id: "daily", label: "Daily" },
+    { id: "weekly", label: "Weekly" },
+    { id: "all-time", label: "All time" },
+];
+
 const countFormat = new Intl.NumberFormat();
 const locationName = ({ city, country }: Location) => city ? `${city}, ${country}` : country;
 const visitorCount = (count: number) => `${countFormat.format(count)} ${count === 1 ? "visitor" : "visitors"}`;
@@ -32,12 +39,14 @@ export default function VisitorMap() {
     const [selected, setSelected] = useState<string>();
     const [expanded, setExpanded] = useState(false);
     const [activeDot, setActiveDot] = useState<number>();
+    const [period, setPeriod] = useState<VisitorPeriod>("daily");
 
     useEffect(() => {
         const controller = new AbortController();
         async function load() {
+            setStatus("loading");
             try {
-                const response = await fetch("/api/admin/visitors", { signal: controller.signal });
+                const response = await fetch(`/api/admin/visitors?period=${period}`, { signal: controller.signal });
                 if (!response.ok) throw new Error("Visitor data unavailable");
                 const result = await response.json();
                 if (!result.success || !Array.isArray(result.data?.countries) || !Array.isArray(result.data?.markers)) {
@@ -51,7 +60,17 @@ export default function VisitorMap() {
         }
         void load();
         return () => controller.abort();
-    }, [request]);
+    }, [request, period]);
+
+    const selectPeriod = (next: VisitorPeriod) => {
+        if (next === period) return;
+        setPeriod(next);
+        setData(undefined);
+        setStatus("loading");
+        setSelected(undefined);
+        setExpanded(false);
+        setActiveDot(undefined);
+    };
 
     const countries = (data?.countries ?? []).filter(country => country.visitorCount > 0)
         .sort((a, b) => b.visitorCount - a.visitorCount);
@@ -71,6 +90,17 @@ export default function VisitorMap() {
 
     return (
         <div className="visitor-geography">
+            <div className="visitor-geography-toolbar">
+                <h3 className="visitor-map-heading">Visitor locations</h3>
+                <div className="visitor-period-controls" role="group" aria-label="Visitor date range">
+                    {visitorPeriods.map(option => (
+                        <button key={option.id} type="button" aria-pressed={period === option.id}
+                            onClick={() => selectPeriod(option.id)}>
+                            {option.label}
+                        </button>
+                    ))}
+                </div>
+            </div>
             <figure className="visitor-map">
                 <div className="visitor-map-stage" onPointerDown={() => setActiveDot(undefined)}>
                     <svg viewBox="0 0 720 300" role="group" aria-label={activeCountry ? `Visitor locations in ${activeCountry.country}` : "Worldwide visitor locations"}>

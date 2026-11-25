@@ -42,6 +42,13 @@
 .currency-choice{display:inline-flex;flex-direction:column;align-items:flex-start;line-height:1.3}.currency-choice strong{font-size:14px}.currency-choice small{font-size:11px;font-weight:400;color:#d7ccdf;white-space:normal;max-width:160px;overflow-wrap:anywhere}
 
 .visitor-geography { color: #f3edf9; }
+.visitor-geography-toolbar{display:flex;align-items:center;justify-content:space-between;gap:12px;flex-wrap:wrap;margin:0 0 14px}
+.visitor-geography-toolbar .visitor-map-heading{margin:0 4px;font-size:15px;color:#f3edf9}
+.visitor-period-controls{display:inline-flex;align-items:center;gap:3px;padding:3px;border:1px solid #483952;border-radius:10px;background:#17111e}
+.visitor-period-controls button{min-height:36px;padding:0 11px;border:0;border-radius:7px;background:transparent;color:#d8c8e5;font:inherit;font-size:12px;font-weight:550;cursor:pointer;transition:background .16s ease,color .16s ease}
+.visitor-period-controls button:hover{background:#302039;color:#fff}
+.visitor-period-controls button[aria-pressed="true"]{background:#693695;color:#fff}
+.visitor-period-controls button:focus-visible{outline:2px solid #d1a7fa;outline-offset:2px}
 .visitor-map { margin: 0; border: 1px solid #483952; border-radius: 12px; overflow: hidden; background: #1d1626; }
 .visitor-map svg { display: block; width: 100%; height: auto; }
 .visitor-map-dot { fill: #d1a7fa; stroke: #251836; stroke-width: 2; }
