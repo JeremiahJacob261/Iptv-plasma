@@ -4,13 +4,13 @@ import { useEffect, useState } from "react";
 import Link from "next/link";
 import Image from "next/image";
 import { Menu, X } from "lucide-react";
-import { Button } from "@/components/ui/button";
 
 const navigation = [
-    { href: "/", label: "Home" },
-    { href: "/", label: "IPTV" },
     { href: "/exchange/", label: "Exchange" },
+    { href: "/", label: "Home" },
+    { href: "/countries/", label: "Countries" },
     { href: "/categories/", label: "Categories" },
+    { href: "/languages/", label: "Languages" },
 ];
 const socialNavigation = [
     { href: "https://x.com/plasma1337x", label: "X" },
@@ -18,7 +18,6 @@ const socialNavigation = [
 ];
 
 export function Header() {
-    const exchangeHref = window.location.pathname.replace(/\/+$/, "") === "/exchange" ? "#exchange" : "/exchange/#exchange";
     const [isMenuOpen, setIsMenuOpen] = useState(false);
 
     useEffect(() => {
@@ -46,9 +45,6 @@ export function Header() {
                         {socialNavigation.map(item => <a key={item.label} href={item.href} target="_blank" rel="noopener noreferrer" aria-label={`PlasmaX on ${item.label}`} title={item.label} className="plasmax-social-link rounded-lg p-3 text-foreground/75 hover:bg-secondary focus-visible:outline-2 focus-visible:outline-primary"><img src={item.label === "Twitch" ? "/assets/social-twitch.svg" : "/assets/social-x.svg"} alt="" width={20} height={20} /></a>)}
                     </nav>
 
-                    <div className="hidden lg:block">
-                        <Button variant="gradient" size="lg" asChild><Link href={exchangeHref}>Start Exchange</Link></Button>
-                    </div>
                     <button type="button" className="plasmax-menu-toggle flex min-h-11 min-w-11 items-center justify-center rounded-lg transition-colors hover:bg-secondary focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-primary lg:hidden" aria-label={isMenuOpen ? "Close navigation menu" : "Open navigation menu"} aria-expanded={isMenuOpen} aria-controls="mobile-navigation" onClick={() => setIsMenuOpen(open => !open)}>
                         {isMenuOpen ? <X aria-hidden="true" /> : <Menu aria-hidden="true" />}
                     </button>
@@ -61,7 +57,6 @@ export function Header() {
                             <a key={item.label} href={item.href} target={item.href.startsWith("https:")?"_blank":undefined} rel={item.href.startsWith("https:")?"noopener noreferrer":undefined} onClick={() => setIsMenuOpen(false)} className="rounded-lg px-3 py-3 text-base font-medium text-foreground/85 hover:bg-secondary focus-visible:outline-2 focus-visible:outline-primary" aria-label={item.label}>{item.href.startsWith("https:") ? <img src={item.label === "Twitch" ? "/assets/social-twitch.svg" : "/assets/social-x.svg"} alt={item.label} width={20} height={20} /> : item.label}</a>
                         ))}
                         <div className="mt-3 flex items-center gap-3">{socialNavigation.map(item => <a key={item.label} href={item.href} target="_blank" rel="noopener noreferrer" aria-label={`PlasmaX on ${item.label}`} className="rounded-lg p-3 hover:bg-secondary"><img src={item.label === "Twitch" ? "/assets/social-twitch.svg" : "/assets/social-x.svg"} alt="" width={20} height={20} /></a>)}</div>
-                        <Button variant="gradient" size="lg" className="mt-3" asChild><Link href={exchangeHref} onClick={() => setIsMenuOpen(false)}>Start Exchange</Link></Button>
                         <div className="mt-5 flex flex-wrap gap-x-6 gap-y-3 border-t border-border pt-5 text-sm text-muted-foreground">
                             <Link href="/exchange/privacy-policy" onClick={() => setIsMenuOpen(false)} className="hover:text-foreground">Privacy Policy</Link>
                             <Link href="/exchange/terms-and-conditions" onClick={() => setIsMenuOpen(false)} className="hover:text-foreground">Terms &amp; Conditions</Link>
