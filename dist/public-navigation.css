@@ -13,11 +13,11 @@
 #plasma-public-header li a[aria-current="page"]{text-decoration:underline;text-underline-offset:6px}
 #plasma-public-header .plasma-public-watch{display:flex;align-items:center;justify-content:center;gap:10px;min-height:44px;padding:10px 18px;background:#693695;border-radius:12px;color:#191120;font-size:11px;font-weight:700;white-space:nowrap}
 #plasma-public-header .plasma-public-watch svg{width:20px;height:20px;color:#eceeef}
-#plasma-public-header .plasma-public-menu-open,#plasma-public-header .plasma-public-menu-close,#plasma-public-header .plasma-public-menu-close-row{display:none}
+#plasma-public-header .plasma-public-menu-open,#plasma-public-header .plasma-public-menu-close,#plasma-public-header .plasma-public-menu-close-row,#plasma-public-header .plasma-public-mobile-watch{display:none}
 #plasma-public-header button{border:0;background:transparent;color:#cfb0ed;cursor:pointer;min-width:44px;min-height:44px;padding:8px;border-radius:10px}
 #plasma-public-header button svg{display:block;width:24px;height:24px}
 #plasma-public-header :is(a,button):focus-visible{outline:2px solid #cfb0ed;outline-offset:2px}
-@media(max-width:991px){
+@media(width < 992px){
  #plasma-public-header .plasma-public-header-row{gap:12px;padding:18px 20px;max-width:1120px}
  #plasma-public-header .plasma-public-logo img{width:150px;height:auto;max-height:48px}
  #plasma-public-header .plasma-public-nav{flex:1;justify-content:flex-end}
@@ -32,4 +32,27 @@
  #plasma-public-header .plasma-public-header-row{padding:8px 16px}
  #plasma-public-header .plasma-public-watch{display:none}
  #plasma-public-header .plasma-public-logo{min-width:0}
+}
+
+/* Mobile layout must not inherit the old IPTV or exchange page header styles. */
+@media(width < 992px){
+ #plasma-public-header{display:block;isolation:isolate;margin:0;padding:0;max-width:100%;overflow:visible}
+ #plasma-public-header .plasma-public-header-row{box-sizing:border-box;width:100%;max-width:none;margin:0;min-width:0;justify-content:space-between}
+ #plasma-public-header .plasma-public-logo{margin:0;padding:0;flex:0 1 auto;min-width:0}
+ #plasma-public-header .plasma-public-logo img{display:block;width:150px;height:44px;max-width:100%;object-fit:contain;margin:0}
+ #plasma-public-header .plasma-public-nav{min-width:0;margin:0;padding:0;flex:1 0 auto;justify-content:flex-end}
+ #plasma-public-header .plasma-public-menu-open{flex:0 0 44px;width:44px;height:44px;margin:0;padding:8px}
+ #plasma-public-header ul{box-sizing:border-box;position:fixed;inset:0;margin:0;border:0;border-radius:0;min-width:0;max-width:none;max-height:none;width:100vw;height:100vh;height:100dvh;z-index:2147483647;background:#191120;color:#cfb0ed;padding:64px 0 max(24px,env(safe-area-inset-bottom));align-items:center;overflow-x:hidden;overflow-y:auto;overscroll-behavior:contain;list-style:none}
+ #plasma-public-header ul.is-open{display:flex}
+ #plasma-public-header ul[popover]:not(:popover-open){display:none}
+ #plasma-public-header .plasma-public-menu-close-row{top:max(8px,env(safe-area-inset-top));right:max(8px,env(safe-area-inset-right))}
+ #plasma-public-header li a{font-family:Inter,'Open Sans',sans-serif!important;line-height:1.4;text-align:center;min-height:48px}
+ #plasma-public-header li a svg{display:block;width:20px;height:20px;flex:none}
+ #plasma-public-header .plasma-public-mobile-watch{display:none}
+}
+@media(max-width:700px){
+ #plasma-public-header .plasma-public-header-row{height:60px;min-height:60px;padding:8px 16px}
+ #plasma-public-header .plasma-public-watch{display:none!important}
+ #plasma-public-header .plasma-public-mobile-watch{display:flex}
+ #plasma-public-header .plasma-public-mobile-watch a{width:auto;min-width:136px;background:#693695;color:#fff;font-size:16px;font-weight:600;border-radius:12px;margin-top:12px;padding:10px 20px}
 }

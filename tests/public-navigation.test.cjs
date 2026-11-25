@@ -10,7 +10,7 @@ test('homepage, directory, exchange, status and legal use the same public naviga
  for(const [url,markup] of routes){const dom=mount(markup,url);try{
   const d=dom.window.document,header=d.querySelector('#plasma-public-header');
   assert.ok(header,url);assert.equal(d.querySelectorAll('#plasma-public-header').length,1);assert.equal(d.querySelector('#_header-2-15'),null);
-  assert.deepEqual([...header.querySelectorAll('nav a')].map(a=>a.getAttribute('href')),['/exchange/','/','/countries/','/categories/','/languages/','https://x.com/plasma1337x','https://www.twitch.tv/plasma1337x']);
+  assert.deepEqual([...header.querySelectorAll('nav a')].map(a=>a.getAttribute('href')),['/exchange/','/','/countries/','/categories/','/languages/','https://x.com/plasma1337x','https://www.twitch.tv/plasma1337x','/iptv-player/']);
   assert.equal(header.querySelector('.plasma-public-watch').getAttribute('href'),'/iptv-player/');
   const open=header.querySelector('.plasma-public-menu-open'),close=header.querySelector('.plasma-public-menu-close'),menu=header.querySelector('ul');
   open.click();assert.equal(open.getAttribute('aria-expanded'),'true');assert.ok(menu.classList.contains('is-open'));
@@ -21,3 +21,5 @@ test('homepage, directory, exchange, status and legal use the same public naviga
 });
 test('admin is not given the public navigation',()=>{const dom=mount('<main id="plasmax-admin"></main>','/admin/dashboard');try{assert.equal(dom.window.document.querySelector('#plasma-public-header'),null);}finally{dom.window.close();}});
 test('shared styles ship with static hosting and suppress the old exchange header',()=>{assert.match(fs.readFileSync('dist/brand.css','utf8'),/public-navigation\.css/);assert.match(fs.readFileSync('dist/exchange-sections.css','utf8'),/\.plasmax-site-header\{display:none!important\}/);assert.match(fs.readFileSync('exchange/exchange-overrides.css','utf8'),/\.plasmax-site-header\{display:none!important\}/);});
+
+test('mobile menu retains Watch Now, locks scroll only while open and restores it on dismissal',()=>{for(const [url,markup] of [['/','<header id="_header-2-15"></header>'],['/exchange/','<div id="plasmax-exchange-page"></div>']]){const dom=mount(markup,url);try{const d=dom.window.document;d.documentElement.style.overflow='auto';const h=d.querySelector('#plasma-public-header');assert.equal(h.querySelector('.plasma-public-mobile-watch a').getAttribute('href'),'/iptv-player/');h.querySelector('.plasma-public-menu-open').click();assert.equal(d.documentElement.style.overflow,'hidden');h.querySelector('.plasma-public-menu-close').click();assert.equal(d.documentElement.style.overflow,'auto');}finally{dom.window.close();}}});
