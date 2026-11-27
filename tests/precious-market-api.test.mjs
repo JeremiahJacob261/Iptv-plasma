@@ -28,6 +28,7 @@ test('market API serves all supported metal and period selections with timestamp
     assert.equal(res.body.points.length, 2);
     assert.deepEqual(res.body.fx.rates, { USD: 1, EUR: .9, CAD: 1.4, NGN: 1500 });
     assert.ok(res.body.source.updatedAt);
+    assert.match(res.body.source.priceType, /not real-time/i);
     assert.match(res.headers['Cache-Control'], /s-maxage=/);
   }
   const historyCalls = calls.filter(url => url.pathname.endsWith('/market/history'));

@@ -63,7 +63,7 @@
       else amount.textContent = '—';
       cell.append(name, amount); return cell;
     }));
-    setText('#pm-updated', `Metal quote · ${new Intl.DateTimeFormat(undefined, { dateStyle: 'medium', timeStyle: 'short' }).format(new Date(item.updatedAt))}`);
+    setText('#pm-updated', `Metal quote · ${new Intl.DateTimeFormat(undefined, { year: 'numeric', month: 'short', day: 'numeric', hour: '2-digit', minute: '2-digit', timeZone: 'UTC', timeZoneName: 'short' }).format(new Date(item.updatedAt))}`);
     setText('#pm-fx-updated', `FX reference · ${report.fx.date} · ${report.fx.name}`);
     drawChart();
   }

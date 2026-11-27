@@ -46,7 +46,7 @@ export default async function handler(req, res) {
       selected: metal,
       period,
       points,
-      source: { name: 'Standard Bullion', url: 'https://standardbullion.com/market-data', attribution: 'Data by Standard Bullion', updatedAt: latestTimestamp, priceType: 'Indicative live dealer midpoint' },
+      source: { name: 'Standard Bullion', url: 'https://standardbullion.com/market-data', attribution: 'Data by Standard Bullion', updatedAt: latestTimestamp, priceType: 'Indicative dealer midpoint; not real-time, provider quotes refresh about every 15 minutes' },
       fx: { name: 'Exchange API', url: 'https://github.com/fawazahmed0/exchange-api', attribution: 'Currency rates by fawazahmed0 Exchange API', date: fx.date, rates: currencies },
       historyUnit: history.unit || 'USD per troy ounce',
       historyGrain: history.grain || 'daily'
