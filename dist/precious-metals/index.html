@@ -1,0 +1,58 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="theme-color" content="#191120">
+  <title>Precious Metals | PlasmaX</title>
+  <meta name="description" content="Track indicative gold, silver and platinum prices, compare currency conversions and read the latest from PlasmaX.">
+  <link rel="icon" href="/assets/plasmax-mark.svg">
+  <link rel="stylesheet" href="/brand.css">
+  <link rel="stylesheet" href="/precious-metals.css">
+</head>
+<body class="pm-page">
+  <header class="pm-header">
+    <a class="pm-brand" href="/" aria-label="PlasmaX home"><img src="/assets/plasmax-mark.svg" alt=""><span>PlasmaX</span></a>
+    <nav aria-label="Main navigation"><a href="/exchange/">Exchange</a><a href="/precious-metals/">Precious Metals</a><a href="/">Home</a><a href="/countries/">Countries</a><a href="/categories/">Categories</a><a href="/languages/">Languages</a></nav>
+    <a class="pm-watch" href="/">Watch TV</a>
+  </header>
+  <main class="pm-main">
+    <section class="pm-hero" aria-labelledby="pm-title">
+      <p class="pm-eyebrow">Markets · Metals</p>
+      <h1 id="pm-title">Precious metals, at a glance.</h1>
+      <p class="pm-intro">Follow gold, silver and platinum prices with flexible units, currencies and history.</p>
+    </section>
+    <section class="pm-tracker" aria-labelledby="tracker-title">
+      <div class="pm-tracker-head"><div><p class="pm-eyebrow">Price tracker</p><h2 id="tracker-title">Market snapshot</h2></div><span class="pm-live-tag"><i></i> Indicative data</span></div>
+      <div class="pm-metals" role="group" aria-label="Choose a metal">
+        <button type="button" data-metal="XAU" aria-pressed="true">Gold <span>XAU</span></button>
+        <button type="button" data-metal="XAG" aria-pressed="false">Silver <span>XAG</span></button>
+        <button type="button" data-metal="XPT" aria-pressed="false">Platinum <span>XPT</span></button>
+      </div>
+      <div class="pm-price-row">
+        <div class="pm-price-copy"><p class="pm-selected-label">Gold · Spot midpoint</p><p class="pm-price" id="pm-price" aria-live="polite">Loading prices…</p><p class="pm-change" id="pm-change">Fetching latest available data</p></div>
+        <div class="pm-controls">
+          <label>Currency<select id="pm-currency"><option value="USD">USD · US dollar</option><option value="EUR">EUR · Euro</option><option value="CAD">CAD · Canadian dollar</option><option value="NGN">NGN · Nigerian naira</option></select></label>
+          <label>Unit<select id="pm-unit"><option value="oz">Troy ounce</option><option value="g">Gram</option></select></label>
+        </div>
+      </div>
+      <div class="pm-performance" id="pm-performance" aria-label="Price changes"><div><span>Today</span><strong>—</strong></div><div><span>1 week</span><strong>—</strong></div><div><span>1 month</span><strong>—</strong></div><div><span>1 year</span><strong>—</strong></div></div>
+      <div class="pm-chart-card">
+        <div class="pm-chart-head"><div><span>Price history</span><small id="pm-chart-caption">Converted using the latest daily FX rate</small></div><div id="pm-periods" class="pm-periods" role="group" aria-label="Chart period"><button type="button" data-period="24h">1D</button><button type="button" data-period="7d">1W</button><button type="button" data-period="1m" aria-pressed="true">1M</button><button type="button" data-period="3m">3M</button><button type="button" data-period="6m">6M</button><button type="button" data-period="1y">1Y</button><button type="button" data-period="5y">5Y</button></div></div>
+        <div id="pm-chart" class="pm-chart" role="img" aria-label="Price history chart"><p class="pm-loading">Loading price history…</p></div>
+        <div class="pm-chart-axis"><span id="pm-chart-start">—</span><span id="pm-chart-end">—</span></div>
+      </div>
+      <div class="pm-updated"><span id="pm-updated">Market timestamp: loading</span><span id="pm-fx-updated">FX reference: loading</span></div>
+      <div class="pm-source-note"><p>Prices are indicative wholesale dealer midpoints, shown for information only. They are not executable quotes or an offer to buy or sell. Currency values use a separate daily reference rate and may differ from local market pricing.</p><div><a href="https://standardbullion.com/market-data" target="_blank" rel="noopener">Data by Standard Bullion</a><span> · </span><a href="https://github.com/fawazahmed0/exchange-api" target="_blank" rel="noopener">Currency rates by Exchange API</a></div></div>
+    </section>
+    <section class="pm-insights" id="insights" aria-labelledby="insights-title">
+      <div class="pm-section-head"><div><p class="pm-eyebrow">From PlasmaX</p><h2 id="insights-title">Metals insights</h2><p>Notes and explainers from the team.</p></div><a class="pm-text-link" href="/precious-metals/blog/">All articles <span aria-hidden="true">→</span></a></div>
+      <div id="pm-post-list" class="pm-post-grid" aria-live="polite"><p class="pm-loading">Loading articles…</p></div>
+    </section>
+  </main>
+  <footer class="pm-footer"><a class="pm-brand" href="/"><img src="/assets/plasmax-mark.svg" alt=""><span>PlasmaX</span></a><p>Explore the markets. Stay curious.</p><nav aria-label="Footer navigation"><a href="/">Home</a><a href="/exchange/">Exchange</a><a href="/precious-metals/">Precious Metals</a></nav></footer>
+  <script defer src="/precious-metals.js"></script>
+  <script defer src="/precious-blog.js"></script>
+  
+<script id="plasma-config" type="application/json">{"brand":"PlasmaX","plannedDomain":"plasmax.io","siteOrigin":"https://free-iptv-player-sigma.vercel.app","xProfile":"https://twitter.com/plasma1337x","twitchURL":"https://www.twitch.tv/plasma1337x"}</script><script defer src="/brand.js"></script></body>
+</html>

@@ -2,11 +2,12 @@
 
 import { useCallback, useEffect, useState } from "react";
 import { useRouter } from "next/navigation";
-import { Loader2, RefreshCcw, LogOut, Save, Globe, Tv, SlidersHorizontal, ArrowLeftRight } from "lucide-react";
+import { Loader2, RefreshCcw, LogOut, Save, Globe, Tv, FileText, SlidersHorizontal, ArrowLeftRight } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import VisitorMap from "@/components/admin/visitor-map";
 import IptvOverview from "@/components/admin/iptv-overview";
+import PreciousBlog from "@/components/admin/precious-blog";
 
 interface Transaction {
     id: string;
@@ -33,7 +34,7 @@ interface Analytics {
 }
 
 export default function AdminDashboard() {
-    const [section, setSection] = useState<"iptv" | "exchange" | "audience">("iptv");
+    const [section, setSection] = useState<"iptv" | "exchange" | "audience" | "metals">("iptv");
     const [refresh, setRefresh] = useState(0);
     const [exchangeError, setExchangeError] = useState(false);
     const [settingsAvailable, setSettingsAvailable] = useState(false);
@@ -136,6 +137,7 @@ export default function AdminDashboard() {
         { id: "iptv", label: "IPTV analytics", Icon: Tv },
         { id: "exchange", label: "Exchange", Icon: ArrowLeftRight },
         { id: "audience", label: "Visitor geography", Icon: Globe },
+        { id: "metals", label: "Metals blog", Icon: FileText },
     ] as const;
 
     return (
@@ -156,6 +158,7 @@ export default function AdminDashboard() {
                 </div>
 
                 {section === "iptv" && <IptvOverview refresh={refresh} onUnauthorized={onUnauthorized} />}
+                {section === "metals" && <PreciousBlog />}
                 {section === "audience" && <section>
                     <div className="admin-section-head"><div><h1>Visitor geography</h1><p>Explore Exchange visitor locations by day, week, or all time.</p></div></div>
                     <div className="admin-panel admin-audience-panel"><VisitorMap key={refresh} /></div>

@@ -69,9 +69,12 @@
   const links=[['Exchange','/exchange/'],['Home','/'],['Countries','/countries/'],['Categories','/categories/'],['Languages','/languages/']];
   const social=[['X','https://x.com/plasma1337x','x'],['Twitch','https://www.twitch.tv/plasma1337x','twitch']];
   const path=location.pathname.replace(/\/+$/,'')||'/';
+  const onExchange=/^\/exchange(?:\/|$)/.test(path);
+  const primaryHref=onExchange?'/exchange/#exchange':'/iptv-player/';
+  const primaryLabel=onExchange?'Start Exchange':'Watch Now';
   const menuLinks=links.map(([label,href])=>'<li><a href="'+href+'"'+((href.replace(/\/+$/,'')||'/')===path?' aria-current="page"':'')+'>'+label+'</a></li>').join('');
   const socialLinks=social.map(([label,href,key])=>'<li><a href="'+href+'" target="_blank" rel="noopener noreferrer" data-social-icon="'+key+'" aria-label="PlasmaX on '+label+'" title="'+label+'"><svg width="20" height="20" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true">'+(key==='x'?'<path d="M18.9 2H22l-6.8 7.8L23.2 22h-6.3L12 14.6 5.5 22H2.3l7.3-8.5L1.8 2h6.5l4.5 6.8L18.9 2Zm-1.1 18h1.7L7.3 3.9H5.5L17.8 20Z"/>':'<path d="M4.3 0 0 4.3v15.4h5.1V24l4.3-4.3h3.4L20.6 12V0H4.3Zm14.6 11.1-3.4 3.5H12l-3 3v-3H5.1V1.7h13.8v9.4ZM15.4 4.3h1.7v5.1h-1.7V4.3Zm-4.7 0h1.7v5.1h-1.7V4.3Z"/>')+'</svg></a></li>').join('');
-  header.innerHTML='<div class="plasma-public-header-row"><a class="plasma-public-logo" href="/" aria-label="PlasmaX home"><img src="/assets/plasmax-logo.svg" alt="PlasmaX"></a><nav class="plasma-public-nav" aria-label="Main navigation"><button type="button" class="plasma-public-menu-open" aria-label="Open navigation menu" aria-expanded="false" aria-controls="plasma-public-menu"><svg viewBox="0 0 24 24" aria-hidden="true"><path fill="currentColor" d="M2 4h20v3H2zm0 7h20v3H2zm0 7h20v3H2z"/></svg></button><ul id="plasma-public-menu"><li class="plasma-public-menu-close-row"><button type="button" class="plasma-public-menu-close" aria-label="Close navigation menu"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="m5 5 14 14M19 5 5 19" fill="none" stroke="currentColor" stroke-width="2.5"/></svg></button></li>'+menuLinks+socialLinks+'<li class="plasma-public-mobile-watch"><a href="/iptv-player/">Watch Now</a></li></ul></nav><a class="plasma-public-watch" href="/iptv-player/"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M6 3v18l15-9z" fill="currentColor"/></svg><span>Watch Now</span></a></div>';
+  header.innerHTML='<div class="plasma-public-header-row"><a class="plasma-public-logo" href="/" aria-label="PlasmaX home"><img src="/assets/plasmax-logo.svg" alt="PlasmaX"></a><nav class="plasma-public-nav" aria-label="Main navigation"><button type="button" class="plasma-public-menu-open" aria-label="Open navigation menu" aria-expanded="false" aria-controls="plasma-public-menu"><svg viewBox="0 0 24 24" aria-hidden="true"><path fill="currentColor" d="M2 4h20v3H2zm0 7h20v3H2zm0 7h20v3H2z"/></svg></button><ul id="plasma-public-menu"><li class="plasma-public-menu-close-row"><button type="button" class="plasma-public-menu-close" aria-label="Close navigation menu"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="m5 5 14 14M19 5 5 19" fill="none" stroke="currentColor" stroke-width="2.5"/></svg></button></li>'+menuLinks+socialLinks+'<li class="plasma-public-mobile-watch"><a href="'+primaryHref+'">'+primaryLabel+'</a></li></ul></nav><a class="plasma-public-watch" href="'+primaryHref+'"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M6 3v18l15-9z" fill="currentColor"/></svg><span>'+primaryLabel+'</span></a></div>';
   const toggle=header.querySelector('.plasma-public-menu-open');
   const close=header.querySelector('.plasma-public-menu-close');
   const menu=header.querySelector('#plasma-public-menu');
@@ -134,6 +137,13 @@
    const link=document.createElement('a');link.href='/exchange/';link.textContent='Exchange';
    const existing=list.querySelector('li > a');if(existing)link.className=existing.className;
    item.append(link);list.insertBefore(item,list.querySelector('template')||list.firstChild);
+  });
+  document.querySelectorAll('.oxy-site-navigation > ul').forEach(list=>{
+   if(list.querySelector('[data-plasmax-metals-link]'))return;
+   const item=document.createElement('li');item.className='menu-item';item.dataset.plasmaxMetalsLink='';
+   const link=document.createElement('a');link.href='/precious-metals/';link.textContent='Precious Metals';
+   const exchangeItem=list.querySelector('[data-plasmax-exchange-link]');if(exchangeItem){link.className=exchangeItem.querySelector('a')?.className||'';exchangeItem.after(item);}else list.insertBefore(item,list.firstChild);
+   item.append(link);
   });
   document.querySelectorAll('nav a, [role="navigation"] a, .menu-item a').forEach(a=>{
    const href=a.getAttribute('href') || '';
